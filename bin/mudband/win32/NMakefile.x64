@@ -1,0 +1,97 @@
+#
+# NMakefile to build the mudband.
+#
+INCLUDE_DIRS = -I. -I..\common -I..\..\..\lib\libmud \
+	-I..\..\..\lib\libjansson \
+	-I..\..\..\contrib\prebuilt\openssl\x64\include \
+	-I..\..\..\contrib\prebuilt\wintun\include
+LIBS= advapi32.lib crypt32.lib iphlpapi.lib shell32.lib user32.lib ws2_32.lib
+LIB_DIRS= /LIBPATH:..\..\..\contrib\prebuilt\openssl\x64\lib
+EXE=mudband.exe
+CPP=cl.exe
+LINK32=link.exe
+CPP_ARG_COMMON=/nologo /W3 /WX /Od \
+	/wd4091 /wd4146 /wd4244 /wd4267 /wd4334 /wd4996 \
+	$(INCLUDE_DIRS) /FD /c \
+	-D_WINSOCK_DEPRECATED_NO_WARNINGS \
+	-D__STDC__ -DWIN32 -DWIN32_LEAN_AND_MEAN -D_MBCS \
+	-DPSAPI_VERSION=1 \
+	-D_CRT_SECURE_NO_WARNINGS \
+	-DTARGETSTR="\"$(TARGET)\"" \
+	/DMUDBAND_X86_64
+!IF "$(BUILD)" == "RELEASE"
+CPP_ARG_COMMON= $(CPP_ARG_COMMON) /MT /Zi -DTARGET_RELEASE
+LIBS= $(LIBS) libcrypto64MT.lib libssl64MT.lib
+LINK32_SUBSYSTEM=/subsystem:windows
+LINK32_FLAGS=/nologo /incremental:no /debug /out:"$(EXE)" \
+    /MANIFESTUAC /MANIFESTUAC:level /MANIFESTUAC:level=requireAdministrator
+!ELSE
+CPP_ARG_COMMON= $(CPP_ARG_COMMON) /MTd /Zi
+LIBS= $(LIBS) libcrypto64MTd.lib libssl64MTd.lib
+LINK32_SUBSYSTEM=/subsystem:console
+LINK32_FLAGS=/nologo /incremental:no /debug /out:"$(EXE)" \
+    /MANIFESTUAC /MANIFESTUAC:level /MANIFESTUAC:level=requireAdministrator
+!ENDIF
+CPP_PROJ=$(CPP_ARG_COMMON)
+OBJS=	\
+        ..\..\..\lib\libjansson\dump.obj \
+        ..\..\..\lib\libjansson\error.obj \
+        ..\..\..\lib\libjansson\hashtable.obj \
+        ..\..\..\lib\libjansson\hashtable_seed.obj \
+        ..\..\..\lib\libjansson\load.obj \
+        ..\..\..\lib\libjansson\memory.obj \
+        ..\..\..\lib\libjansson\pack_unpack.obj \
+        ..\..\..\lib\libjansson\strbuffer.obj \
+        ..\..\..\lib\libjansson\strconv.obj \
+        ..\..\..\lib\libjansson\utf.obj \
+        ..\..\..\lib\libjansson\value.obj \
+        ..\..\..\lib\libmud\odr.obj \
+        ..\..\..\lib\libmud\odr_pthread.obj \
+        ..\..\..\lib\libmud\vct.obj \
+        ..\..\..\lib\libmud\vhttps.obj \
+        ..\..\..\lib\libmud\vopt.obj \
+        ..\..\..\lib\libmud\vsb.obj \
+        ..\..\..\lib\libmud\vsock.obj \
+        ..\..\..\lib\libmud\vss.obj \
+        ..\..\..\lib\libmud\vssl.obj \
+        ..\..\..\lib\libmud\vtc_log.obj \
+        ..\..\..\lib\libmud\vtim.obj \
+        ..\..\..\lib\libmud\vuuid.obj \
+	..\common\bpf.obj \
+	..\common\callout.obj \
+	..\common\crypto\blake2s.obj \
+	..\common\crypto\chacha20.obj \
+	..\common\crypto\chacha20poly1305.obj \
+	..\common\crypto\poly1305-donna.obj \
+	..\common\crypto\x25519.obj \
+	..\common\crypto.obj \
+	..\common\wireguard.obj \
+	..\common\wireguard-pbuf.obj \
+	mudband.obj \
+	mudband_acl.obj \
+	mudband_confmgr.obj \
+	mudband_connmgr.obj \
+	mudband_enroll.obj \
+	mudband_mqtt.obj \
+	mudband_progconf.obj \
+	mudband_stun_client.obj \
+	mudband_tasks.obj \
+	mudband_webcli.obj
+
+VERPATCH= \
+	..\..\..\contrib\verpatch\verpatch.exe
+
+mudband: $(OBJS)
+	$(LINK32) $(LINK32_FLAGS) $(LIB_DIRS) $(LIBS) $(OBJS)
+	$(VERPATCH) $(EXE) /va "0.0.6" /pv "0.0.6" \
+	    /s desc "Mudband" \
+	    /s copyright "Copyright (c) 2024 by Mudfish Networks" \
+	    /s product "Mudband"
+
+mudband.obj: mudband.c win32/mudband.c
+
+.c.obj:
+	$(CPP) $(CPP_PROJ) /Fo$*.obj $<
+
+clean:
+	del $(OBJS) $(EXE)
