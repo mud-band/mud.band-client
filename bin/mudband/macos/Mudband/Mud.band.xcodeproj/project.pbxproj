@@ -1,0 +1,940 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FB0A105F2D0BBA2300189DA8 /* mudband_tunnel.m in Sources */ = {isa = PBXBuildFile; fileRef = FB0A105E2D0BBA2300189DA8 /* mudband_tunnel.m */; };
+		FB0A10612D0BBAEF00189DA8 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = FB0A10602D0BBAEF00189DA8 /* Alamofire */; };
+		FB0A10652D0BBD2100189DA8 /* FileManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0A10642D0BBD2100189DA8 /* FileManagerExtension.swift */; };
+		FB0A10672D0BBDB000189DA8 /* mudband_tunnel_confmgr.m in Sources */ = {isa = PBXBuildFile; fileRef = FB0A10662D0BBDB000189DA8 /* mudband_tunnel_confmgr.m */; };
+		FB2138152D064BA1008C4BB7 /* Mudband.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2138142D064BA1008C4BB7 /* Mudband.swift */; };
+		FB2138172D064BA1008C4BB7 /* UiMainEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2138162D064BA1008C4BB7 /* UiMainEntryView.swift */; };
+		FB2138192D064BA3008C4BB7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB2138182D064BA3008C4BB7 /* Assets.xcassets */; };
+		FB21381C2D064BA3008C4BB7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB21381B2D064BA3008C4BB7 /* Preview Assets.xcassets */; };
+		FB21382A2D064BBC008C4BB7 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2138292D064BBC008C4BB7 /* NetworkExtension.framework */; };
+		FB21382D2D064BBC008C4BB7 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21382C2D064BBC008C4BB7 /* PacketTunnelProvider.swift */; };
+		FB2138322D064BBC008C4BB7 /* Mud.band Tunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FB2138272D064BBC008C4BB7 /* Mud.band Tunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FB2138392D0655FC008C4BB7 /* VpnManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2138382D0655FC008C4BB7 /* VpnManager.swift */; };
+		FB21383C2D0656B3008C4BB7 /* mudband_ui.m in Sources */ = {isa = PBXBuildFile; fileRef = FB21383B2D0656B3008C4BB7 /* mudband_ui.m */; };
+		FB2138422D067C01008C4BB7 /* UiEnrollmentNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2138412D067C01008C4BB7 /* UiEnrollmentNewView.swift */; };
+		FB2138452D067CBA008C4BB7 /* FileManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2138442D067CBA008C4BB7 /* FileManagerExtension.swift */; };
+		FB4E5D702D0BC23300322ECD /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D1A22D07F9F300BF6D73 /* odr.c */; };
+		FB4E5D712D0BC24500322ECD /* vtc_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19A2D07F6FA00BF6D73 /* vtc_log.c */; };
+		FB4E5D722D0BC25500322ECD /* odr_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19C2D07F78D00BF6D73 /* odr_pthread.c */; };
+		FB4E5D732D0BC25900322ECD /* vsb.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19E2D07F97F00BF6D73 /* vsb.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FB4E5D742D0BC25C00322ECD /* vtim.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D1A02D07F9AB00BF6D73 /* vtim.c */; };
+		FB549B882D1626E000C1F5F4 /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B832D1626E000C1F5F4 /* x25519.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FB549B892D1626E000C1F5F4 /* chacha20poly1305.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B842D1626E000C1F5F4 /* chacha20poly1305.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FB549B8A2D1626E000C1F5F4 /* blake2s.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B852D1626E000C1F5F4 /* blake2s.c */; };
+		FB549B8B2D1626E000C1F5F4 /* chacha20.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B862D1626E000C1F5F4 /* chacha20.c */; };
+		FB549B8C2D1626E000C1F5F4 /* poly1305-donna.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B872D1626E000C1F5F4 /* poly1305-donna.c */; };
+		FB549B932D1627E700C1F5F4 /* wireguard.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B8F2D16273C00C1F5F4 /* wireguard.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FB549B942D1627EB00C1F5F4 /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B8D2D16273200C1F5F4 /* crypto.c */; };
+		FB549B952D1627F700C1F5F4 /* blake2s.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B852D1626E000C1F5F4 /* blake2s.c */; };
+		FB549B962D1627FA00C1F5F4 /* chacha20.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B862D1626E000C1F5F4 /* chacha20.c */; };
+		FB549B972D1627FC00C1F5F4 /* chacha20poly1305.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B842D1626E000C1F5F4 /* chacha20poly1305.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FB549B982D1627FE00C1F5F4 /* poly1305-donna.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B872D1626E000C1F5F4 /* poly1305-donna.c */; };
+		FB549B992D16280100C1F5F4 /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B832D1626E000C1F5F4 /* x25519.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FB549B9A2D16289100C1F5F4 /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B8D2D16273200C1F5F4 /* crypto.c */; };
+		FB549B9D2D16295B00C1F5F4 /* callout.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B9B2D16295B00C1F5F4 /* callout.c */; };
+		FB796A5A2D14DF310061007D /* UiEnrollmentChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB796A592D14DF310061007D /* UiEnrollmentChangeView.swift */; };
+		FB7EA7D12D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m in Sources */ = {isa = PBXBuildFile; fileRef = FB7EA7D02D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m */; };
+		FB88BBC52D0E129A0054822E /* mudband_tunnel_stun_client.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBC42D0E129A0054822E /* mudband_tunnel_stun_client.m */; };
+		FB88BBC82D0E69BB0054822E /* mudband_tunnel_tasks.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBC72D0E69BB0054822E /* mudband_tunnel_tasks.m */; };
+		FB88BBCB2D0E6BC60054822E /* mudband_tunnel_mqtt.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBCA2D0E6BC60054822E /* mudband_tunnel_mqtt.m */; };
+		FB9D80082D0FB6EA000D755C /* vuuid.c in Sources */ = {isa = PBXBuildFile; fileRef = FBDF23752D0B954C002E8735 /* vuuid.c */; };
+		FBA4CEC22D0D26FF00252A0F /* mudband_tunnel_enroll.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CEC12D0D26FF00252A0F /* mudband_tunnel_enroll.m */; };
+		FBA4CEC42D0D2EC400252A0F /* mudband_ui_progconf.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CEC32D0D2EC400252A0F /* mudband_ui_progconf.m */; };
+		FBA4CEC62D0D36A100252A0F /* mudband_tunnel_progconf.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CEC52D0D36A100252A0F /* mudband_tunnel_progconf.m */; };
+		FBA4CEC72D0D36CF00252A0F /* dump.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4D2D0A3F76005D1D51 /* dump.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBA4CEC82D0D36D200252A0F /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4C2D0A3F75005D1D51 /* error.c */; };
+		FBA4CEC92D0D36D400252A0F /* hashtable_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4B2D0A3F75005D1D51 /* hashtable_seed.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBA4CECA2D0D36D600252A0F /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E482D0A3F75005D1D51 /* hashtable.c */; };
+		FBA4CECB2D0D36D900252A0F /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E492D0A3F75005D1D51 /* load.c */; };
+		FBA4CECC2D0D36DB00252A0F /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E512D0A3F76005D1D51 /* memory.c */; };
+		FBA4CECD2D0D36DD00252A0F /* pack_unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E502D0A3F76005D1D51 /* pack_unpack.c */; };
+		FBA4CECE2D0D36DF00252A0F /* strbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4E2D0A3F76005D1D51 /* strbuffer.c */; };
+		FBA4CECF2D0D36E100252A0F /* strconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4A2D0A3F75005D1D51 /* strconv.c */; };
+		FBA4CED02D0D36E300252A0F /* utf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4F2D0A3F76005D1D51 /* utf.c */; };
+		FBA4CED12D0D36E600252A0F /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E522D0A3F76005D1D51 /* value.c */; };
+		FBA4CED32D0D4CF400252A0F /* mudband_tunnel_connmgr.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CED22D0D4CF400252A0F /* mudband_tunnel_connmgr.m */; };
+		FBA4CED52D0D4FE100252A0F /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CED42D0D4FE100252A0F /* vsock.c */; };
+		FBA7F4082D09210F00C3E25D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = FBA7F4072D09210F00C3E25D /* Alamofire */; };
+		FBA7F40B2D09284300C3E25D /* libwireguard.c in Sources */ = {isa = PBXBuildFile; fileRef = FBA7F40A2D09284300C3E25D /* libwireguard.c */; };
+		FBA7F4162D094D5100C3E25D /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = FBA7F4152D094D5100C3E25D /* SwiftyJSON */; };
+		FBB31E532D0A3F76005D1D51 /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E482D0A3F75005D1D51 /* hashtable.c */; };
+		FBB31E542D0A3F76005D1D51 /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E492D0A3F75005D1D51 /* load.c */; };
+		FBB31E552D0A3F76005D1D51 /* strconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4A2D0A3F75005D1D51 /* strconv.c */; };
+		FBB31E562D0A3F76005D1D51 /* hashtable_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4B2D0A3F75005D1D51 /* hashtable_seed.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBB31E572D0A3F76005D1D51 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4C2D0A3F75005D1D51 /* error.c */; };
+		FBB31E582D0A3F76005D1D51 /* dump.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4D2D0A3F76005D1D51 /* dump.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBB31E592D0A3F76005D1D51 /* strbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4E2D0A3F76005D1D51 /* strbuffer.c */; };
+		FBB31E5A2D0A3F76005D1D51 /* utf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4F2D0A3F76005D1D51 /* utf.c */; };
+		FBB31E5B2D0A3F76005D1D51 /* pack_unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E502D0A3F76005D1D51 /* pack_unpack.c */; };
+		FBB31E5C2D0A3F76005D1D51 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E512D0A3F76005D1D51 /* memory.c */; };
+		FBB31E5D2D0A3F76005D1D51 /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E522D0A3F76005D1D51 /* value.c */; };
+		FBB31E5F2D0A9FED005D1D51 /* UiDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E5E2D0A9FED005D1D51 /* UiDashboardView.swift */; };
+		FBB31E612D0AAA32005D1D51 /* mudband_ui_enroll.m in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E602D0AAA32005D1D51 /* mudband_ui_enroll.m */; };
+		FBDF23762D0B954C002E8735 /* vuuid.c in Sources */ = {isa = PBXBuildFile; fileRef = FBDF23752D0B954C002E8735 /* vuuid.c */; };
+		FBF5D19B2D07F6FA00BF6D73 /* vtc_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19A2D07F6FA00BF6D73 /* vtc_log.c */; };
+		FBF5D19D2D07F78D00BF6D73 /* odr_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19C2D07F78D00BF6D73 /* odr_pthread.c */; };
+		FBF5D19F2D07F97F00BF6D73 /* vsb.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19E2D07F97F00BF6D73 /* vsb.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF5D1A12D07F9AB00BF6D73 /* vtim.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D1A02D07F9AB00BF6D73 /* vtim.c */; };
+		FBF5D1A32D07F9F300BF6D73 /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D1A22D07F9F300BF6D73 /* odr.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FB2138302D064BBC008C4BB7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FB2138092D064BA1008C4BB7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FB2138262D064BBC008C4BB7;
+			remoteInfo = "Mudband Tunnel";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FB2138362D064BBC008C4BB7 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				FB2138322D064BBC008C4BB7 /* Mud.band Tunnel.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		FB0A105D2D0BBA2300189DA8 /* Mudband Tunnel-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mudband Tunnel-Bridging-Header.h"; sourceTree = "<group>"; };
+		FB0A105E2D0BBA2300189DA8 /* mudband_tunnel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel.m; sourceTree = "<group>"; };
+		FB0A10642D0BBD2100189DA8 /* FileManagerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileManagerExtension.swift; sourceTree = "<group>"; };
+		FB0A10662D0BBDB000189DA8 /* mudband_tunnel_confmgr.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_confmgr.m; sourceTree = "<group>"; };
+		FB2138112D064BA1008C4BB7 /* Mud.band.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mud.band.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB2138142D064BA1008C4BB7 /* Mudband.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mudband.swift; sourceTree = "<group>"; };
+		FB2138162D064BA1008C4BB7 /* UiMainEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiMainEntryView.swift; sourceTree = "<group>"; };
+		FB2138182D064BA3008C4BB7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FB21381B2D064BA3008C4BB7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		FB21381D2D064BA3008C4BB7 /* Mudband.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mudband.entitlements; sourceTree = "<group>"; };
+		FB2138272D064BBC008C4BB7 /* Mud.band Tunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Mud.band Tunnel.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB2138292D064BBC008C4BB7 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		FB21382C2D064BBC008C4BB7 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
+		FB21382E2D064BBC008C4BB7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FB21382F2D064BBC008C4BB7 /* Mudband_Tunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mudband_Tunnel.entitlements; sourceTree = "<group>"; };
+		FB2138382D0655FC008C4BB7 /* VpnManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VpnManager.swift; sourceTree = "<group>"; };
+		FB21383A2D0656B3008C4BB7 /* Mudband-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mudband-Bridging-Header.h"; sourceTree = "<group>"; };
+		FB21383B2D0656B3008C4BB7 /* mudband_ui.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui.m; sourceTree = "<group>"; };
+		FB2138412D067C01008C4BB7 /* UiEnrollmentNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiEnrollmentNewView.swift; sourceTree = "<group>"; };
+		FB2138442D067CBA008C4BB7 /* FileManagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerExtension.swift; sourceTree = "<group>"; };
+		FB4E5D6F2D0BC0E100322ECD /* mudband_tunnel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_tunnel.h; sourceTree = "<group>"; };
+		FB549B832D1626E000C1F5F4 /* x25519.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = x25519.c; path = ../../../../../../common/crypto/x25519.c; sourceTree = "<group>"; };
+		FB549B842D1626E000C1F5F4 /* chacha20poly1305.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chacha20poly1305.c; path = ../../../../../../common/crypto/chacha20poly1305.c; sourceTree = "<group>"; };
+		FB549B852D1626E000C1F5F4 /* blake2s.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = blake2s.c; path = ../../../../../../common/crypto/blake2s.c; sourceTree = "<group>"; };
+		FB549B862D1626E000C1F5F4 /* chacha20.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chacha20.c; path = ../../../../../../common/crypto/chacha20.c; sourceTree = "<group>"; };
+		FB549B872D1626E000C1F5F4 /* poly1305-donna.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "poly1305-donna.c"; path = "../../../../../../common/crypto/poly1305-donna.c"; sourceTree = "<group>"; };
+		FB549B8D2D16273200C1F5F4 /* crypto.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crypto.c; path = ../../../../../common/crypto.c; sourceTree = "<group>"; };
+		FB549B8F2D16273C00C1F5F4 /* wireguard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wireguard.c; path = ../../../../../common/wireguard.c; sourceTree = "<group>"; };
+		FB549B912D16276500C1F5F4 /* crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crypto.h; path = ../../../../../common/crypto.h; sourceTree = "<group>"; };
+		FB549B922D16278200C1F5F4 /* wireguard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wireguard.h; path = ../../../../../common/wireguard.h; sourceTree = "<group>"; };
+		FB549B9B2D16295B00C1F5F4 /* callout.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = callout.c; path = ../../../../../common/callout.c; sourceTree = "<group>"; };
+		FB549B9C2D16295B00C1F5F4 /* callout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = callout.h; path = ../../../../../common/callout.h; sourceTree = "<group>"; };
+		FB796A592D14DF310061007D /* UiEnrollmentChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiEnrollmentChangeView.swift; sourceTree = "<group>"; };
+		FB7EA7D02D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_wireguard.m; sourceTree = "<group>"; };
+		FB7EA7D32D0FAC2400186AC3 /* mudband_tunnel_wireguard_platform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_tunnel_wireguard_platform.h; sourceTree = "<group>"; };
+		FB88BBC42D0E129A0054822E /* mudband_tunnel_stun_client.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_stun_client.m; sourceTree = "<group>"; };
+		FB88BBC62D0E12D80054822E /* mudband_tunnel_stun_client.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_tunnel_stun_client.h; sourceTree = "<group>"; };
+		FB88BBC72D0E69BB0054822E /* mudband_tunnel_tasks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_tasks.m; sourceTree = "<group>"; };
+		FB88BBC92D0E6B770054822E /* mudband_tunnel_mqtt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_tunnel_mqtt.h; sourceTree = "<group>"; };
+		FB88BBCA2D0E6BC60054822E /* mudband_tunnel_mqtt.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_mqtt.m; sourceTree = "<group>"; };
+		FBA4CEC12D0D26FF00252A0F /* mudband_tunnel_enroll.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_enroll.m; sourceTree = "<group>"; };
+		FBA4CEC32D0D2EC400252A0F /* mudband_ui_progconf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui_progconf.m; sourceTree = "<group>"; };
+		FBA4CEC52D0D36A100252A0F /* mudband_tunnel_progconf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_progconf.m; sourceTree = "<group>"; };
+		FBA4CED22D0D4CF400252A0F /* mudband_tunnel_connmgr.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_connmgr.m; sourceTree = "<group>"; };
+		FBA4CED42D0D4FE100252A0F /* vsock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsock.c; path = ../../../../../../../lib/libmud/vsock.c; sourceTree = "<group>"; };
+		FBA7F40A2D09284300C3E25D /* libwireguard.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libwireguard.c; sourceTree = "<group>"; };
+		FBA7F4102D092AA800C3E25D /* libwireguard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libwireguard.h; sourceTree = "<group>"; };
+		FBB31E482D0A3F75005D1D51 /* hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable.c; path = ../../../../../../../lib/libjansson/hashtable.c; sourceTree = "<group>"; };
+		FBB31E492D0A3F75005D1D51 /* load.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = load.c; path = ../../../../../../../lib/libjansson/load.c; sourceTree = "<group>"; };
+		FBB31E4A2D0A3F75005D1D51 /* strconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strconv.c; path = ../../../../../../../lib/libjansson/strconv.c; sourceTree = "<group>"; };
+		FBB31E4B2D0A3F75005D1D51 /* hashtable_seed.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable_seed.c; path = ../../../../../../../lib/libjansson/hashtable_seed.c; sourceTree = "<group>"; };
+		FBB31E4C2D0A3F75005D1D51 /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = error.c; path = ../../../../../../../lib/libjansson/error.c; sourceTree = "<group>"; };
+		FBB31E4D2D0A3F76005D1D51 /* dump.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dump.c; path = ../../../../../../../lib/libjansson/dump.c; sourceTree = "<group>"; };
+		FBB31E4E2D0A3F76005D1D51 /* strbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strbuffer.c; path = ../../../../../../../lib/libjansson/strbuffer.c; sourceTree = "<group>"; };
+		FBB31E4F2D0A3F76005D1D51 /* utf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utf.c; path = ../../../../../../../lib/libjansson/utf.c; sourceTree = "<group>"; };
+		FBB31E502D0A3F76005D1D51 /* pack_unpack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pack_unpack.c; path = ../../../../../../../lib/libjansson/pack_unpack.c; sourceTree = "<group>"; };
+		FBB31E512D0A3F76005D1D51 /* memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = memory.c; path = ../../../../../../../lib/libjansson/memory.c; sourceTree = "<group>"; };
+		FBB31E522D0A3F76005D1D51 /* value.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = value.c; path = ../../../../../../../lib/libjansson/value.c; sourceTree = "<group>"; };
+		FBB31E5E2D0A9FED005D1D51 /* UiDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardView.swift; sourceTree = "<group>"; };
+		FBB31E602D0AAA32005D1D51 /* mudband_ui_enroll.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui_enroll.m; sourceTree = "<group>"; };
+		FBB31E622D0AAAAC005D1D51 /* mudband_ui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_ui.h; sourceTree = "<group>"; };
+		FBDF23752D0B954C002E8735 /* vuuid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vuuid.c; path = ../../../../../../../lib/libmud/vuuid.c; sourceTree = "<group>"; };
+		FBF5D19A2D07F6FA00BF6D73 /* vtc_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vtc_log.c; path = ../../../../../../../lib/libmud/vtc_log.c; sourceTree = "<group>"; };
+		FBF5D19C2D07F78D00BF6D73 /* odr_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = odr_pthread.c; path = ../../../../../../../lib/libmud/odr_pthread.c; sourceTree = "<group>"; };
+		FBF5D19E2D07F97F00BF6D73 /* vsb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsb.c; path = ../../../../../../../lib/libmud/vsb.c; sourceTree = "<group>"; };
+		FBF5D1A02D07F9AB00BF6D73 /* vtim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vtim.c; path = ../../../../../../../lib/libmud/vtim.c; sourceTree = "<group>"; };
+		FBF5D1A22D07F9F300BF6D73 /* odr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = odr.c; path = ../../../../../../../lib/libmud/odr.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FB21380E2D064BA1008C4BB7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBA7F4162D094D5100C3E25D /* SwiftyJSON in Frameworks */,
+				FBA7F4082D09210F00C3E25D /* Alamofire in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB2138242D064BBC008C4BB7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB21382A2D064BBC008C4BB7 /* NetworkExtension.framework in Frameworks */,
+				FB0A10612D0BBAEF00189DA8 /* Alamofire in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FB0A105B2D0BBA0100189DA8 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				FB7EA7C02D0FAA2100186AC3 /* libwireguard */,
+				FB0A10642D0BBD2100189DA8 /* FileManagerExtension.swift */,
+				FB0A105C2D0BBA0B00189DA8 /* objc */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		FB0A105C2D0BBA0B00189DA8 /* objc */ = {
+			isa = PBXGroup;
+			children = (
+				FB4E5D6F2D0BC0E100322ECD /* mudband_tunnel.h */,
+				FB0A105E2D0BBA2300189DA8 /* mudband_tunnel.m */,
+				FB0A10662D0BBDB000189DA8 /* mudband_tunnel_confmgr.m */,
+				FBA4CED22D0D4CF400252A0F /* mudband_tunnel_connmgr.m */,
+				FBA4CEC12D0D26FF00252A0F /* mudband_tunnel_enroll.m */,
+				FB88BBC92D0E6B770054822E /* mudband_tunnel_mqtt.h */,
+				FB88BBCA2D0E6BC60054822E /* mudband_tunnel_mqtt.m */,
+				FBA4CEC52D0D36A100252A0F /* mudband_tunnel_progconf.m */,
+				FB88BBC62D0E12D80054822E /* mudband_tunnel_stun_client.h */,
+				FB88BBC42D0E129A0054822E /* mudband_tunnel_stun_client.m */,
+				FB88BBC72D0E69BB0054822E /* mudband_tunnel_tasks.m */,
+				FB7EA7D02D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m */,
+				FB7EA7D32D0FAC2400186AC3 /* mudband_tunnel_wireguard_platform.h */,
+				FB0A105D2D0BBA2300189DA8 /* Mudband Tunnel-Bridging-Header.h */,
+			);
+			path = objc;
+			sourceTree = "<group>";
+		};
+		FB2138082D064BA1008C4BB7 = {
+			isa = PBXGroup;
+			children = (
+				FB2138132D064BA1008C4BB7 /* Mudband */,
+				FB21382B2D064BBC008C4BB7 /* Mudband Tunnel */,
+				FB2138282D064BBC008C4BB7 /* Frameworks */,
+				FB2138122D064BA1008C4BB7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FB2138122D064BA1008C4BB7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FB2138112D064BA1008C4BB7 /* Mud.band.app */,
+				FB2138272D064BBC008C4BB7 /* Mud.band Tunnel.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FB2138132D064BA1008C4BB7 /* Mudband */ = {
+			isa = PBXGroup;
+			children = (
+				FB2138432D067CA7008C4BB7 /* lib */,
+				FB21383D2D0656D9008C4BB7 /* objc */,
+				FB2138402D065C51008C4BB7 /* ui */,
+				FB2138142D064BA1008C4BB7 /* Mudband.swift */,
+				FB2138382D0655FC008C4BB7 /* VpnManager.swift */,
+				FB2138182D064BA3008C4BB7 /* Assets.xcassets */,
+				FB21381D2D064BA3008C4BB7 /* Mudband.entitlements */,
+				FB21381A2D064BA3008C4BB7 /* Preview Content */,
+				FB21383A2D0656B3008C4BB7 /* Mudband-Bridging-Header.h */,
+			);
+			path = Mudband;
+			sourceTree = "<group>";
+		};
+		FB21381A2D064BA3008C4BB7 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				FB21381B2D064BA3008C4BB7 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		FB2138282D064BBC008C4BB7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FB2138292D064BBC008C4BB7 /* NetworkExtension.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FB21382B2D064BBC008C4BB7 /* Mudband Tunnel */ = {
+			isa = PBXGroup;
+			children = (
+				FB0A105B2D0BBA0100189DA8 /* lib */,
+				FB21382C2D064BBC008C4BB7 /* PacketTunnelProvider.swift */,
+				FB21382E2D064BBC008C4BB7 /* Info.plist */,
+				FB21382F2D064BBC008C4BB7 /* Mudband_Tunnel.entitlements */,
+			);
+			path = "Mudband Tunnel";
+			sourceTree = "<group>";
+		};
+		FB21383D2D0656D9008C4BB7 /* objc */ = {
+			isa = PBXGroup;
+			children = (
+				FBB31E622D0AAAAC005D1D51 /* mudband_ui.h */,
+				FB21383B2D0656B3008C4BB7 /* mudband_ui.m */,
+				FBB31E602D0AAA32005D1D51 /* mudband_ui_enroll.m */,
+				FBA4CEC32D0D2EC400252A0F /* mudband_ui_progconf.m */,
+			);
+			path = objc;
+			sourceTree = "<group>";
+		};
+		FB2138402D065C51008C4BB7 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				FBB31E5E2D0A9FED005D1D51 /* UiDashboardView.swift */,
+				FB796A592D14DF310061007D /* UiEnrollmentChangeView.swift */,
+				FB2138412D067C01008C4BB7 /* UiEnrollmentNewView.swift */,
+				FB2138162D064BA1008C4BB7 /* UiMainEntryView.swift */,
+			);
+			path = ui;
+			sourceTree = "<group>";
+		};
+		FB2138432D067CA7008C4BB7 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				FBB31E472D0A3DB2005D1D51 /* libjansson */,
+				FBA7F4092D09282000C3E25D /* libwireguard */,
+				FBF5D1992D07F6E100BF6D73 /* libmud */,
+				FB2138442D067CBA008C4BB7 /* FileManagerExtension.swift */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		FB7EA7C02D0FAA2100186AC3 /* libwireguard */ = {
+			isa = PBXGroup;
+			children = (
+				FB549B9B2D16295B00C1F5F4 /* callout.c */,
+				FB549B9C2D16295B00C1F5F4 /* callout.h */,
+				FB549B8D2D16273200C1F5F4 /* crypto.c */,
+				FB549B912D16276500C1F5F4 /* crypto.h */,
+				FB549B8F2D16273C00C1F5F4 /* wireguard.c */,
+				FB549B922D16278200C1F5F4 /* wireguard.h */,
+			);
+			path = libwireguard;
+			sourceTree = "<group>";
+		};
+		FBA7F4092D09282000C3E25D /* libwireguard */ = {
+			isa = PBXGroup;
+			children = (
+				FBA7F40C2D09298400C3E25D /* crypto */,
+				FBA7F40A2D09284300C3E25D /* libwireguard.c */,
+				FBA7F4102D092AA800C3E25D /* libwireguard.h */,
+			);
+			path = libwireguard;
+			sourceTree = "<group>";
+		};
+		FBA7F40C2D09298400C3E25D /* crypto */ = {
+			isa = PBXGroup;
+			children = (
+				FB549B852D1626E000C1F5F4 /* blake2s.c */,
+				FB549B862D1626E000C1F5F4 /* chacha20.c */,
+				FB549B842D1626E000C1F5F4 /* chacha20poly1305.c */,
+				FB549B872D1626E000C1F5F4 /* poly1305-donna.c */,
+				FB549B832D1626E000C1F5F4 /* x25519.c */,
+			);
+			path = crypto;
+			sourceTree = "<group>";
+		};
+		FBB31E472D0A3DB2005D1D51 /* libjansson */ = {
+			isa = PBXGroup;
+			children = (
+				FBB31E4D2D0A3F76005D1D51 /* dump.c */,
+				FBB31E4C2D0A3F75005D1D51 /* error.c */,
+				FBB31E4B2D0A3F75005D1D51 /* hashtable_seed.c */,
+				FBB31E482D0A3F75005D1D51 /* hashtable.c */,
+				FBB31E492D0A3F75005D1D51 /* load.c */,
+				FBB31E512D0A3F76005D1D51 /* memory.c */,
+				FBB31E502D0A3F76005D1D51 /* pack_unpack.c */,
+				FBB31E4E2D0A3F76005D1D51 /* strbuffer.c */,
+				FBB31E4A2D0A3F75005D1D51 /* strconv.c */,
+				FBB31E4F2D0A3F76005D1D51 /* utf.c */,
+				FBB31E522D0A3F76005D1D51 /* value.c */,
+			);
+			path = libjansson;
+			sourceTree = "<group>";
+		};
+		FBF5D1992D07F6E100BF6D73 /* libmud */ = {
+			isa = PBXGroup;
+			children = (
+				FBF5D19C2D07F78D00BF6D73 /* odr_pthread.c */,
+				FBF5D1A22D07F9F300BF6D73 /* odr.c */,
+				FBF5D19E2D07F97F00BF6D73 /* vsb.c */,
+				FBA4CED42D0D4FE100252A0F /* vsock.c */,
+				FBF5D19A2D07F6FA00BF6D73 /* vtc_log.c */,
+				FBF5D1A02D07F9AB00BF6D73 /* vtim.c */,
+				FBDF23752D0B954C002E8735 /* vuuid.c */,
+			);
+			path = libmud;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FB2138102D064BA1008C4BB7 /* Mud.band */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FB2138202D064BA3008C4BB7 /* Build configuration list for PBXNativeTarget "Mud.band" */;
+			buildPhases = (
+				FB21380D2D064BA1008C4BB7 /* Sources */,
+				FB21380E2D064BA1008C4BB7 /* Frameworks */,
+				FB21380F2D064BA1008C4BB7 /* Resources */,
+				FB2138362D064BBC008C4BB7 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FB2138312D064BBC008C4BB7 /* PBXTargetDependency */,
+			);
+			name = Mud.band;
+			packageProductDependencies = (
+				FBA7F4072D09210F00C3E25D /* Alamofire */,
+				FBA7F4152D094D5100C3E25D /* SwiftyJSON */,
+			);
+			productName = Mudband;
+			productReference = FB2138112D064BA1008C4BB7 /* Mud.band.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FB2138262D064BBC008C4BB7 /* Mud.band Tunnel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FB2138332D064BBC008C4BB7 /* Build configuration list for PBXNativeTarget "Mud.band Tunnel" */;
+			buildPhases = (
+				FB2138232D064BBC008C4BB7 /* Sources */,
+				FB2138242D064BBC008C4BB7 /* Frameworks */,
+				FB2138252D064BBC008C4BB7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Mud.band Tunnel";
+			packageProductDependencies = (
+				FB0A10602D0BBAEF00189DA8 /* Alamofire */,
+			);
+			productName = "Mudband Tunnel";
+			productReference = FB2138272D064BBC008C4BB7 /* Mud.band Tunnel.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FB2138092D064BA1008C4BB7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					FB2138102D064BA1008C4BB7 = {
+						CreatedOnToolsVersion = 15.0;
+						LastSwiftMigration = 1500;
+					};
+					FB2138262D064BBC008C4BB7 = {
+						CreatedOnToolsVersion = 15.0;
+						LastSwiftMigration = 1500;
+					};
+				};
+			};
+			buildConfigurationList = FB21380C2D064BA1008C4BB7 /* Build configuration list for PBXProject "Mud.band" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FB2138082D064BA1008C4BB7;
+			packageReferences = (
+				FBF5D1A42D080E2100BF6D73 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				FBA7F4142D094D3D00C3E25D /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+			);
+			productRefGroup = FB2138122D064BA1008C4BB7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FB2138102D064BA1008C4BB7 /* Mud.band */,
+				FB2138262D064BBC008C4BB7 /* Mud.band Tunnel */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FB21380F2D064BA1008C4BB7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB21381C2D064BA3008C4BB7 /* Preview Assets.xcassets in Resources */,
+				FB2138192D064BA3008C4BB7 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB2138252D064BBC008C4BB7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FB21380D2D064BA1008C4BB7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB549B892D1626E000C1F5F4 /* chacha20poly1305.c in Sources */,
+				FBB31E5B2D0A3F76005D1D51 /* pack_unpack.c in Sources */,
+				FBB31E5A2D0A3F76005D1D51 /* utf.c in Sources */,
+				FBA7F40B2D09284300C3E25D /* libwireguard.c in Sources */,
+				FBB31E562D0A3F76005D1D51 /* hashtable_seed.c in Sources */,
+				FBF5D1A32D07F9F300BF6D73 /* odr.c in Sources */,
+				FBB31E532D0A3F76005D1D51 /* hashtable.c in Sources */,
+				FBF5D19B2D07F6FA00BF6D73 /* vtc_log.c in Sources */,
+				FB2138172D064BA1008C4BB7 /* UiMainEntryView.swift in Sources */,
+				FBA4CEC42D0D2EC400252A0F /* mudband_ui_progconf.m in Sources */,
+				FB549B9A2D16289100C1F5F4 /* crypto.c in Sources */,
+				FBB31E592D0A3F76005D1D51 /* strbuffer.c in Sources */,
+				FBB31E5C2D0A3F76005D1D51 /* memory.c in Sources */,
+				FB549B882D1626E000C1F5F4 /* x25519.c in Sources */,
+				FBF5D19D2D07F78D00BF6D73 /* odr_pthread.c in Sources */,
+				FB796A5A2D14DF310061007D /* UiEnrollmentChangeView.swift in Sources */,
+				FBDF23762D0B954C002E8735 /* vuuid.c in Sources */,
+				FB2138452D067CBA008C4BB7 /* FileManagerExtension.swift in Sources */,
+				FB2138152D064BA1008C4BB7 /* Mudband.swift in Sources */,
+				FBB31E552D0A3F76005D1D51 /* strconv.c in Sources */,
+				FBF5D1A12D07F9AB00BF6D73 /* vtim.c in Sources */,
+				FBB31E572D0A3F76005D1D51 /* error.c in Sources */,
+				FB549B8B2D1626E000C1F5F4 /* chacha20.c in Sources */,
+				FBB31E542D0A3F76005D1D51 /* load.c in Sources */,
+				FB2138392D0655FC008C4BB7 /* VpnManager.swift in Sources */,
+				FB549B8A2D1626E000C1F5F4 /* blake2s.c in Sources */,
+				FBB31E5F2D0A9FED005D1D51 /* UiDashboardView.swift in Sources */,
+				FBB31E582D0A3F76005D1D51 /* dump.c in Sources */,
+				FB549B8C2D1626E000C1F5F4 /* poly1305-donna.c in Sources */,
+				FBB31E612D0AAA32005D1D51 /* mudband_ui_enroll.m in Sources */,
+				FBF5D19F2D07F97F00BF6D73 /* vsb.c in Sources */,
+				FBB31E5D2D0A3F76005D1D51 /* value.c in Sources */,
+				FB2138422D067C01008C4BB7 /* UiEnrollmentNewView.swift in Sources */,
+				FB21383C2D0656B3008C4BB7 /* mudband_ui.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB2138232D064BBC008C4BB7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBA4CED02D0D36E300252A0F /* utf.c in Sources */,
+				FB88BBC52D0E129A0054822E /* mudband_tunnel_stun_client.m in Sources */,
+				FB549B932D1627E700C1F5F4 /* wireguard.c in Sources */,
+				FB549B982D1627FE00C1F5F4 /* poly1305-donna.c in Sources */,
+				FB4E5D712D0BC24500322ECD /* vtc_log.c in Sources */,
+				FBA4CEC22D0D26FF00252A0F /* mudband_tunnel_enroll.m in Sources */,
+				FBA4CECA2D0D36D600252A0F /* hashtable.c in Sources */,
+				FB4E5D732D0BC25900322ECD /* vsb.c in Sources */,
+				FBA4CECD2D0D36DD00252A0F /* pack_unpack.c in Sources */,
+				FBA4CED52D0D4FE100252A0F /* vsock.c in Sources */,
+				FBA4CEC82D0D36D200252A0F /* error.c in Sources */,
+				FB549B992D16280100C1F5F4 /* x25519.c in Sources */,
+				FB21382D2D064BBC008C4BB7 /* PacketTunnelProvider.swift in Sources */,
+				FB4E5D722D0BC25500322ECD /* odr_pthread.c in Sources */,
+				FBA4CECB2D0D36D900252A0F /* load.c in Sources */,
+				FB9D80082D0FB6EA000D755C /* vuuid.c in Sources */,
+				FB88BBC82D0E69BB0054822E /* mudband_tunnel_tasks.m in Sources */,
+				FBA4CECF2D0D36E100252A0F /* strconv.c in Sources */,
+				FBA4CEC72D0D36CF00252A0F /* dump.c in Sources */,
+				FB0A10652D0BBD2100189DA8 /* FileManagerExtension.swift in Sources */,
+				FB0A10672D0BBDB000189DA8 /* mudband_tunnel_confmgr.m in Sources */,
+				FB549B972D1627FC00C1F5F4 /* chacha20poly1305.c in Sources */,
+				FB0A105F2D0BBA2300189DA8 /* mudband_tunnel.m in Sources */,
+				FB7EA7D12D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m in Sources */,
+				FBA4CED32D0D4CF400252A0F /* mudband_tunnel_connmgr.m in Sources */,
+				FB88BBCB2D0E6BC60054822E /* mudband_tunnel_mqtt.m in Sources */,
+				FBA4CECC2D0D36DB00252A0F /* memory.c in Sources */,
+				FBA4CECE2D0D36DF00252A0F /* strbuffer.c in Sources */,
+				FB549B9D2D16295B00C1F5F4 /* callout.c in Sources */,
+				FB549B942D1627EB00C1F5F4 /* crypto.c in Sources */,
+				FBA4CED12D0D36E600252A0F /* value.c in Sources */,
+				FB4E5D702D0BC23300322ECD /* odr.c in Sources */,
+				FB4E5D742D0BC25C00322ECD /* vtim.c in Sources */,
+				FBA4CEC62D0D36A100252A0F /* mudband_tunnel_progconf.m in Sources */,
+				FB549B962D1627FA00C1F5F4 /* chacha20.c in Sources */,
+				FBA4CEC92D0D36D400252A0F /* hashtable_seed.c in Sources */,
+				FB549B952D1627F700C1F5F4 /* blake2s.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FB2138312D064BBC008C4BB7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FB2138262D064BBC008C4BB7 /* Mud.band Tunnel */;
+			targetProxy = FB2138302D064BBC008C4BB7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		FB21381E2D064BA3008C4BB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		FB21381F2D064BA3008C4BB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		FB2138212D064BA3008C4BB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Mudband/Mudband.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Mudband/Preview Content\"";
+				DEVELOPMENT_TEAM = H84YML94ZH;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../../../lib/libmud,
+					../../../../lib/libwireguard,
+					../../../../lib/libjansson,
+					../../common/crypto,
+				);
+				INFOPLIST_KEY_CFBundleDisplayName = Mud.band;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.mudfish.mudband.Mudband;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Mudband/Mudband-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FB2138222D064BA3008C4BB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Mudband/Mudband.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Mudband/Preview Content\"";
+				DEVELOPMENT_TEAM = H84YML94ZH;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../../../lib/libmud,
+					../../../../lib/libwireguard,
+					../../../../lib/libjansson,
+					../../common/crypto,
+				);
+				INFOPLIST_KEY_CFBundleDisplayName = Mud.band;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = net.mudfish.mudband.Mudband;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Mudband/Mudband-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		FB2138342D064BBC008C4BB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Mudband Tunnel/Mudband_Tunnel.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H84YML94ZH;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../../../lib/libmud,
+					../../../../lib/libjansson,
+				);
+				INFOPLIST_FILE = "Mudband Tunnel/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Mudband Tunnel";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.mudfish.mudband.Mudband.Mudband-Tunnel";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Mudband Tunnel/lib/objc/Mudband Tunnel-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FB2138352D064BBC008C4BB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Mudband Tunnel/Mudband_Tunnel.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H84YML94ZH;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../../../lib/libmud,
+					../../../../lib/libjansson,
+				);
+				INFOPLIST_FILE = "Mudband Tunnel/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Mudband Tunnel";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.mudfish.mudband.Mudband.Mudband-Tunnel";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Mudband Tunnel/lib/objc/Mudband Tunnel-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FB21380C2D064BA1008C4BB7 /* Build configuration list for PBXProject "Mud.band" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB21381E2D064BA3008C4BB7 /* Debug */,
+				FB21381F2D064BA3008C4BB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FB2138202D064BA3008C4BB7 /* Build configuration list for PBXNativeTarget "Mud.band" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB2138212D064BA3008C4BB7 /* Debug */,
+				FB2138222D064BA3008C4BB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FB2138332D064BBC008C4BB7 /* Build configuration list for PBXNativeTarget "Mud.band Tunnel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB2138342D064BBC008C4BB7 /* Debug */,
+				FB2138352D064BBC008C4BB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FBA7F4142D094D3D00C3E25D /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.2;
+			};
+		};
+		FBF5D1A42D080E2100BF6D73 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FB0A10602D0BBAEF00189DA8 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FBF5D1A42D080E2100BF6D73 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		FBA7F4072D09210F00C3E25D /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FBF5D1A42D080E2100BF6D73 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		FBA7F4152D094D5100C3E25D /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FBA7F4142D094D3D00C3E25D /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = FB2138092D064BA1008C4BB7 /* Project object */;
+}
