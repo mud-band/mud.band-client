@@ -34,7 +34,6 @@
 
 #if defined(WIN32)
 #include <winsock2.h>
-#include <sys/param.h>
 #if BYTE_ORDER == LITTLE_ENDIAN
 #define htole64(x) (x)
 #define le64toh(x) (x)
