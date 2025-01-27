@@ -32,7 +32,9 @@
 #include <os/log.h>
 #endif
 
+#if !defined(WIN32)
 #include <endian.h>
+#endif
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
