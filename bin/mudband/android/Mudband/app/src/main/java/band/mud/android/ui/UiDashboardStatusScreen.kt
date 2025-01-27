@@ -40,12 +40,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -61,6 +59,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import band.mud.android.MainActivity
@@ -80,7 +79,7 @@ fun Context.getActivity(): ComponentActivity? {
 }
 
 @Composable
-fun DashboardStatusAlertDialog(
+fun DashboardStatusConnectErrorAlertDialog(
     onDismissRequest: () -> Unit,
     dialogTitle: String,
     dialogText: String,
@@ -113,6 +112,48 @@ fun DashboardStatusAlertDialog(
 }
 
 @Composable
+fun DashboardStatusMfaErrorAlertDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    icon: ImageVector,
+) {
+    AlertDialog(
+        icon = {
+            Icon(icon, contentDescription = "Example Icon")
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Open URL")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
+}
+
+@Composable
 fun UiDashboardStatusScreen(
     viewModel: MudbandAppViewModel,
     navController: NavHostController,
@@ -120,9 +161,12 @@ fun UiDashboardStatusScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
     var connectButtonEnabled by remember { mutableStateOf(true) }
-    val alertDialogOpen = remember { mutableStateOf(false) }
-    var alertDialogMessage = remember { mutableStateOf("") }
+    val connectErrorAlertDialogOpen = remember { mutableStateOf(false) }
+    var connectErrorAlertDialogMessage = remember { mutableStateOf("") }
+    val connectMfaAlertDialogOpen = remember { mutableStateOf(false) }
+    var connectMfaAlertDialogURL = remember { mutableStateOf("") }
 
     val resultReceiver = MudbandVpnResultReceiver(Handler(Looper.getMainLooper())) { resultCode, data ->
         when (resultCode) {
@@ -137,11 +181,20 @@ fun UiDashboardStatusScreen(
 
             in 300..399 -> {
                 MudbandLog.e("BANDEC_00429: VPN connection error: $resultCode")
-                alertDialogOpen.value = true
+                connectErrorAlertDialogOpen.value = true
                 if (data != null) {
-                    alertDialogMessage.value = data.getString("msg").toString()
+                    connectErrorAlertDialogMessage.value = data.getString("msg").toString()
                 } else {
-                    alertDialogMessage.value = "VPN connection error"
+                    connectErrorAlertDialogMessage.value = "VPN connection error"
+                }
+            }
+
+            401 -> {
+                connectMfaAlertDialogOpen.value = true
+                if (data != null) {
+                    connectMfaAlertDialogURL.value = data.getString("msg").toString()
+                } else {
+                    MudbandLog.e("BANDEC_XXXX: MFA required but no SSO_URL found.")
                 }
             }
 
@@ -156,14 +209,43 @@ fun UiDashboardStatusScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (alertDialogOpen.value) {
-            DashboardStatusAlertDialog(
+        if (connectErrorAlertDialogOpen.value) {
+            DashboardStatusConnectErrorAlertDialog(
                 onDismissRequest = {
-                    alertDialogOpen.value = false
+                    connectErrorAlertDialogOpen.value = false
                     connectButtonEnabled = true
                 },
                 dialogTitle = "Status",
-                dialogText = alertDialogMessage.value,
+                dialogText = connectErrorAlertDialogMessage.value,
+                icon = Icons.Default.Error
+            )
+        }
+        if (connectMfaAlertDialogOpen.value) {
+            DashboardStatusMfaErrorAlertDialog(
+                onDismissRequest = {
+                    connectMfaAlertDialogOpen.value = false
+                    connectButtonEnabled = true
+                },
+                onConfirmation = {
+                    uriHandler.openUri(connectMfaAlertDialogURL.value)
+                },
+                dialogTitle = "MFA",
+                dialogText = "MFA (multi-factor authentication) is required to connect.",
+                icon = Icons.Default.Error
+            )
+        }
+        if (uiState.mfaRequired) {
+            DashboardStatusMfaErrorAlertDialog(
+                onDismissRequest = {
+                    connectMfaAlertDialogOpen.value = false
+                    connectButtonEnabled = true
+                },
+                onConfirmation = {
+                    uriHandler.openUri(uiState.mfaUrl)
+                    viewModel.resetMfaStatus()
+                },
+                dialogTitle = "MFA",
+                dialogText = "MFA (multi-factor authentication) is required to re-activate the tunnel.",
                 icon = Icons.Default.Error
             )
         }

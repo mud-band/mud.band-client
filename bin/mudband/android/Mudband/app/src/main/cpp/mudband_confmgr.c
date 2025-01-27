@@ -166,15 +166,25 @@ CNF_fill_iface_peer(json_t *jroot, struct wireguard_iface_peer *peer,
         json_t *jpeer, *jprivate_ip;
         json_t *jwireguard_pubkey, *jprivate_mask;
         json_t *jdevice_addresses, *jdevice_address;
-        json_t *jnat_type;
+        json_t *jnat_type, *jotp_sender, *jotp_receiver;
         int peer_nat_type;
-        size_t x;
+        size_t x, z;
 
         if (i != idx)
             continue;
         jpeer = json_array_get(jpeers, i);
         AN(jpeer);
         assert(json_is_object(jpeer));
+        /* otp_sender */
+        jotp_sender = json_object_get(jpeer, "otp_sender");
+        AN(jotp_sender);
+        assert(json_is_string(jotp_sender));
+        assert(json_string_length(jotp_sender) > 0);
+        /* otp_receiver */
+        jotp_receiver = json_object_get(jpeer, "otp_receiver");
+        AN(jotp_receiver);
+        assert(json_is_array(jotp_receiver));
+        assert(json_array_size(jotp_receiver) == 3);
         /* wireguard_pubkey */
         jwireguard_pubkey = json_object_get(jpeer, "wireguard_pubkey");
         AN(jwireguard_pubkey);
@@ -261,6 +271,22 @@ CNF_fill_iface_peer(json_t *jroot, struct wireguard_iface_peer *peer,
                 (uint32_t)inet_addr(json_string_value(jprivate_mask));
         /* XXX */
         peer->iface_addr = peer->allowed_ip;
+        peer->otp_sender = (uint64_t)strtoull(json_string_value(jotp_sender), NULL, 16);
+        for (z = 0; z < json_array_size(jotp_receiver); z++) {
+            json_t *jone;
+
+            jone = json_array_get(jotp_receiver, z);
+            AN(jone);
+            assert(json_is_string(jone));
+            assert(json_string_length(jone) > 0);
+            peer->otp_receiver[z] = (uint64_t)strtoull(json_string_value(jone), NULL, 16);
+        }
+        peer->otp_enabled = false;
+        if (peer->otp_receiver[0] != 0 ||
+            peer->otp_receiver[1] != 0 ||
+            peer->otp_receiver[2] != 0) {
+            peer->otp_enabled = true;
+        }
         return (0);
     }
     return (-1);

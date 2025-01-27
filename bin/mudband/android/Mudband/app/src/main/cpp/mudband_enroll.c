@@ -377,6 +377,20 @@ MBE_get_jwt(void)
 }
 
 int
+MBE_is_public(void)
+{
+    json_t *jopt_public;
+
+    if (mbe_jroot == NULL)
+        return (0);
+    jopt_public = json_object_get(mbe_jroot, "opt_public");
+    if (jopt_public == NULL)
+        return (0);
+    assert(json_is_integer(jopt_public));
+    return ((int)json_integer_value(jopt_public));
+}
+
+int
 MBE_check_and_read(void)
 {
     struct mbe_traversal_dir_arg dir_arg = { 0, };

@@ -27,6 +27,7 @@
 package band.mud.android.vpn
 
 import android.app.PendingIntent
+import android.content.Context
 import android.content.pm.PackageManager
 import android.net.VpnService
 import android.os.ParcelFileDescriptor
@@ -69,7 +70,8 @@ data class MudbandConfigRequestData(
 @Serializable
 data class MudbandConfigResponseData(
     val status: Int,
-    val msg: String? = null
+    val msg: String? = null,
+    val sso_url: String? = null
 )
 
 data class MudbandConfigResult(
@@ -135,6 +137,9 @@ class MudbandVpnConnection(
             val jsonWithUnknownKeys = Json { ignoreUnknownKeys = true }
             val obj = jsonWithUnknownKeys.decodeFromString<MudbandConfigResponseData>(responseData)
             if (obj.status != 200) {
+                if (obj.status == 301 /* SSO_URL */) {
+                    return fetchResult(-10, obj.sso_url ?: "https://mud.band/api/error/BANDEC_00495")
+                }
                 return fetchResult(-5, obj.msg ?: "BANDEC_00180: msg is null")
             }
             var r = app.jni.parseConfigResponse(etag, responseData)
@@ -158,11 +163,24 @@ class MudbandVpnConnection(
         MudbandLog.e(msg, e)
     }
 
+    private fun saveMfaUrlIntoPref(url: String) {
+        val app = MainApplication.applicationContext() as MainApplication
+        val sharedPreferences = app.getSharedPreferences("Mud.band", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putString("MFA_URL", url)
+            apply()
+        }
+    }
+
     override fun run() {
         val app = MainApplication.applicationContext() as MainApplication
         try {
             val result = fetchConfAndConnect("when_it_gots_a_event")
             if (result.status != 0) {
+                if (result.status == -10 /* SSO_URL */) {
+                    reportError(401, result.msg)
+                    return
+                }
                 reportError(301, "BANDEC_00183: fetchConfAndConnect() failed.")
                 return
             }
@@ -187,7 +205,14 @@ class MudbandVpnConnection(
                     1 -> {
                         mConfigFetcherThread?.interrupt()
                         mConfigFetcherThread = Thread {
-                            fetchConfAndConnect("when_it_gots_a_event")
+                            var result = fetchConfAndConnect("when_it_gots_a_event")
+                            if (result.status != 0) {
+                                if (result.status == -10 /* SSO_URL */) {
+                                    saveMfaUrlIntoPref(result.msg)
+                                } else {
+                                    MudbandLog.e("BANDEC_00503: fetchConfAndConnect() failed.")
+                                }
+                            }
                         }
                         mConfigFetcherThread?.start();
                     }

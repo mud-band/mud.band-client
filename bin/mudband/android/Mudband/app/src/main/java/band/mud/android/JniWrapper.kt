@@ -47,6 +47,7 @@ class JniWrapper private constructor() {
         }
     }
 
+    external fun isBandPublic(): Boolean
     external fun getBandJWT(): String
     external fun getActiveBandName(): String
     external fun getBandConfigEtag(): String?

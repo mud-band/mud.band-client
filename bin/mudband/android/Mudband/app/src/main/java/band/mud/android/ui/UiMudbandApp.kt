@@ -36,11 +36,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Web
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
@@ -56,24 +59,36 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import band.mud.android.MainApplication
 import band.mud.android.R
 import band.mud.android.ui.model.MudbandAppViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 
 enum class MudbandScreen(@StringRes val title: Int) {
     EnrollmentNew(title = R.string.enrollment_new),
@@ -227,12 +242,96 @@ fun UiMudbandScaffold(viewModel: MudbandAppViewModel, navController: NavHostCont
     }
 }
 
+data class WebCliResult(
+    var status: Int,
+    var msg: String
+)
+
+@Serializable
+data class WebCliResponseData(
+    val status: Int,
+    val msg: String? = null,
+    val url: String? = null
+)
+
+suspend fun getWebCliToken(): WebCliResult {
+    val app = MainApplication.applicationContext() as MainApplication
+    val client = OkHttpClient()
+    var builder = Request.Builder()
+        .url("https://www.mud.band/webcli/signin")
+    builder = builder.addHeader("Authorization", app.jni.getBandJWT())
+    val request = builder.get()
+        .build()
+    try {
+        val response = client.newCall(request).execute()
+        if (!response.isSuccessful) {
+            return WebCliResult(-1, "BANDEC_00496: Unexpected status ${response.code}")
+        }
+        val responseData = response.body?.string()
+            ?: return WebCliResult(-2, "BANDEC_00497: Failed to get the response body.")
+        val jsonWithUnknownKeys = Json { ignoreUnknownKeys = true }
+        val obj = jsonWithUnknownKeys.decodeFromString<WebCliResponseData>(responseData)
+        if (obj.status != 200) {
+            return WebCliResult(-3, obj.msg ?: "BANDEC_00498: msg is null")
+        }
+        return WebCliResult(0, obj.url ?: "https://mud.band/api/error/BANDEC_00499")
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return WebCliResult(-4, "BANDEC_00500: Exception ${e.message}")
+    }
+}
+
+@Composable
+fun UiMudbandDrawerErrorAlertDialog(
+    onDismissRequest: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    icon: ImageVector,
+) {
+    AlertDialog(
+        icon = {
+            Icon(icon, contentDescription = "Example Icon")
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
+}
 @Composable
 fun UiMudbandDrawer(viewModel: MudbandAppViewModel, navController: NavHostController,
                     drawerState: DrawerState) {
     val uiState by viewModel.uiState.collectAsState()
+    val uriHandler = LocalUriHandler.current
     val coroutineScope = rememberCoroutineScope()
+    val webCliErrorAlertDialogOpen = remember { mutableStateOf(false) }
+    val webCliErrorAlertDialogMessage = remember { mutableStateOf("") }
 
+    if (webCliErrorAlertDialogOpen.value) {
+        UiMudbandDrawerErrorAlertDialog(
+            onDismissRequest = {
+                webCliErrorAlertDialogOpen.value = false
+            },
+            dialogTitle = "WebCLI",
+            dialogText = webCliErrorAlertDialogMessage.value,
+            icon = Icons.Default.Info
+        )
+    }
     ModalDrawerSheet {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -273,6 +372,27 @@ fun UiMudbandDrawer(viewModel: MudbandAppViewModel, navController: NavHostContro
                     }
                 }
             )
+            if (uiState.isBandPublic) {
+                NavigationDrawerItem(
+                    icon = { Icon(Icons.Outlined.Web, contentDescription = null) },
+                    label = { Text("WebCLI") },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                            withContext(Dispatchers.IO) {
+                                var result = getWebCliToken()
+                                if (result.status != 0) {
+                                    webCliErrorAlertDialogOpen.value = true
+                                    webCliErrorAlertDialogMessage.value = result.msg
+                                } else {
+                                    uriHandler.openUri(result.msg)
+                                }
+                            }
+                        }
+                    }
+                )
+            }
             NavigationDrawerItem(
                 label = { Text("Settings") },
                 selected = false,

@@ -102,6 +102,7 @@ void	MPC_delete_default_band_uuid(void);
 const char *
 MPC_get_default_band_uuid(void);
 void	MPC_init(void);
+int     MBE_is_public(void);
 
 /* mudband_tasks.c */
 int     MBT_init(void);

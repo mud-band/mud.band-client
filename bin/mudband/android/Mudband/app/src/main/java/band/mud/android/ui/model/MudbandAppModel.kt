@@ -27,9 +27,9 @@
 package band.mud.android.ui.model
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import band.mud.android.MainApplication
-import band.mud.android.util.MudbandLog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -80,6 +80,9 @@ data class MudbandAppUiStateDevice(
 )
 
 data class MudbandAppUiState(
+    var mfaRequired: Boolean = false,
+    var mfaUrl: String = "",
+    var isBandPublic: Boolean = false,
     var isEnrolled: Boolean = false,
     var isConnected: Boolean = false,
     var isConfigurationReady: Boolean = false,
@@ -93,6 +96,7 @@ data class MudbandAppUiState(
 
 class MudbandAppViewModel(application: Application) : AndroidViewModel(application) {
     private val app = getApplication<Application>().applicationContext as MainApplication
+    private val sharedPreferences = app.getSharedPreferences("Mud.band", Context.MODE_PRIVATE)
     private val _uiState = MutableStateFlow(MudbandAppUiState())
     val uiState: StateFlow<MudbandAppUiState> = _uiState.asStateFlow()
 
@@ -107,6 +111,41 @@ class MudbandAppViewModel(application: Application) : AndroidViewModel(applicati
             setDashboardScreenName("status")
             updateBandList()
             updateDeviceList()
+        }
+        setBandPublic(app.jni.isBandPublic())
+        updateMfaStatus()
+    }
+
+    private fun updateMfaStatus() {
+        val mfaUrl = sharedPreferences.getString("MFA_URL", null)
+        if (mfaUrl != null) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    mfaRequired = true,
+                    mfaUrl = mfaUrl
+                )
+            }
+        }
+    }
+
+    fun resetMfaStatus() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                mfaRequired = false,
+                mfaUrl = ""
+            )
+        }
+        with(sharedPreferences.edit()) {
+            remove("MFA_URL")
+            apply()
+        }
+    }
+
+    private fun setBandPublic(isPublic: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                isBandPublic = isPublic
+            )
         }
     }
 

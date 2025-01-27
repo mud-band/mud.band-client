@@ -50,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -71,13 +72,15 @@ import okhttp3.RequestBody.Companion.toRequestBody
 data class EnrollmentRequestData(
     val token: String,
     val name: String,
-    var wireguard_pubkey: String
+    var wireguard_pubkey: String,
+    var secret: String
 )
 
 @Serializable
 data class EnrollmentResponseData(
     val status: Int,
-    val msg: String? = null
+    val msg: String? = null,
+    val sso_url: String? = null
 )
 
 data class EnrollmentResult(
@@ -92,11 +95,12 @@ fun returnEnrollResult(status: Int, msg: String): EnrollmentResult {
     return EnrollmentResult(status, msg)
 }
 
-suspend fun makeEnrollRequest(enrollmentToken: String, deviceName: String): EnrollmentResult {
+suspend fun makeEnrollRequest(enrollmentToken: String, deviceName: String,
+                              enrollmentSecret: String): EnrollmentResult {
     val app = MainApplication.applicationContext() as MainApplication
     val keys = app.jni.createWireguardKeys()
         ?: return returnEnrollResult(-1, "BANDEC_00163: Failed to create the wireguard keys.")
-    val data = EnrollmentRequestData(enrollmentToken, deviceName, keys[0])
+    val data = EnrollmentRequestData(enrollmentToken, deviceName, keys[0], enrollmentSecret)
     val mediaType = "application/json; charset=utf-8".toMediaType()
     val post = Json.encodeToString(data).toRequestBody(mediaType)
     val client = OkHttpClient()
@@ -114,6 +118,9 @@ suspend fun makeEnrollRequest(enrollmentToken: String, deviceName: String): Enro
         val jsonWithUnknownKeys = Json { ignoreUnknownKeys = true }
         val obj = jsonWithUnknownKeys.decodeFromString<EnrollmentResponseData>(responseData)
         if (obj.status != 200) {
+            if (obj.status == 301) {
+                return returnEnrollResult(-10, obj.sso_url ?: "https://mud.band/api/error/BANDEC_00494")
+            }
             return returnEnrollResult(-5, obj.msg ?: "BANDEC_00166: msg is null")
         }
         val r = app.jni.parseEnrollmentResponse(keys[1], responseData)
@@ -128,7 +135,7 @@ suspend fun makeEnrollRequest(enrollmentToken: String, deviceName: String): Enro
 }
 
 @Composable
-fun EnrollmentAlertDialog(
+fun EnrollmentErrorAlertDialog(
     onDismissRequest: () -> Unit,
     dialogTitle: String,
     dialogText: String,
@@ -161,12 +168,56 @@ fun EnrollmentAlertDialog(
 }
 
 @Composable
+fun EnrollmentMfaAlertDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    icon: ImageVector,
+) {
+    AlertDialog(
+        icon = {
+            Icon(icon, contentDescription = "Example Icon")
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Open URL")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
+}
+
+@Composable
 fun UiEnrollmentNewScreen(
     viewModel: MudbandAppViewModel,
     navController: NavHostController,
     onEnrollSuccess: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val uriHandler = LocalUriHandler.current
+
     Column(
         modifier = modifier
     ) {
@@ -175,17 +226,33 @@ fun UiEnrollmentNewScreen(
         ) {
             var enrollmentToken by remember { mutableStateOf("") }
             var deviceName by remember { mutableStateOf("") }
+            var enrollmentSecret by remember { mutableStateOf("") }
             val coroutineScope = rememberCoroutineScope()
-            val alertDialogOpen = remember { mutableStateOf(false) }
-            val alertDialogMessage = remember { mutableStateOf("") }
+            val enrollmentErrorAlertDialogOpen = remember { mutableStateOf(false) }
+            val enrollmentErrorAlertDialogMessage = remember { mutableStateOf("") }
+            val enrollmentMfaAlertDialogOpen = remember { mutableStateOf(false) }
+            val enrollmentMfaAlertDialogURL = remember { mutableStateOf("") }
 
-            if (alertDialogOpen.value) {
-                EnrollmentAlertDialog(
+            if (enrollmentErrorAlertDialogOpen.value) {
+                EnrollmentErrorAlertDialog(
                     onDismissRequest = {
-                        alertDialogOpen.value = false
+                        enrollmentErrorAlertDialogOpen.value = false
                     },
                     dialogTitle = "Enrollment",
-                    dialogText = alertDialogMessage.value,
+                    dialogText = enrollmentErrorAlertDialogMessage.value,
+                    icon = Icons.Default.Info
+                )
+            }
+            if (enrollmentMfaAlertDialogOpen.value) {
+                EnrollmentMfaAlertDialog(
+                    onDismissRequest = {
+                        enrollmentMfaAlertDialogOpen.value = false
+                    },
+                    onConfirmation = {
+                        uriHandler.openUri(enrollmentMfaAlertDialogURL.value)
+                    },
+                    dialogTitle = "Enrollment MFA",
+                    dialogText = "MFA (multi-factor authentication) is enabled to enroll.",
                     icon = Icons.Default.Info
                 )
             }
@@ -211,6 +278,14 @@ fun UiEnrollmentNewScreen(
                     .fillMaxWidth()
                     .padding(dimensionResource(R.dimen.padding_small))
             )
+            TextField(
+                value = enrollmentSecret,
+                onValueChange = { enrollmentSecret = it },
+                label = { Text("Enrollment Secret (optional)") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.padding_small))
+            )
             Column(
                 modifier = modifier,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -220,10 +295,16 @@ fun UiEnrollmentNewScreen(
                         onClick = {
                             coroutineScope.launch {
                                 withContext(Dispatchers.IO) {
-                                    var result = makeEnrollRequest(enrollmentToken, deviceName)
+                                    var result = makeEnrollRequest(enrollmentToken, deviceName,
+                                        enrollmentSecret)
                                     if (result.status != 0) {
-                                        alertDialogOpen.value = true
-                                        alertDialogMessage.value = result.msg
+                                        if (result.status == -10 /* SSO_URL */) {
+                                            enrollmentMfaAlertDialogOpen.value = true
+                                            enrollmentMfaAlertDialogURL.value = result.msg
+                                        } else {
+                                            enrollmentErrorAlertDialogOpen.value = true
+                                            enrollmentErrorAlertDialogMessage.value = result.msg
+                                        }
                                     } else {
                                         withContext(Dispatchers.Main) {
                                             navController.popBackStack()
