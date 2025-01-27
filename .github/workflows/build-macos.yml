@@ -1,0 +1,15 @@
+name: Build on macOS
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build on macos-latest
+      run: |
+        cd bin/mudband/macos/Mudband
+        xcodebuild -project Mud.band.xcodeproj -configuration Release -allowProvisioningUpdates
