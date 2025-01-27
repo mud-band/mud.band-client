@@ -18,4 +18,4 @@ jobs:
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
     - name: Build with Gradle
-      run: (cd bin/mudband/android && ./gradlew assembleDebug)
+      run: (cd bin/mudband/android/Mudband && ./gradlew assembleDebug)
