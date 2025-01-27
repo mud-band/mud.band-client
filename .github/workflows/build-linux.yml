@@ -1,4 +1,4 @@
-name: Build mud.band for Linux
+name: Build on Linux
 on:
   push:
     branches: [ "main" ]
