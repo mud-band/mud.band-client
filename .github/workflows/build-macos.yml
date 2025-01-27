@@ -12,4 +12,4 @@ jobs:
     - name: Build on macos-latest
       run: |
         cd bin/mudband/macos/Mudband
-        xcodebuild -project Mud.band.xcodeproj -configuration Release
+        xcodebuild -project Mud.band.xcodeproj -configuration Release -allowProvisioningUpdates
