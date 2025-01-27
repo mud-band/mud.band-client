@@ -88,12 +88,12 @@ acl_request(json_t *jreq_json)
 	resp_bodylen = sizeof(resp_body);
 	r = VHTTPS_post(&req, resp_body, &resp_bodylen);
 	if (r == -1) {
-		vtc_log(acl_vl, 0, "BANDEC_XXXXX: VHTTPS_post() failed.");
+		vtc_log(acl_vl, 0, "BANDEC_00437: VHTTPS_post() failed.");
 		return (NULL);
 	}
 	if (req.resp_status != 200) {
 		vtc_log(acl_vl, 0,
-		    "BANDEC_XXXXX: Unexpected response status: %d",
+		    "BANDEC_00438: Unexpected response status: %d",
 		    req.resp_status);
 		return (NULL);
 	}
@@ -101,10 +101,10 @@ acl_request(json_t *jreq_json)
 	jroot = json_loads(resp_body, 0, &jerror);
 	if (jroot == NULL) {
 		vtc_log(acl_vl, 1,
-		    "BANDEC_XXXXX: error while parsing JSON format:"
+		    "BANDEC_00439: error while parsing JSON format:"
 		    " on line %d: %s", jerror.line, jerror.text);
 		vtc_log(acl_vl, 1,
-		    "BANDEC_XXXXX: response body: %s", resp_body);
+		    "BANDEC_00440: response body: %s", resp_body);
 		return (NULL);
 	}
 	jstatus = json_object_get(jroot, "status");
@@ -113,7 +113,7 @@ acl_request(json_t *jreq_json)
 	if (json_integer_value(jstatus) != 200) {
 		jmsg = json_object_get(jroot, "msg");
 		vtc_log(acl_vl, 0,
-		    "BANDEC_XXXXX: Failed with error: %s",
+		    "BANDEC_00441: Failed with error: %s",
 		    json_string_value(jmsg));
 		json_decref(jroot);
 		return (NULL);
@@ -129,7 +129,7 @@ acl_add(const char *syntax, const char *prioritystr)
 
 	if (prioritystr == NULL) {
 		vtc_log(acl_vl, 0,
-		    "BANDEC_XXXXX: --acl-priority option is required.");
+		    "BANDEC_00442: --acl-priority option is required.");
 		return (1);
 	}
 	priority = atoi(prioritystr);
@@ -141,7 +141,7 @@ acl_add(const char *syntax, const char *prioritystr)
 	json_object_set_new(jroot, "priority", json_integer(priority));
 	jresp = acl_request(jroot);
 	if (jresp == NULL) {
-		vtc_log(acl_vl, 0, "BANDEC_XXXXX: acl_request() failed.");
+		vtc_log(acl_vl, 0, "BANDEC_00443: acl_request() failed.");
 		json_decref(jroot);
 		return (1);
 	}
@@ -165,7 +165,7 @@ acl_del(const char *acl_idstr)
 	json_object_set_new(jroot, "acl_id", json_integer(acl_id));
 	jresp = acl_request(jroot);
 	if (jresp == NULL) {
-		vtc_log(acl_vl, 0, "BANDEC_XXXXX: acl_request() failed.");
+		vtc_log(acl_vl, 0, "BANDEC_00444: acl_request() failed.");
 		json_decref(jroot);
 		return (1);
 	}
@@ -186,7 +186,7 @@ acl_default_policy(const char *arg)
 		arg = "block";
 	else {
 		vtc_log(acl_vl, 0,
-		    "BANDEC_XXXXX: Invalid default policy: %s", arg);
+		    "BANDEC_00445: Invalid default policy: %s", arg);
 		return (1);
 	}
 
@@ -196,7 +196,7 @@ acl_default_policy(const char *arg)
 	json_object_set_new(jroot, "default_policy", json_string(arg));
 	jresp = acl_request(jroot);
 	if (jresp == NULL) {
-		vtc_log(acl_vl, 0, "BANDEC_XXXXX: acl_request() failed.");
+		vtc_log(acl_vl, 0, "BANDEC_00446: acl_request() failed.");
 		json_decref(jroot);
 		return (1);
 	}
@@ -217,7 +217,7 @@ acl_list(void)
 	json_object_set_new(jroot, "action", json_string("acl_list"));
 	jresp = acl_request(jroot);
 	if (jresp == NULL) {
-		vtc_log(acl_vl, 0, "BANDEC_XXXXX: acl_request() failed.");
+		vtc_log(acl_vl, 0, "BANDEC_00447: acl_request() failed.");
 		json_decref(jroot);
 		return (1);
 	}
@@ -277,7 +277,7 @@ ACL_cmd(const char *acl_add_arg, const char *acl_priority_arg,
 
 	r = MBE_check_and_read();
 	if (r == -1) {
-		vtc_log(acl_vl, 0, "BANDEC_XXXXX: Enrollment check failed.");
+		vtc_log(acl_vl, 0, "BANDEC_00448: Enrollment check failed.");
 		return (1);
 	}
 	if (acl_add_arg != NULL)
@@ -288,7 +288,7 @@ ACL_cmd(const char *acl_add_arg, const char *acl_priority_arg,
 		return (acl_default_policy(acl_default_policy_arg));
 	if (acl_list_flag)
 		return (acl_list());
-	vtc_log(acl_vl, 0, "BANDEC_XXXXX: Unexpected ACL command.");
+	vtc_log(acl_vl, 0, "BANDEC_00449: Unexpected ACL command.");
 	return (1);
 }
 

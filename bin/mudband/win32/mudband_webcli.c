@@ -59,7 +59,7 @@ MWC_get(void)
 
 	r = MBE_check_and_read();
 	if (r == -1) {
-		vtc_log(mwc_vl, 0, "BANDEC_XXXXX: Enrollment check failed.");
+		vtc_log(mwc_vl, 0, "BANDEC_00458: Enrollment check failed.");
 		return (1);
 	}
 	AN(mbe_jroot);
@@ -82,12 +82,12 @@ MWC_get(void)
 	resp_bodylen = sizeof(resp_body);
 	r = VHTTPS_get(&req, resp_body, &resp_bodylen);
 	if (r == -1) {
-		vtc_log(mwc_vl, 0, "BANDEC_XXXXX: VHTTPS_post() failed.");
+		vtc_log(mwc_vl, 0, "BANDEC_00459: VHTTPS_post() failed.");
 		return (1);
 	}
 	if (req.resp_status != 200) {
 		vtc_log(mwc_vl, 0,
-		    "BANDEC_XXXXX: Unexpected response status: %d",
+		    "BANDEC_00460: Unexpected response status: %d",
 		    req.resp_status);
 		return (1);
 	}
@@ -95,10 +95,10 @@ MWC_get(void)
 	jroot = json_loads(resp_body, 0, &jerror);
 	if (jroot == NULL) {
 		vtc_log(mwc_vl, 1,
-		    "BANDEC_XXXXX: error while parsing JSON format:"
+		    "BANDEC_00461: error while parsing JSON format:"
 		    " on line %d: %s", jerror.line, jerror.text);
 		vtc_log(mwc_vl, 1,
-		    "BANDEC_XXXXX: response body: %s", resp_body);
+		    "BANDEC_00462: response body: %s", resp_body);
 		return (1);
 	}
 	jstatus = json_object_get(jroot, "status");
@@ -107,7 +107,7 @@ MWC_get(void)
 	if (json_integer_value(jstatus) != 200) {
 		jmsg = json_object_get(jroot, "msg");
 		vtc_log(mwc_vl, 0,
-		    "BANDEC_XXXXX: Failed with error: %s",
+		    "BANDEC_00463: Failed with error: %s",
 		    json_string_value(jmsg));
 		json_decref(jroot);
 		return (1);

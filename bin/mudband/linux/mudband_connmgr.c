@@ -74,7 +74,7 @@ mcm_open_port(uint16_t port)
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr.sin_port = htons(port);
 	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-		vtc_log(mcm_vl, 0, "BANDEC_XXXXX: bind(2) failed: %d %s",
+		vtc_log(mcm_vl, 0, "BANDEC_00464: bind(2) failed: %d %s",
 		    errno, strerror(errno));
 		ODR_close(fd);
 		return (-1);

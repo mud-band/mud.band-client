@@ -340,7 +340,7 @@ CNF_acl_build(json_t *jroot)
 	AN(acl);
 	acl->n_programs = json_array_size(jprograms);
 	if (acl->n_programs >= WIREGUARD_ACL_PROGRAM_MAX) {
-		vtc_log(cnf_vl, 0, "BANDEC_XXXXX: Too many BPF programs: %d",
+		vtc_log(cnf_vl, 0, "BANDEC_00478: Too many BPF programs: %d",
 			acl->n_programs);
 		free(acl);
 		return (NULL);
@@ -354,7 +354,7 @@ CNF_acl_build(json_t *jroot)
 	else if (!strcmp(json_string_value(jdefault_policy), "block"))
 		acl->default_policy = WIREGUARD_ACL_POLICY_BLOCK;
 	else {
-		vtc_log(cnf_vl, 0, "BANDEC_XXXXX: Invalid default_policy: %s",
+		vtc_log(cnf_vl, 0, "BANDEC_00479: Invalid default_policy: %s",
 		    json_string_value(jdefault_policy));
 		free(acl);
 		return (NULL);
@@ -371,7 +371,7 @@ CNF_acl_build(json_t *jroot)
 		acl_program->n_insns = json_array_size(jinsns);
 		if (acl_program->n_insns >= WIREGUARD_ACL_PROGRAM_INSNS_MAX) {
 			vtc_log(cnf_vl, 0,
-			    "BANDEC_XXXXX: Too many BPF instructions: %d",
+			    "BANDEC_00480: Too many BPF instructions: %d",
 			    acl_program->n_insns);
 			free(acl);
 			return (NULL);
@@ -396,7 +396,7 @@ CNF_acl_build(json_t *jroot)
 		r = bpf_validate(acl_program->insns, acl_program->n_insns);
 		if (r != 1) {
 			vtc_log(cnf_vl, 0,
-			    "BANDEC_XXXXX: BPF program validation failed:"
+			    "BANDEC_00481: BPF program validation failed:"
 			    " r %d n_insns %d", r, acl_program->n_insns);
 			free(acl);
 			return (NULL);
@@ -744,7 +744,7 @@ CNF_fetch(const char *fetch_type)
 			AN(jsso_url);
 			assert(json_is_string(jsso_url));
 			vtc_log(cnf_vl, 1,
-			    "BANDEC_XXXXX: MFA authentication expired."
+			    "BANDEC_00482: MFA authentication expired."
 			    " Please visit the SSO URL to re-verify: %s",
 			    json_string_value(jsso_url));
 			json_decref(jroot);
