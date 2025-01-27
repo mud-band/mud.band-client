@@ -141,7 +141,7 @@ MBE_enroll(const char *token, const char *name, const char *secret)
 
 	if (name == NULL) {
 		vtc_log(mbe_vl, 0,
-		    "[ERROR] BANDEC_XXXXX: Missing -n argument."
+		    "[ERROR] BANDEC_00483: Missing -n argument."
 		    " Specify the device name.");
 		return (1);
 	}

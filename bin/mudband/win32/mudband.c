@@ -433,18 +433,18 @@ mudband_tunnel_iface_init(const char *private_ip, const char *private_mask,
 
 	r = wintun_init();
 	if (r != 0) {
-		vtc_log(band_vl, 0, "BANDEC_XXXXX: wintun_init() failed.");
+		vtc_log(band_vl, 0, "BANDEC_00450: wintun_init() failed.");
 		return (-1);
 	}
 	r = wintun_alloc();
 	if (r != 0) {
-		vtc_log(band_vl, 0, "BANDEC_XXXXX: wintun_alloc() failed.");
+		vtc_log(band_vl, 0, "BANDEC_00451: wintun_alloc() failed.");
 		return (-1);
 	}
 	r = wintun_set_address(private_ip, private_mask, mtu);
 	if (r != 0) {
 		vtc_log(band_vl, 0,
-		    "BANDEC_XXXXX: wintun_set_address() failed.");
+		    "BANDEC_00452: wintun_set_address() failed.");
 		return (-1);
 	}
 	fd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -2021,7 +2021,7 @@ mudband_tunnel(void)
 	fd = mudband_tunnel_iface_init(private_ip, private_mask, mtu);
 	if (fd == -1) {
 		vtc_log(band_vl, 0,
-		    "BANDEC_XXXXX: mudband_tunnel_iface_init() failed. Exit.");
+		    "BANDEC_00453: mudband_tunnel_iface_init() failed. Exit.");
 		return (1);
 	}
 
