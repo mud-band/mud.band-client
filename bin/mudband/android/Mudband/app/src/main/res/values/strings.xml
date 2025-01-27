@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Mud.band</string>
+    <string name="enrollment">Enrollment</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="connecting">Connecting</string>
+    <string name="connected">Connected</string>
+    <string name="ic_arrow_forward">III</string>
+    <string name="enrollment_new">New enrollment</string>
+    <string name="settings">Settings</string>
+    <string name="danger_zone">Danger Zone</string>
+    <string name="unenroll">Unenroll</string>
+    <string name="enrollment_change">Change enrollment</string>
+</resources>

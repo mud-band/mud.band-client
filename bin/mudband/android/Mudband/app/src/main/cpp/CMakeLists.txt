@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 3.22.1)
+project("mudband")
+add_library(${CMAKE_PROJECT_NAME} SHARED
+        common/bpf.c
+        common/callout.c
+        common/crypto/blake2s.c
+        common/crypto/chacha20.c
+        common/crypto/chacha20poly1305.c
+        common/crypto/poly1305-donna.c
+        common/crypto/x25519.c
+        common/crypto.c
+        common/wireguard.c
+        common/wireguard-pbuf.c
+        libjansson/dump.c
+        libjansson/error.c
+        libjansson/hashtable.c
+        libjansson/hashtable_seed.c
+        libjansson/load.c
+        libjansson/memory.c
+        libjansson/pack_unpack.c
+        libjansson/strbuffer.c
+        libjansson/strconv.c
+        libjansson/utf.c
+        libjansson/value.c
+        libmud/odr.c
+        libmud/odr_pthread.c
+        libmud/vsb.c
+        libmud/vsock.c
+        libmud/vtc_log.c
+        libmud/vtim.c
+        libmud/vuuid.c
+        mudband.c
+        mudband_confmgr.c
+        mudband_connmgr.c
+        mudband_enroll.c
+        mudband_mqtt.c
+        mudband_progconf.c
+        mudband_stun_client.c
+        mudband_tasks.c
+        mudband_wireguard.c)
+include_directories(common)
+include_directories(libjansson)
+include_directories(libmud)
+target_link_libraries(${CMAKE_PROJECT_NAME}
+    android
+    log)
