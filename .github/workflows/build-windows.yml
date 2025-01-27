@@ -1,0 +1,21 @@
+name: Build on Windows
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+    - name: Set up MSVC environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x86
+    - name: Build with nmake
+      run: |
+        cd bin/mudband/win32
+        nmake -f NMakefile clean
+        nmake -f NMakefile

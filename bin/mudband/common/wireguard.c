@@ -32,7 +32,19 @@
 #include <os/log.h>
 #endif
 
+#if defined(WIN32)
+#include <winsock2.h>
+#if BYTE_ORDER == LITTLE_ENDIAN
+#define htole64(x) (x)
+#define le64toh(x) (x)
+#elif BYTE_ORDER == BIG_ENDIAN
+#define htole64(x) __builtin_bswap64(x)
+#define le64toh(x) __builtin_bswap64(x)
+#endif
+#else
 #include <endian.h>
+#endif
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
