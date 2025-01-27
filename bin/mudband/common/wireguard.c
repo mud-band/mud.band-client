@@ -41,6 +41,7 @@
 #elif BYTE_ORDER == BIG_ENDIAN
 #define htole64(x) __builtin_bswap64(x)
 #define le64toh(x) __builtin_bswap64(x)
+#endif
 #else
 #include <endian.h>
 #endif
