@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=0.0.6
+VERSION=0.0.7
 
 (cd ../../bin/mudband && make -f Makefile.musl clean && make -f Makefile.musl)
 
