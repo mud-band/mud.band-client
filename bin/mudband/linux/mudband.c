@@ -1995,7 +1995,7 @@ usage(void)
 	fprintf(stderr, FMT, "-e <token>", "Enroll with the given token.");
 	fprintf(stderr, FMT_LONG, "   --enroll-token <token>");
 	fprintf(stderr, FMT, "--enroll-list",
-		"List the enrollments in the disk.");
+	    "List the enrollments in the disk.");
 	fprintf(stderr, FMT, "--enroll-secret <secret>",
 	    "Set the secret for the enrollment.");
 	fprintf(stderr, FMT, "-h, --help", "Print this message and exit.");
@@ -2021,10 +2021,10 @@ main(int argc, char *argv[])
 		{ "acl-del", vopt_long_required_argument, NULL, '$' },
 		{ "acl-list", vopt_long_no_argument, NULL, '#' },
 		{ "acl-priority", vopt_long_required_argument, NULL, '%' },
-		{ "band-list", vopt_long_no_argument, NULL, '&' },
 		{ "band-uuid", vopt_long_required_argument, NULL, 'b' },
 		{ "daemon", vopt_long_no_argument, NULL, 'D' },
 		{ "device-name", vopt_long_required_argument, NULL, 'n' },
+		{ "enroll-list", vopt_long_no_argument, NULL, '&' },
 		{ "enroll-secret", vopt_long_required_argument, NULL, '^' },
 		{ "enroll-token", vopt_long_required_argument, NULL, 'e' },
 		{ "help", vopt_long_no_argument, NULL, 'h' },
