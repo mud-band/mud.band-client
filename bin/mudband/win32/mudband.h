@@ -120,7 +120,7 @@ int	MCM_listen_fd(void);
 extern json_t *mbe_jroot;
 int	MBE_init(void);
 void	MBE_fini(void);
-int	MBE_enroll(const char *token, const char *name);
+int	MBE_enroll(const char *token, const char *name, const char *secret);
 int	MBE_check_and_read(void);
 const char *
 	MBE_get_private_key(void);
@@ -129,6 +129,7 @@ const char *
 
 const vuuid_t *
 	MBE_get_uuid(void);
+int	MBE_list(void);
 
 /* mudband_progconf.c */
 void	MPC_set_default_band_uuid(const char *band_uuid);

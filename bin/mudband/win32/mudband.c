@@ -2144,7 +2144,11 @@ usage(void)
 	fprintf(stderr, FMT, "-b <uuid>", "Specify the band UUID to use.");
 	fprintf(stderr, FMT_LONG, "--band-uuid <uuid>");
 	fprintf(stderr, FMT, "-e <token>", "Enroll with the given token.");
-	fprintf(stderr, FMT_LONG, "--enroll <token>");
+	fprintf(stderr, FMT_LONG, "--enroll-token <token>");
+	fprintf(stderr, FMT, "--enroll-list",
+	    "List the enrollments in the disk.");
+	fprintf(stderr, FMT, "--enroll-secret <secret>",
+	    "Set the secret for the enrollment.");
 	fprintf(stderr, FMT, "-h, --help", "Print this message and exit.");
 	fprintf(stderr, FMT, "-n <device_name>",
 	    "Specify the device name.");
@@ -2167,12 +2171,15 @@ main(int argc, char *argv[])
 		{ "band-uuid", vopt_long_required_argument, NULL, 'b' },
 		{ "daemon", vopt_long_no_argument, NULL, 'D' },
 		{ "device-name", vopt_long_required_argument, NULL, 'n' },
+		{ "enroll-list", vopt_long_no_argument, NULL, '&' },
+		{ "enroll-secret", vopt_long_required_argument, NULL, '^' },
 		{ "enroll-token", vopt_long_required_argument, NULL, 'e' },
 		{ "help", vopt_long_no_argument, NULL, 'h' },
 		{ "webcli", vopt_long_no_argument, NULL, 'W' },
 		{ NULL, 0, NULL, 0 }
 	};
 	unsigned acl_list_flag = 0;
+	unsigned enroll_list_flag = 0;
 	unsigned W_flag = 0;
 	int ch;
 	const char *acl_add_arg = NULL;
@@ -2180,6 +2187,7 @@ main(int argc, char *argv[])
 	const char *acl_del_arg = NULL;
 	const char *acl_priority_arg = NULL;
 	const char *e_arg = NULL;
+	const char *enroll_secret_arg = "";
 	const char *n_arg = NULL;
 	unsigned D_flag = 0;
 	const char *opt = "b:e:hn:vW";
@@ -2203,6 +2211,12 @@ main(int argc, char *argv[])
 			break;
 		case '%':
 			acl_priority_arg = vopt_arg;
+			break;
+		case '^':
+			enroll_secret_arg = vopt_arg;
+			break;
+		case '&':
+			enroll_list_flag = 1 - enroll_list_flag;
 			break;
 		case 'b':
 			band_b_arg = vopt_arg;
@@ -2229,15 +2243,10 @@ main(int argc, char *argv[])
 
 	mudband_init();
 
-	if (e_arg != NULL) {
-		if (n_arg == NULL) {
-			vtc_log(band_vl, 0,
-			    "[ERROR] Missing -n argument. Specify the device"
-			    " name.");
-			return (1);
-		}
-		return (MBE_enroll(e_arg, n_arg));
-	}
+	if (e_arg != NULL)
+		return (MBE_enroll(e_arg, n_arg, enroll_secret_arg));
+	if (enroll_list_flag)
+		return (MBE_list());
 	if (acl_add_arg != NULL || acl_del_arg != NULL ||
 	    acl_default_policy_arg != NULL || acl_list_flag)
 		return (ACL_cmd(acl_add_arg, acl_priority_arg, acl_list_flag,

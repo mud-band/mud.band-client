@@ -114,7 +114,7 @@ mbe_file_write(const char *filepath, json_t *obj)
 }
 
 int
-MBE_enroll(const char *token, const char *name)
+MBE_enroll(const char *token, const char *name, const char *secret)
 {
 	struct vhttps_req req;
 	json_t *jroot, *jstatus, *jband, *juuid, *jband_name;
@@ -128,6 +128,13 @@ MBE_enroll(const char *token, const char *name)
 	char wg_pubkeystr[WIREGUARD_PUBLIC_KEY_LEN * 2 + 1 /* XXX */];
 	char wg_privkeystr[WIREGUARD_PRIVATE_KEY_LEN * 2 + 1 /* XXX */];
 	bool success;
+
+	if (name == NULL) {
+		vtc_log(mbe_vl, 0,
+		    "[ERROR] BANDEC_00504: Missing -n argument."
+		    " Specify the device name.");
+		return (1);
+	}
 
 	vtc_log(mbe_vl, 2, "Enrolling with token: %s (name %s)", token, name);
 	/* generate wireguard key pair */
@@ -154,8 +161,9 @@ MBE_enroll(const char *token, const char *name)
 	    "{"
 	    "  \"token\": \"%s\","
 	    "  \"name\": \"%s\","
+	    "  \"secret\": \"%s\","
 	    "  \"wireguard_pubkey\": \"%s\""
-	    "}", token, name, wg_pubkeystr);
+	    "}", token, name, secret, wg_pubkeystr);
 	ODR_bzero(&req, sizeof(req));
 	req.vl = mbe_vl;
 	req.server = "www.mud.band:443";
@@ -376,6 +384,25 @@ MBE_check_and_read(void)
 	    mbe_default_uuidstr);
 	mbe_jroot = mbe_band_read(filename);
 	AN(mbe_jroot);
+	return (0);
+}
+
+int
+MBE_list(void)
+{
+	struct mbe_traversal_dir_arg dir_arg = { 0, };
+	int r;
+
+	r = ODR_traversal_dir(mbe_vl, band_confdir_enroll,
+	    mbe_traversal_dir_callback, (void *)&dir_arg);
+	if (r != 0) {
+		vtc_log(mbe_vl, 0, "BANDEC_00501: ODR_traversal_dir() failed");
+		return (1);
+	}
+	if (dir_arg.n_enroll == 0) {
+		vtc_log(mbe_vl, 0, "BANDEC_00502: No enrollments found.");
+		return (1);
+	}
 	return (0);
 }
 
