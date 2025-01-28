@@ -512,6 +512,35 @@ wireguard_iface_peer_init(struct wireguard_iface_peer *peer)
     peer->preshared_key = NULL;
 }
 
+static int
+wireguard_iface_otp_reusable(struct wireguard_peer *peer,
+                             struct wireguard_iface_peer *p)
+{
+    int i;
+
+    if (peer->otp_enabled != p->otp_enabled)
+        return (0);
+    if (peer->otp_sender != p->otp_sender)
+        return (0);
+    for (i = 0; i < 3; i++) {
+        if (peer->otp_receiver[i] != p->otp_receiver[i])
+            return (0);
+    }
+    return (1);
+}
+
+static void
+wireguard_iface_otp_update(struct wireguard_peer *peer,
+                           struct wireguard_iface_peer *p)
+{
+    int i;
+
+    peer->otp_enabled = p->otp_enabled;
+    peer->otp_sender = p->otp_sender;
+    for (i = 0; i < 3; i++)
+        peer->otp_receiver[i] = p->otp_receiver[i];
+}
+
 static struct wireguard_peer *
 wireguard_iface_reusable_old_peer_by_pubkey(struct wireguard_peer *peers,
                                             int peers_count, uint8_t *public_key)
@@ -561,6 +590,8 @@ wireguard_iface_reusable_old_peer(struct wireguard_peer *peers,
         if (peer->endpoints[i].port != p->endpoints[i].port)
             return (NULL);
     }
+    if (!wireguard_iface_otp_reusable(peer, p))
+        return (NULL);
     return (peer);
 }
 
@@ -636,6 +667,7 @@ wireguard_iface_add_peer(struct wireguard_device *device,
               "BANDEC_00201: wireguard_peer_init() failed");
         return (-1);
     }
+    wireguard_iface_otp_update(peer, p);
     peer->iface_addr = p->iface_addr;
     for (i = 0; i < p->n_endpoints; i++) {
         peer->endpoints[i].alive = false;
@@ -662,8 +694,9 @@ wireguard_iface_add_peer(struct wireguard_device *device,
 
         in.s_addr = peer->iface_addr;
         vtc_log(mwg_vl, 2,
-                "Added a peer (private_ip %s idx %d n_endpoints %d)",
-                inet_ntoa(in), *peer_index, peer->n_endpoints);
+                "Added a peer (private_ip %s idx %d n_endpoints %d opt %#jx)",
+                inet_ntoa(in), *peer_index, peer->n_endpoints,
+                peer->otp_sender);
     }
     return (0);
 }
@@ -765,6 +798,7 @@ wireguard_iface_peers_update(struct wireguard_device *device, struct cnf *cnf)
             new_peer = wireguard_peer_alloc(device);
             AN(new_peer);
             *new_peer = *old_peer;
+            wireguard_iface_otp_update(new_peer, &iface_peer);
             n_reuse++;
         }
     }

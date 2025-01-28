@@ -169,6 +169,17 @@ Java_band_mud_android_JniWrapper_getBandJWT(JNIEnv *env, jobject thiz)
     return (*env)->NewStringUTF(env, jwt);
 }
 
+jboolean
+Java_band_mud_android_JniWrapper_isBandPublic(JNIEnv *env, jobject thiz)
+{
+
+    (void)thiz;
+
+    if (!band_inited)
+        return (0);
+    return (MBE_is_public() != 0);
+}
+
 jstring
 Java_band_mud_android_JniWrapper_getBandConfigEtag(JNIEnv *env, jobject thiz)
 {

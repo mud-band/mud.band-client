@@ -83,6 +83,10 @@ struct wireguard_iface_peer {
     } endpoints[WIREGUARD_IFACE_PEER_ENDPOINTS_MAX];
     uint8_t n_endpoints;
     uint16_t keep_alive;
+
+    bool otp_enabled;
+    uint64_t otp_sender;
+    uint64_t otp_receiver[3];
 };
 
 #pragma pack(push, 4)

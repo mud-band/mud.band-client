@@ -424,6 +424,25 @@ MBE_check_and_read(void)
 	return (0);
 }
 
+int
+MBE_list(void)
+{
+	struct mbe_traversal_dir_arg dir_arg = { 0, };
+	int r;
+
+	r = ODR_traversal_dir(mbe_vl, band_confdir_enroll,
+	    mbe_traversal_dir_callback, (void *)&dir_arg);
+	if (r != 0) {
+		vtc_log(mbe_vl, 0, "BANDEC_00501: ODR_traversal_dir() failed");
+		return (1);
+	}
+	if (dir_arg.n_enroll == 0) {
+		vtc_log(mbe_vl, 0, "BANDEC_00502: No enrollments found.");
+		return (1);
+	}
+	return (0);
+}
+
 void
 MBE_fini(void)
 {

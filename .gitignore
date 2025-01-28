@@ -65,3 +65,4 @@ sbin/mudband_proxyd/mudband_proxyd
 share/www/www.mud.band/flask_session/
 TAGS
 vendor
+.aider*

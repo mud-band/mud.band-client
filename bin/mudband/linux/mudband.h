@@ -138,6 +138,7 @@ const char *
 
 const vuuid_t *
 	MBE_get_uuid(void);
+int	MBE_list(void);
 
 /* mudband_progconf.c */
 void	MPC_set_default_band_uuid(const char *band_uuid);
