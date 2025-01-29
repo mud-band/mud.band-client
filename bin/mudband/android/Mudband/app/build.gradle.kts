@@ -12,7 +12,7 @@ android {
         applicationId = "band.mud.android"
         minSdk = 33
         targetSdk = 35
-        versionCode = 0x000007
+        versionCode = 1000007
         versionName = "0.0.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -28,10 +28,13 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("mudband.jks")
-            storePassword = "alskdj"
-            keyAlias = "mudband"
-            keyPassword = "alskdj"
+            var envMudbandAndroidJksPath = System.getenv("MUDBAND_ANDROID_JSK_PATH") ?: "NO_JSK_PATH"
+            var envMudbandAndroidAlias = System.getenv("MUDBAND_ANDROID_ALIAS") ?: "NO_ALIAS"
+            var envMudbandAndroidPassword = System.getenv("MUDBAND_ANDROID_PASSWORD") ?: "NO_PASSWORD"
+            storeFile = file(envMudbandAndroidJksPath)
+            storePassword = envMudbandAndroidPassword
+            keyAlias = envMudbandAndroidAlias
+            keyPassword = envMudbandAndroidPassword
         }
     }
 
