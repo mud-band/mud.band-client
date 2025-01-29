@@ -1728,7 +1728,7 @@ MQTT_subscribe(void)
         device_uuid = CNF_get_interface_device_uuid(cnf->jroot);
         AN(device_uuid);
         snprintf(topic, sizeof(topic), "/band/%s/device/%s",
-                 band_uuid, device_uuid);
+                 default_band_uuid, device_uuid);
 
         error = mqtt_subscribe(&mqtt_client, topic, 0);
         assert(error == MQTT_OK);
