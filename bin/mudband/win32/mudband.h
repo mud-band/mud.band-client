@@ -108,6 +108,8 @@ int	CNF_fetch(const char *fetch_type);
 int	CNF_get_peer_size(json_t *);
 struct wireguard_acl *
 	CNF_acl_build(json_t *jroot);
+const char *
+	CNF_get_interface_device_uuid(json_t *jroot);
 
 /* mudband_connmgr.c */
 int	MCM_init(void);
