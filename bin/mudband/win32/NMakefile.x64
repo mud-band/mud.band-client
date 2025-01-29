@@ -88,8 +88,6 @@ mudband: $(OBJS)
 	    /s copyright "Copyright (c) 2024 by Mudfish Networks" \
 	    /s product "Mudband"
 
-mudband.obj: mudband.c win32/mudband.c
-
 .c.obj:
 	$(CPP) $(CPP_PROJ) /Fo$*.obj $<
 
