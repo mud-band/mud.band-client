@@ -31,22 +31,30 @@ import SwiftyJSON
 class UiEnrollmentNewModel : ObservableObject {
     var mEnrollmentToken: String = ""
     var mDeviceName: String = ""
+    var mEnrollmentSecret: String = ""
 
     struct enroll_params: Encodable {
         let token: String
         let name: String
         let wireguard_pubkey: String
+        let secret: String
     }
 
     struct enroll_decodable_type: Decodable {
         let status: Int
         let msg: String
+        let sso_url: String
     }
     
     private func enroll_set_result(target: UiEnrollmentNewView, status: Int, msg: String) {
         if status != 200 {
-            target.mAlertNeed = true
-            target.mAlertMessage = msg
+            if status == 301 {
+                target.mMfaAlertNeed = true
+                target.mMfaAlertURL = msg
+            } else {
+                target.mErrorAlertNeed = true
+                target.mErrorAlertMessage = msg
+            }
         }
     }
     
@@ -78,7 +86,8 @@ class UiEnrollmentNewModel : ObservableObject {
         self.update_is_enrolling(target: target, ing: true)
         let parameters = enroll_params(token: mEnrollmentToken,
                                        name: mDeviceName,
-                                       wireguard_pubkey: pub_key)
+                                       wireguard_pubkey: pub_key,
+                                       secret: mEnrollmentSecret)
         AF.request("https://www.mud.band/api/band/enroll",
                    method: .post,
                    parameters: parameters,
@@ -90,6 +99,12 @@ class UiEnrollmentNewModel : ObservableObject {
             case .success(let str):
                 if let obj = try? JSON(data: Data(str.utf8)) {
                     if obj["status"].intValue != 200 {
+                        if obj["status"].intValue == 301 {
+                            self.enroll_set_result(target: target,
+                                                   status: 301,
+                                                   msg: obj["sso_url"].stringValue)
+                            return
+                        }
                         self.enroll_set_result(target: target,
                                                status: 501,
                                                msg: obj["msg"].stringValue)
@@ -110,8 +125,11 @@ class UiEnrollmentNewModel : ObservableObject {
 struct UiEnrollmentNewView: View {
     @ObservedObject private var model = UiEnrollmentNewModel()
     @Environment(\.dismiss) var dismiss
-    @State var mAlertNeed = false
-    @State var mAlertMessage = ""
+    @Environment(\.openURL) var openURL
+    @State var mMfaAlertNeed = false
+    @State var mMfaAlertURL = ""
+    @State var mErrorAlertNeed = false
+    @State var mErrorAlertMessage = ""
     @State var mIsEnrolling = false
 
     @ViewBuilder
@@ -127,6 +145,9 @@ struct UiEnrollmentNewView: View {
                 TextField(text: $model.mDeviceName, prompt: Text("Required")) {
                     Text("Device Name")
                 }
+                TextField(text: $model.mEnrollmentSecret, prompt: Text("Optional")) {
+                    Text("Enrollment Secret")
+                }
             }
             HStack {
                 Spacer()
@@ -140,10 +161,22 @@ struct UiEnrollmentNewView: View {
                     }
                 }
                 .disabled(mIsEnrolling == true)
-                .alert("Enrollment Error", isPresented: $mAlertNeed) {
+                .alert("Enrollment Error", isPresented: $mErrorAlertNeed) {
                     Button("OK", role: .cancel) { }
                 } message: {
-                    Text(mAlertMessage)
+                    Text(mErrorAlertMessage)
+                }
+                .alert("MFA Required", isPresented: $mMfaAlertNeed) {
+                    Button("Open URL", role: .cancel) {
+                        if let url = URL(string: mMfaAlertURL) {
+                            openURL(url)
+                        }
+                    }
+                    Button("Dismiss", role: .cancel) {
+                        
+                    }
+                } message: {
+                    Text("MFS required to enroll")
                 }
             }
         }

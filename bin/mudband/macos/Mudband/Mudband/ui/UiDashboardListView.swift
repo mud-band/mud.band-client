@@ -29,43 +29,46 @@ import NetworkExtension
 import SwiftUI
 import SwiftyJSON
 
-struct UiDashboardView: View {
-    @State var mEnrollmentCount: Int = Int(mudband_ui_enroll_get_count())
-    @State var mNeedEnrollmentCountRefresh = false
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
-    @ViewBuilder
+struct UiDashboardListView: View {
+    var mTopView: UiDashboardView
+    @State private var selectedItem: String? = "Status"
+        
+    @State private var items = [
+        "Status",
+        "Devices",
+        "Setup",
+    ]
+        
     var body: some View {
-        VStack {
-            if mEnrollmentCount > 0 {
-                UiDashboardListView(mTopView: self)
-            } else {
-                NavigationStack {
-                    VStack {
-                        Image(systemName: "globe")
-                            .imageScale(.large)
-                            .foregroundStyle(.tint)
-                        HStack {
-                            Text("No enrollment found.  Please enroll first.")
-                        }
-                        NavigationLink("Enroll", destination: UiEnrollmentNewView())
-                    }
-                    Spacer().frame(height: 50)
-                    VStack {
-                        Text("New to Mud.band? Create a band.")
-                        Link("Create", destination: URL(string: "https://mud.band")!)
+        NavigationSplitView {
+            List(selection: $selectedItem) {
+                ForEach(items, id: \.self) { folder in
+                    NavigationLink(value: folder) {
+                        Text(verbatim: folder)
                     }
                 }
             }
-        }.onReceive(timer) { _ in
-            if mEnrollmentCount == 0 || mNeedEnrollmentCountRefresh {
-                mEnrollmentCount = Int(mudband_ui_enroll_get_count())
-                mNeedEnrollmentCountRefresh = false
+            .navigationTitle("Sidebar")
+        } detail: {
+            if let selectedItem {
+                if selectedItem == "Status" {
+                    UiDashboardStatusListView()
+                        .tag("Status")
+                } else if selectedItem == "Devices" {
+                    UiDashboardDevicesListView()
+                        .tag("Devices")
+                } else if selectedItem == "Setup" {
+                    UiDashboardSetupListView(mTopView: mTopView)
+                        .tag("Setup")
+                } else {
+                    NavigationLink(value: selectedItem) {
+                        Text(verbatim: selectedItem)
+                            .navigationTitle(selectedItem)
+                    }
+                }
+            } else {
+                Text("Choose a menu from the sidebar")
             }
         }
     }
-}
-
-#Preview {
-    UiDashboardView()
 }

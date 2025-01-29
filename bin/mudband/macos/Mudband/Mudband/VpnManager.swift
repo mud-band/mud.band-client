@@ -26,6 +26,7 @@
 
 import Foundation
 import NetworkExtension
+import SwiftyJSON
 import SystemExtensions
 
 class VpnManager: NSObject {
@@ -36,6 +37,9 @@ class VpnManager: NSObject {
     
     private var mManager: NETunnelProviderManager?
     private var mSendPingTask: DispatchWorkItem?
+    
+    private var mPongMfaRequired = false
+    private var mPongMfaURL = ""
     
     private func log(level: Int32, msg: String) {
         mudband_ui_log(level, msg)
@@ -99,13 +103,27 @@ class VpnManager: NSObject {
             return
         }
         if let session = manager.connection as? NETunnelProviderSession,
-            let message = "ping".data(using: String.Encoding.utf8),
+           let message = "ping".data(using: String.Encoding.utf8),
            manager.connection.status != .invalid {
             do {
                 try session.sendProviderMessage(message) { response in
-                    if response == nil {
+                    guard let responseData = response else {
                         self.log(level: self.LOG_LEVEL_WARNING,
                                  msg: "BANDEC_00386: Got a nil response from the provider for ping cmd.")
+                        return
+                    }
+                    if let obj = try? JSON(data: responseData) {
+                        switch obj["status"].intValue {
+                        case 200:
+                            break
+                        case 301:
+                            self.mPongMfaRequired = true
+                            self.mPongMfaURL = obj["sso_url"].stringValue
+                        default:
+                            let msg = obj["msg"].stringValue
+                            self.log(level: self.LOG_LEVEL_WARNING, msg: "BANDEC_00505: \(msg)")
+                            return
+                        }
                     }
                 }
             } catch {

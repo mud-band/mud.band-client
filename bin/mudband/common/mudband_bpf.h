@@ -40,21 +40,21 @@
 #ifndef _MUDBAND_BPF_H_
 #define _MUDBAND_BPF_H_
 
-typedef uint32_t bpf_u_int32;
+typedef uint32_t mudband_bpf_u_int32;
 
 /*
  * The instruction data structure.
  */
-struct bpf_insn {
+struct mudband_bpf_insn {
 	uint16_t	code;
 	uint8_t		jt;
 	uint8_t		jf;
-	bpf_u_int32 k;
+    mudband_bpf_u_int32 k;
 };
 
 uint32_t
-	bpf_filter(const struct bpf_insn *pc, uint8_t *p, uint32_t
+    mudband_bpf_filter(const struct mudband_bpf_insn *pc, uint8_t *p, uint32_t
 		    wirelen, uint32_t buflen);
-int	bpf_validate(const struct bpf_insn *f, int len);
+int	mudband_bpf_validate(const struct mudband_bpf_insn *f, int len);
 
 #endif

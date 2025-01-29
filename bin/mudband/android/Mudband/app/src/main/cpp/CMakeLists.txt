@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.22.1)
 project("mudband")
 add_library(${CMAKE_PROJECT_NAME} SHARED
-        common/bpf.c
         common/callout.c
         common/crypto/blake2s.c
         common/crypto/chacha20.c
@@ -9,6 +8,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         common/crypto/poly1305-donna.c
         common/crypto/x25519.c
         common/crypto.c
+        common/mudband_bpf.c
         common/wireguard.c
         common/wireguard-pbuf.c
         libjansson/dump.c

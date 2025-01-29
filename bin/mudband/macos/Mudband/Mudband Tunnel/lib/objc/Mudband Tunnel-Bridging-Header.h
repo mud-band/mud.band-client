@@ -65,6 +65,6 @@ int     mudband_tunnel_wireguard_rx_recvfrom(void);
 void    mudband_tunnel_wireguard_tx(NSData *data);
 @class PacketTunnelProvider;
 void    mudband_tunnel_iface_set_tunnel_provider(PacketTunnelProvider *obj);
-void    mudband_tunnel_iface_need_peers_update(void);
+void    mudband_tunnel_iface_need_sync(void);
 
 #endif /* MUDBAND_TUNNEL_BRIDGING_H */

@@ -53,7 +53,7 @@
 #include "vsock.h"
 #include "vtc_log.h"
 
-#include "bpf.h"
+#include "mudband_bpf.h"
 #include "callout.h"
 
 #include "mudband.h"
@@ -377,7 +377,7 @@ CNF_acl_build(json_t *jroot)
 			return (NULL);
 		}
 		for (x = 0; x < json_array_size(jinsns); x++) {
-			struct bpf_insn *insn;
+			struct mudband_bpf_insn *insn;
 			json_t *jinsn;
 
 			jinsn = json_array_get(jinsns, x);
@@ -391,9 +391,9 @@ CNF_acl_build(json_t *jroot)
 			insn->jf =
 			    (uint8_t)json_integer_value(json_array_get(jinsn, 2));
 			insn->k =
-			    (bpf_u_int32)json_integer_value(json_array_get(jinsn, 3));
+			    (mudband_bpf_u_int32)json_integer_value(json_array_get(jinsn, 3));
 		}
-		r = bpf_validate(acl_program->insns, acl_program->n_insns);
+		r = mudband_bpf_validate(acl_program->insns, acl_program->n_insns);
 		if (r != 1) {
 			vtc_log(cnf_vl, 0,
 			    "BANDEC_00481: BPF program validation failed:"
