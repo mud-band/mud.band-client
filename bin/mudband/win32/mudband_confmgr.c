@@ -178,6 +178,22 @@ cnf_file_write(const char *filepath, json_t *obj)
 	return (0);
 }
 
+const char *
+CNF_get_interface_device_uuid(json_t *jroot)
+{
+	json_t *interface, *device_uuid;
+
+	AN(jroot);
+	interface = json_object_get(jroot, "interface");
+	AN(interface);
+	assert(json_is_object(interface));
+	device_uuid = json_object_get(interface, "device_uuid");
+	AN(device_uuid);
+	assert(json_is_string(device_uuid));
+	assert(json_string_length(device_uuid) > 0);
+	return (json_string_value(device_uuid));
+}
+
 static int
 cnf_get_interface_nat_type_by_obj(json_t *jroot)
 {

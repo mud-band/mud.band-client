@@ -1736,7 +1736,6 @@ MQTT_subscribe(void)
 
 		CNF_rel(&cnf);
 	}
-
 }
 
 static void

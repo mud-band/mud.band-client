@@ -1706,7 +1706,9 @@ MQTT_sync(void)
 void
 MQTT_subscribe(void)
 {
+    struct cnf *cnf;
     enum mqtt_error error;
+    int r;
     const char *default_band_uuid;
     char topic[128];
 
@@ -1718,6 +1720,23 @@ MQTT_subscribe(void)
     assert(error == MQTT_OK);
 
     vtc_log(mqtt_vl, 2, "Subscribed to %s topic.", topic);
+
+    r = CNF_get(&cnf);
+    if (r == 0) {
+        const char *device_uuid;
+
+        device_uuid = CNF_get_interface_device_uuid(cnf->jroot);
+        AN(device_uuid);
+        snprintf(topic, sizeof(topic), "/band/%s/device/%s",
+                 default_band_uuid, device_uuid);
+
+        error = mqtt_subscribe(&mqtt_client, topic, 0);
+        assert(error == MQTT_OK);
+
+        vtc_log(mqtt_vl, 2, "Subscribed to %s topic.", topic);
+
+        CNF_rel(&cnf);
+    }
 }
 
 static void
