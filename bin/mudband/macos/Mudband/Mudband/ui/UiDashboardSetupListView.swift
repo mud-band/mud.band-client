@@ -19,10 +19,10 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
         case response_body_status_error
     }
     
-    func mudband_unenroll(fetchCompletionHandler: @escaping (Error?) -> Void) {
+    func mudband_unenroll(unenrollCompletionHandler: @escaping (Error?) -> Void) {
         guard let band_uuid = mudband_ui_enroll_get_band_uuid() else {
             mudband_ui_log(0, "BANDEC_00421: mudband_ui_enroll_get_band_uuid() failed.")
-            fetchCompletionHandler(band_ui_error.no_band_uuid_found)
+            unenrollCompletionHandler(band_ui_error.no_band_uuid_found)
             return
         }
         var headers: HTTPHeaders = []
@@ -30,7 +30,7 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
             headers["Authorization"] = jwt
         } else {
             mudband_ui_log(0, "BANDEC_00422: mudband_tunnel_enroll_get_jwt() failed.")
-            fetchCompletionHandler(band_ui_error.no_jwt_token_found)
+            unenrollCompletionHandler(band_ui_error.no_jwt_token_found)
             return
         }
         AF.request("https://www.mud.band/api/band/unenroll",
@@ -43,26 +43,26 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
                 if let obj = try? JSON(data: Data(body.utf8)) {
                     guard let status = obj["status"].int else {
                         mudband_ui_log(0, "BANDEC_00423: No status field in the response.")
-                        fetchCompletionHandler(band_ui_error.response_body_error)
+                        unenrollCompletionHandler(band_ui_error.response_body_error)
                         return
                     }
                     if status != 200 {
                         mudband_ui_log(0, "BANDEC_00424: Failed to unenroll: status \(status)")
-                        fetchCompletionHandler(band_ui_error.response_body_status_error)
+                        unenrollCompletionHandler(band_ui_error.response_body_status_error)
                         return
                     }
                 }
                 mudband_ui_enroll_unenroll(band_uuid)
-                fetchCompletionHandler(nil)
+                unenrollCompletionHandler(nil)
                 break
             case .failure(let error):
                 guard let statusCode = resp.response?.statusCode else {
                     mudband_ui_log(0, "BANDEC_00425: Failed to set the status code.")
-                    fetchCompletionHandler(band_ui_error.response_status_error)
+                    unenrollCompletionHandler(band_ui_error.response_status_error)
                     return
                 }
                 mudband_ui_log(0, "BANDEC_00426: \(statusCode) \(error)")
-                fetchCompletionHandler(error)
+                unenrollCompletionHandler(error)
                 break
             }
         }
@@ -70,23 +70,16 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
 }
 
 struct UiDashboardSetupDangerZoneUnenrollView: View {
-    var mTopView: UiDashboardView
     @EnvironmentObject private var mAppModel: AppModel
-    @ObservedObject private var model = UiDashboardSetupDangerZoneUnenrollModel()
+    @ObservedObject private var mUnenrollModel = UiDashboardSetupDangerZoneUnenrollModel()
     @State private var mNeedToShowPopupConnect = false
     @State private var mUnenrollAlertNeed = false
     @State private var mUnenrollAlertMessage = ""
     @State private var mCanUnenroll = true
-
-    private func need_enrollment_count_refresh() {
-        DispatchQueue.main.async {
-            mTopView.mNeedEnrollmentCountRefresh = true
-        }
-    }
     
     private func isUnenrollable() -> Bool {
         if mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" ||
-            mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
+           mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
             return true
         }
         return false
@@ -118,14 +111,14 @@ struct UiDashboardSetupDangerZoneUnenrollView: View {
                 .padding()
             HStack {
                 Button("Yes") {
-                    model.mudband_unenroll(fetchCompletionHandler: { error in
+                    mUnenrollModel.mudband_unenroll(unenrollCompletionHandler: { error in
                         if let error = error {
                             mUnenrollAlertNeed = true
                             mUnenrollAlertMessage = "\(error)"
                             return
                         }
                         mNeedToShowPopupConnect = false
-                        need_enrollment_count_refresh()
+                        mAppModel.update_enrollments()
                     })
                 }
                 Button("No") {
@@ -147,7 +140,7 @@ struct UiDashboardSetupEnrollmentChangeView: View {
     
     func isChangable() -> Bool {
         if mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" ||
-            mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" {
+           mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" {
             return true
         }
         return false
@@ -176,7 +169,7 @@ struct UiDashboardSetupEnrollmentNewView: View {
     
     private func isEnrollable() -> Bool {
         if mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" ||
-            mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
+           mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
             return true
         }
         return false
@@ -200,8 +193,6 @@ struct UiDashboardSetupEnrollmentNewView: View {
 }
 
 struct UiDashboardSetupListView: View {
-    var mTopView: UiDashboardView
-
     @ViewBuilder
     var body: some View {
         VStack {
@@ -211,7 +202,7 @@ struct UiDashboardSetupListView: View {
                     UiDashboardSetupEnrollmentChangeView()
                 }
                 Section(header: Text("DANGER ZONE")) {
-                    UiDashboardSetupDangerZoneUnenrollView(mTopView: mTopView)
+                    UiDashboardSetupDangerZoneUnenrollView()
                 }
             }.padding()
         }

@@ -30,15 +30,13 @@ import SwiftUI
 import SwiftyJSON
 
 struct UiDashboardView: View {
-    @State var mEnrollmentCount: Int = Int(mudband_ui_enroll_get_count())
-    @State var mNeedEnrollmentCountRefresh = false
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @EnvironmentObject private var mAppModel: AppModel
 
     @ViewBuilder
     var body: some View {
         VStack {
-            if mEnrollmentCount > 0 {
-                UiDashboardListView(mTopView: self)
+            if mAppModel.mEnrollmentCount > 0 {
+                UiDashboardListView()
             } else {
                 NavigationStack {
                     VStack {
@@ -57,11 +55,9 @@ struct UiDashboardView: View {
                     }
                 }
             }
-        }.onReceive(timer) { _ in
-            if mEnrollmentCount == 0 || mNeedEnrollmentCountRefresh {
-                mEnrollmentCount = Int(mudband_ui_enroll_get_count())
-                mNeedEnrollmentCountRefresh = false
-            }
+        }
+        .onAppear() {
+            mAppModel.update_enrollments()
         }
     }
 }

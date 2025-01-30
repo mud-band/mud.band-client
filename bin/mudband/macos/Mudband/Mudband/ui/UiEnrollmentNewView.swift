@@ -58,13 +58,15 @@ class UiEnrollmentNewModel : ObservableObject {
         }
     }
     
-    func enroll_success(target: UiEnrollmentNewView, priv_key: String, raw_str: String) {
+    func enroll_success(target: UiEnrollmentNewView, appModel: AppModel,
+                        priv_key: String, raw_str: String) {
         let r = mudband_ui_enroll_post(priv_key, raw_str)
         if r != 0 {
             mudband_ui_log(0, "BANDEC_00414: mudband_ui_enroll() failed.")
             return
         }
         DispatchQueue.main.async {
+            appModel.update_enrollments()
             target.dismiss()
         }
     }
@@ -73,7 +75,7 @@ class UiEnrollmentNewModel : ObservableObject {
         target.mIsEnrolling = ing
     }
     
-    func enroll(target: UiEnrollmentNewView) async {
+    func enroll(target: UiEnrollmentNewView, appModel: AppModel) async {
         let keys = mudband_ui_create_wireguard_keys()
         if keys == nil || keys?.count != 2 {
             enroll_set_result(target: target,
@@ -111,7 +113,8 @@ class UiEnrollmentNewModel : ObservableObject {
                         return
                     }
                 }
-                self.enroll_success(target: target, priv_key: priv_key, raw_str: str)
+                self.enroll_success(target: target,
+                                    appModel: appModel, priv_key: priv_key, raw_str: str)
             case .failure(let error):
                 self.enroll_set_result(target: target,
                                        status: 502,
@@ -123,7 +126,8 @@ class UiEnrollmentNewModel : ObservableObject {
 }
 
 struct UiEnrollmentNewView: View {
-    @ObservedObject private var model = UiEnrollmentNewModel()
+    @EnvironmentObject private var mAppModel: AppModel
+    @ObservedObject private var mEnrollmentModel = UiEnrollmentNewModel()
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
     @State var mMfaAlertNeed = false
@@ -139,13 +143,13 @@ struct UiEnrollmentNewView: View {
             Text("Input the enrollment information.")
                 .padding(.bottom, 10)
             Form {
-                TextField(text: $model.mEnrollmentToken, prompt: Text("Required")) {
+                TextField(text: $mEnrollmentModel.mEnrollmentToken, prompt: Text("Required")) {
                     Text("Enrollment Token")
                 }
-                TextField(text: $model.mDeviceName, prompt: Text("Required")) {
+                TextField(text: $mEnrollmentModel.mDeviceName, prompt: Text("Required")) {
                     Text("Device Name")
                 }
-                TextField(text: $model.mEnrollmentSecret, prompt: Text("Optional")) {
+                TextField(text: $mEnrollmentModel.mEnrollmentSecret, prompt: Text("Optional")) {
                     Text("Enrollment Secret")
                 }
             }
@@ -157,7 +161,8 @@ struct UiEnrollmentNewView: View {
                 }
                 Button("Enroll") {
                     Task {
-                        await model.enroll(target: self)
+                        await mEnrollmentModel.enroll(target: self,
+                                                      appModel: mAppModel)
                     }
                 }
                 .disabled(mIsEnrolling == true)
