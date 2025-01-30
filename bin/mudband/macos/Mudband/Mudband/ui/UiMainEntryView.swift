@@ -27,7 +27,7 @@
 import SwiftUI
 
 class UiMainEntryModel : ObservableObject {
-    private var mEnrollmentCount: Int32 = -1111
+    private var mEnrollmentCount: Int32 = -1111 /* XXX magic number */
     
     func enroll_get_count() -> Int32 {
         if mEnrollmentCount == -1111 {

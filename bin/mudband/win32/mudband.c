@@ -1455,7 +1455,7 @@ wireguard_iface_apply_acl(struct wireguard_device *device, struct pbuf *pbuf)
 		struct wireguard_acl_program *acl_program;
 
 		acl_program = &acl->programs[i];
-		r = bpf_filter(acl_program->insns, pbuf->payload, pbuf->tot_len,
+		r = mudband_bpf_filter(acl_program->insns, pbuf->payload, pbuf->tot_len,
 		    pbuf->tot_len);
 		if (r != 0) {
 			/* matched */

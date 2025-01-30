@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "bpf.h"
+#include "mudband_bpf.h"
 
 /*
  * Number of scratch memory words (for BPF_LD|BPF_MEM and BPF_ST).
@@ -157,11 +157,11 @@
  * buflen is the amount of data present
  */
 uint32_t
-bpf_filter(const struct bpf_insn *pc, uint8_t *p, uint32_t wirelen,
+mudband_bpf_filter(const struct mudband_bpf_insn *pc, uint8_t *p, uint32_t wirelen,
     uint32_t buflen)
 {
 	uint32_t A = 0, X = 0;
-	bpf_u_int32 k;
+    mudband_bpf_u_int32 k;
 	uint32_t mem[BPF_MEMWORDS];
 
 	memset(mem, 0, sizeof(mem));
@@ -432,10 +432,10 @@ static const uint16_t	bpf_code_map[] = {
  * Otherwise, a bogus program could easily crash the system.
  */
 int
-bpf_validate(const struct bpf_insn *f, int len)
+mudband_bpf_validate(const struct mudband_bpf_insn *f, int len)
 {
 	register int i;
-	register const struct bpf_insn *p;
+	register const struct mudband_bpf_insn *p;
 
 	/* Do not accept negative length filter. */
 	if (len < 0)

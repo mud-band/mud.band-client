@@ -33,7 +33,6 @@ OBJS =  \
         ../../../lib/libmud/vtc_log.o \
         ../../../lib/libmud/vtim.o \
         ../../../lib/libmud/vuuid.o \
-	../common/bpf.o \
 	../common/callout.o \
 	../common/crypto/blake2s.o \
 	../common/crypto/chacha20.o \
@@ -41,6 +40,7 @@ OBJS =  \
 	../common/crypto/poly1305-donna.o \
 	../common/crypto/x25519.o \
 	../common/crypto.o \
+	../common/mudband_bpf.o \
 	../common/wireguard.o \
 	../common/wireguard-pbuf.o \
 	mudband.o \

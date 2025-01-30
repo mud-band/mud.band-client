@@ -41,6 +41,8 @@
 #define htole64(x) __builtin_bswap64(x)
 #define le64toh(x) __builtin_bswap64(x)
 #endif
+#elif defined(__APPLE__)
+#include <machine/endian.h>
 #else
 #include <endian.h>
 #endif
