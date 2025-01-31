@@ -22,69 +22,76 @@
 		FB21383C2D0656B3008C4BB7 /* mudband_ui.m in Sources */ = {isa = PBXBuildFile; fileRef = FB21383B2D0656B3008C4BB7 /* mudband_ui.m */; };
 		FB2138422D067C01008C4BB7 /* UiEnrollmentNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2138412D067C01008C4BB7 /* UiEnrollmentNewView.swift */; };
 		FB2138452D067CBA008C4BB7 /* FileManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2138442D067CBA008C4BB7 /* FileManagerExtension.swift */; };
-		FB4E5D702D0BC23300322ECD /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D1A22D07F9F300BF6D73 /* odr.c */; };
-		FB4E5D712D0BC24500322ECD /* vtc_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19A2D07F6FA00BF6D73 /* vtc_log.c */; };
-		FB4E5D722D0BC25500322ECD /* odr_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19C2D07F78D00BF6D73 /* odr_pthread.c */; };
-		FB4E5D732D0BC25900322ECD /* vsb.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19E2D07F97F00BF6D73 /* vsb.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB4E5D742D0BC25C00322ECD /* vtim.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D1A02D07F9AB00BF6D73 /* vtim.c */; };
-		FB549B882D1626E000C1F5F4 /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B832D1626E000C1F5F4 /* x25519.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB549B892D1626E000C1F5F4 /* chacha20poly1305.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B842D1626E000C1F5F4 /* chacha20poly1305.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB549B8A2D1626E000C1F5F4 /* blake2s.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B852D1626E000C1F5F4 /* blake2s.c */; };
-		FB549B8B2D1626E000C1F5F4 /* chacha20.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B862D1626E000C1F5F4 /* chacha20.c */; };
-		FB549B8C2D1626E000C1F5F4 /* poly1305-donna.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B872D1626E000C1F5F4 /* poly1305-donna.c */; };
-		FB549B932D1627E700C1F5F4 /* wireguard.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B8F2D16273C00C1F5F4 /* wireguard.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB549B942D1627EB00C1F5F4 /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B8D2D16273200C1F5F4 /* crypto.c */; };
-		FB549B952D1627F700C1F5F4 /* blake2s.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B852D1626E000C1F5F4 /* blake2s.c */; };
-		FB549B962D1627FA00C1F5F4 /* chacha20.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B862D1626E000C1F5F4 /* chacha20.c */; };
-		FB549B972D1627FC00C1F5F4 /* chacha20poly1305.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B842D1626E000C1F5F4 /* chacha20poly1305.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB549B982D1627FE00C1F5F4 /* poly1305-donna.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B872D1626E000C1F5F4 /* poly1305-donna.c */; };
-		FB549B992D16280100C1F5F4 /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B832D1626E000C1F5F4 /* x25519.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB549B9A2D16289100C1F5F4 /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B8D2D16273200C1F5F4 /* crypto.c */; };
-		FB549B9D2D16295B00C1F5F4 /* callout.c in Sources */ = {isa = PBXBuildFile; fileRef = FB549B9B2D16295B00C1F5F4 /* callout.c */; };
+		FB6909BD2D4BFFD70086B56F /* UiDashboardListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB6909BC2D4BFFD70086B56F /* UiDashboardListView.swift */; };
 		FB796A5A2D14DF310061007D /* UiEnrollmentChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB796A592D14DF310061007D /* UiEnrollmentChangeView.swift */; };
 		FB7EA7D12D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m in Sources */ = {isa = PBXBuildFile; fileRef = FB7EA7D02D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m */; };
 		FB88BBC52D0E129A0054822E /* mudband_tunnel_stun_client.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBC42D0E129A0054822E /* mudband_tunnel_stun_client.m */; };
 		FB88BBC82D0E69BB0054822E /* mudband_tunnel_tasks.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBC72D0E69BB0054822E /* mudband_tunnel_tasks.m */; };
 		FB88BBCB2D0E6BC60054822E /* mudband_tunnel_mqtt.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBCA2D0E6BC60054822E /* mudband_tunnel_mqtt.m */; };
-		FB9D80082D0FB6EA000D755C /* vuuid.c in Sources */ = {isa = PBXBuildFile; fileRef = FBDF23752D0B954C002E8735 /* vuuid.c */; };
 		FBA4CEC22D0D26FF00252A0F /* mudband_tunnel_enroll.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CEC12D0D26FF00252A0F /* mudband_tunnel_enroll.m */; };
 		FBA4CEC42D0D2EC400252A0F /* mudband_ui_progconf.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CEC32D0D2EC400252A0F /* mudband_ui_progconf.m */; };
 		FBA4CEC62D0D36A100252A0F /* mudband_tunnel_progconf.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CEC52D0D36A100252A0F /* mudband_tunnel_progconf.m */; };
-		FBA4CEC72D0D36CF00252A0F /* dump.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4D2D0A3F76005D1D51 /* dump.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FBA4CEC82D0D36D200252A0F /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4C2D0A3F75005D1D51 /* error.c */; };
-		FBA4CEC92D0D36D400252A0F /* hashtable_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4B2D0A3F75005D1D51 /* hashtable_seed.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FBA4CECA2D0D36D600252A0F /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E482D0A3F75005D1D51 /* hashtable.c */; };
-		FBA4CECB2D0D36D900252A0F /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E492D0A3F75005D1D51 /* load.c */; };
-		FBA4CECC2D0D36DB00252A0F /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E512D0A3F76005D1D51 /* memory.c */; };
-		FBA4CECD2D0D36DD00252A0F /* pack_unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E502D0A3F76005D1D51 /* pack_unpack.c */; };
-		FBA4CECE2D0D36DF00252A0F /* strbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4E2D0A3F76005D1D51 /* strbuffer.c */; };
-		FBA4CECF2D0D36E100252A0F /* strconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4A2D0A3F75005D1D51 /* strconv.c */; };
-		FBA4CED02D0D36E300252A0F /* utf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4F2D0A3F76005D1D51 /* utf.c */; };
-		FBA4CED12D0D36E600252A0F /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E522D0A3F76005D1D51 /* value.c */; };
 		FBA4CED32D0D4CF400252A0F /* mudband_tunnel_connmgr.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CED22D0D4CF400252A0F /* mudband_tunnel_connmgr.m */; };
-		FBA4CED52D0D4FE100252A0F /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CED42D0D4FE100252A0F /* vsock.c */; };
 		FBA7F4082D09210F00C3E25D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = FBA7F4072D09210F00C3E25D /* Alamofire */; };
 		FBA7F40B2D09284300C3E25D /* libwireguard.c in Sources */ = {isa = PBXBuildFile; fileRef = FBA7F40A2D09284300C3E25D /* libwireguard.c */; };
 		FBA7F4162D094D5100C3E25D /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = FBA7F4152D094D5100C3E25D /* SwiftyJSON */; };
-		FBB31E532D0A3F76005D1D51 /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E482D0A3F75005D1D51 /* hashtable.c */; };
-		FBB31E542D0A3F76005D1D51 /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E492D0A3F75005D1D51 /* load.c */; };
-		FBB31E552D0A3F76005D1D51 /* strconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4A2D0A3F75005D1D51 /* strconv.c */; };
-		FBB31E562D0A3F76005D1D51 /* hashtable_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4B2D0A3F75005D1D51 /* hashtable_seed.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FBB31E572D0A3F76005D1D51 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4C2D0A3F75005D1D51 /* error.c */; };
-		FBB31E582D0A3F76005D1D51 /* dump.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4D2D0A3F76005D1D51 /* dump.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FBB31E592D0A3F76005D1D51 /* strbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4E2D0A3F76005D1D51 /* strbuffer.c */; };
-		FBB31E5A2D0A3F76005D1D51 /* utf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E4F2D0A3F76005D1D51 /* utf.c */; };
-		FBB31E5B2D0A3F76005D1D51 /* pack_unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E502D0A3F76005D1D51 /* pack_unpack.c */; };
-		FBB31E5C2D0A3F76005D1D51 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E512D0A3F76005D1D51 /* memory.c */; };
-		FBB31E5D2D0A3F76005D1D51 /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E522D0A3F76005D1D51 /* value.c */; };
 		FBB31E5F2D0A9FED005D1D51 /* UiDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E5E2D0A9FED005D1D51 /* UiDashboardView.swift */; };
 		FBB31E612D0AAA32005D1D51 /* mudband_ui_enroll.m in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E602D0AAA32005D1D51 /* mudband_ui_enroll.m */; };
-		FBDF23762D0B954C002E8735 /* vuuid.c in Sources */ = {isa = PBXBuildFile; fileRef = FBDF23752D0B954C002E8735 /* vuuid.c */; };
-		FBF5D19B2D07F6FA00BF6D73 /* vtc_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19A2D07F6FA00BF6D73 /* vtc_log.c */; };
-		FBF5D19D2D07F78D00BF6D73 /* odr_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19C2D07F78D00BF6D73 /* odr_pthread.c */; };
-		FBF5D19F2D07F97F00BF6D73 /* vsb.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D19E2D07F97F00BF6D73 /* vsb.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FBF5D1A12D07F9AB00BF6D73 /* vtim.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D1A02D07F9AB00BF6D73 /* vtim.c */; };
-		FBF5D1A32D07F9F300BF6D73 /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF5D1A22D07F9F300BF6D73 /* odr.c */; };
+		FBBBA3B62D4B28F300227E55 /* mudband_bpf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBBBA3B42D4B28F300227E55 /* mudband_bpf.c */; };
+		FBCF074C2D4B2CE400CE7436 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = FBCF074B2D4B2CE400CE7436 /* SwiftyJSON */; };
+		FBF4100F2D4ACFBE00F8A45A /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410052D4ACFBE00F8A45A /* crypto.c */; };
+		FBF410132D4AD04900F8A45A /* callout.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4100B2D4ACFBE00F8A45A /* callout.c */; };
+		FBF410172D4AD08B00F8A45A /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410152D4AD08B00F8A45A /* odr.c */; };
+		FBF410182D4AD08B00F8A45A /* odr_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410162D4AD08B00F8A45A /* odr_pthread.c */; };
+		FBF410192D4AD0A400F8A45A /* wireguard-pbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410082D4ACFBE00F8A45A /* wireguard-pbuf.c */; };
+		FBF4101C2D4AD0B700F8A45A /* vuuid.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4101A2D4AD0B700F8A45A /* vuuid.c */; };
+		FBF4101D2D4AD0B700F8A45A /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4101B2D4AD0B700F8A45A /* vsock.c */; };
+		FBF410312D4AD0E100F8A45A /* strconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4101F2D4AD0E100F8A45A /* strconv.c */; };
+		FBF410322D4AD0E100F8A45A /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410202D4AD0E100F8A45A /* value.c */; };
+		FBF410332D4AD0E100F8A45A /* utf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410222D4AD0E100F8A45A /* utf.c */; };
+		FBF410342D4AD0E100F8A45A /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410272D4AD0E100F8A45A /* error.c */; };
+		FBF410352D4AD0E100F8A45A /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410282D4AD0E100F8A45A /* load.c */; };
+		FBF410362D4AD0E100F8A45A /* strbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410292D4AD0E100F8A45A /* strbuffer.c */; };
+		FBF410372D4AD0E100F8A45A /* dump.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4102B2D4AD0E100F8A45A /* dump.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF410382D4AD0E100F8A45A /* pack_unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4102C2D4AD0E100F8A45A /* pack_unpack.c */; };
+		FBF410392D4AD0E100F8A45A /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4102D2D4AD0E100F8A45A /* memory.c */; };
+		FBF4103A2D4AD0E100F8A45A /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4102E2D4AD0E100F8A45A /* hashtable.c */; };
+		FBF4103B2D4AD0E100F8A45A /* hashtable_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410302D4AD0E100F8A45A /* hashtable_seed.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF4103D2D4AD0FF00F8A45A /* vtc_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4103C2D4AD0FF00F8A45A /* vtc_log.c */; };
+		FBF410402D4AD11B00F8A45A /* vtim.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4103E2D4AD11B00F8A45A /* vtim.c */; };
+		FBF410412D4AD11B00F8A45A /* vsb.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4103F2D4AD11B00F8A45A /* vsb.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF410422D4AD13E00F8A45A /* wireguard.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410062D4ACFBE00F8A45A /* wireguard.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF410442D4AD17300F8A45A /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410052D4ACFBE00F8A45A /* crypto.c */; };
+		FBF410512D4AD1A600F8A45A /* blake2s.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410482D4AD1A600F8A45A /* blake2s.c */; };
+		FBF410522D4AD1A600F8A45A /* poly1305-donna.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410492D4AD1A600F8A45A /* poly1305-donna.c */; };
+		FBF410532D4AD1A600F8A45A /* chacha20.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4104A2D4AD1A600F8A45A /* chacha20.c */; };
+		FBF410542D4AD1A600F8A45A /* chacha20poly1305.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4104C2D4AD1A600F8A45A /* chacha20poly1305.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF410552D4AD1A600F8A45A /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4104D2D4AD1A600F8A45A /* x25519.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF410562D4AD1C200F8A45A /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410152D4AD08B00F8A45A /* odr.c */; };
+		FBF410572D4AD1C500F8A45A /* odr_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410162D4AD08B00F8A45A /* odr_pthread.c */; };
+		FBF410582D4AD1D300F8A45A /* dump.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4102B2D4AD0E100F8A45A /* dump.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF410592D4AD1D500F8A45A /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410272D4AD0E100F8A45A /* error.c */; };
+		FBF4105A2D4AD1D800F8A45A /* hashtable_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410302D4AD0E100F8A45A /* hashtable_seed.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF4105B2D4AD1DB00F8A45A /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4102E2D4AD0E100F8A45A /* hashtable.c */; };
+		FBF4105C2D4AD1DE00F8A45A /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410282D4AD0E100F8A45A /* load.c */; };
+		FBF4105D2D4AD1E100F8A45A /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4102D2D4AD0E100F8A45A /* memory.c */; };
+		FBF4105E2D4AD1E400F8A45A /* pack_unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4102C2D4AD0E100F8A45A /* pack_unpack.c */; };
+		FBF4105F2D4AD1E700F8A45A /* strbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410292D4AD0E100F8A45A /* strbuffer.c */; };
+		FBF410602D4AD1EA00F8A45A /* strconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4101F2D4AD0E100F8A45A /* strconv.c */; };
+		FBF410612D4AD1EC00F8A45A /* utf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410222D4AD0E100F8A45A /* utf.c */; };
+		FBF410622D4AD1EE00F8A45A /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410202D4AD0E100F8A45A /* value.c */; };
+		FBF410632D4AD1FF00F8A45A /* vuuid.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4101A2D4AD0B700F8A45A /* vuuid.c */; };
+		FBF410642D4AD20500F8A45A /* blake2s.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410482D4AD1A600F8A45A /* blake2s.c */; };
+		FBF410652D4AD20800F8A45A /* chacha20.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4104A2D4AD1A600F8A45A /* chacha20.c */; };
+		FBF410662D4AD20B00F8A45A /* chacha20poly1305.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4104C2D4AD1A600F8A45A /* chacha20poly1305.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF410672D4AD20E00F8A45A /* poly1305-donna.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410492D4AD1A600F8A45A /* poly1305-donna.c */; };
+		FBF410682D4AD21100F8A45A /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4104D2D4AD1A600F8A45A /* x25519.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF410692D4AD22300F8A45A /* vtc_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4103C2D4AD0FF00F8A45A /* vtc_log.c */; };
+		FBF4106A2D4AD22D00F8A45A /* vsb.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4103F2D4AD11B00F8A45A /* vsb.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBF4106B2D4AD22F00F8A45A /* vtim.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4103E2D4AD11B00F8A45A /* vtim.c */; };
+		FBF410702D4AF2D800F8A45A /* UiDashboardSetupListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF4106F2D4AF2D800F8A45A /* UiDashboardSetupListView.swift */; };
+		FBF410722D4AF36200F8A45A /* UiDashboardDevicesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF410712D4AF36200F8A45A /* UiDashboardDevicesListView.swift */; };
+		FBF410742D4AF38D00F8A45A /* UiDashboardStatusListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF410732D4AF38D00F8A45A /* UiDashboardStatusListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,17 +140,7 @@
 		FB2138412D067C01008C4BB7 /* UiEnrollmentNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiEnrollmentNewView.swift; sourceTree = "<group>"; };
 		FB2138442D067CBA008C4BB7 /* FileManagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerExtension.swift; sourceTree = "<group>"; };
 		FB4E5D6F2D0BC0E100322ECD /* mudband_tunnel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_tunnel.h; sourceTree = "<group>"; };
-		FB549B832D1626E000C1F5F4 /* x25519.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = x25519.c; path = ../../../../../../common/crypto/x25519.c; sourceTree = "<group>"; };
-		FB549B842D1626E000C1F5F4 /* chacha20poly1305.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chacha20poly1305.c; path = ../../../../../../common/crypto/chacha20poly1305.c; sourceTree = "<group>"; };
-		FB549B852D1626E000C1F5F4 /* blake2s.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = blake2s.c; path = ../../../../../../common/crypto/blake2s.c; sourceTree = "<group>"; };
-		FB549B862D1626E000C1F5F4 /* chacha20.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chacha20.c; path = ../../../../../../common/crypto/chacha20.c; sourceTree = "<group>"; };
-		FB549B872D1626E000C1F5F4 /* poly1305-donna.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "poly1305-donna.c"; path = "../../../../../../common/crypto/poly1305-donna.c"; sourceTree = "<group>"; };
-		FB549B8D2D16273200C1F5F4 /* crypto.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crypto.c; path = ../../../../../common/crypto.c; sourceTree = "<group>"; };
-		FB549B8F2D16273C00C1F5F4 /* wireguard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wireguard.c; path = ../../../../../common/wireguard.c; sourceTree = "<group>"; };
-		FB549B912D16276500C1F5F4 /* crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crypto.h; path = ../../../../../common/crypto.h; sourceTree = "<group>"; };
-		FB549B922D16278200C1F5F4 /* wireguard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wireguard.h; path = ../../../../../common/wireguard.h; sourceTree = "<group>"; };
-		FB549B9B2D16295B00C1F5F4 /* callout.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = callout.c; path = ../../../../../common/callout.c; sourceTree = "<group>"; };
-		FB549B9C2D16295B00C1F5F4 /* callout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = callout.h; path = ../../../../../common/callout.h; sourceTree = "<group>"; };
+		FB6909BC2D4BFFD70086B56F /* UiDashboardListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardListView.swift; sourceTree = "<group>"; };
 		FB796A592D14DF310061007D /* UiEnrollmentChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiEnrollmentChangeView.swift; sourceTree = "<group>"; };
 		FB7EA7D02D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_wireguard.m; sourceTree = "<group>"; };
 		FB7EA7D32D0FAC2400186AC3 /* mudband_tunnel_wireguard_platform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_tunnel_wireguard_platform.h; sourceTree = "<group>"; };
@@ -156,29 +153,61 @@
 		FBA4CEC32D0D2EC400252A0F /* mudband_ui_progconf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui_progconf.m; sourceTree = "<group>"; };
 		FBA4CEC52D0D36A100252A0F /* mudband_tunnel_progconf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_progconf.m; sourceTree = "<group>"; };
 		FBA4CED22D0D4CF400252A0F /* mudband_tunnel_connmgr.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_connmgr.m; sourceTree = "<group>"; };
-		FBA4CED42D0D4FE100252A0F /* vsock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsock.c; path = ../../../../../../../lib/libmud/vsock.c; sourceTree = "<group>"; };
 		FBA7F40A2D09284300C3E25D /* libwireguard.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libwireguard.c; sourceTree = "<group>"; };
 		FBA7F4102D092AA800C3E25D /* libwireguard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libwireguard.h; sourceTree = "<group>"; };
-		FBB31E482D0A3F75005D1D51 /* hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable.c; path = ../../../../../../../lib/libjansson/hashtable.c; sourceTree = "<group>"; };
-		FBB31E492D0A3F75005D1D51 /* load.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = load.c; path = ../../../../../../../lib/libjansson/load.c; sourceTree = "<group>"; };
-		FBB31E4A2D0A3F75005D1D51 /* strconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strconv.c; path = ../../../../../../../lib/libjansson/strconv.c; sourceTree = "<group>"; };
-		FBB31E4B2D0A3F75005D1D51 /* hashtable_seed.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable_seed.c; path = ../../../../../../../lib/libjansson/hashtable_seed.c; sourceTree = "<group>"; };
-		FBB31E4C2D0A3F75005D1D51 /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = error.c; path = ../../../../../../../lib/libjansson/error.c; sourceTree = "<group>"; };
-		FBB31E4D2D0A3F76005D1D51 /* dump.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dump.c; path = ../../../../../../../lib/libjansson/dump.c; sourceTree = "<group>"; };
-		FBB31E4E2D0A3F76005D1D51 /* strbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strbuffer.c; path = ../../../../../../../lib/libjansson/strbuffer.c; sourceTree = "<group>"; };
-		FBB31E4F2D0A3F76005D1D51 /* utf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utf.c; path = ../../../../../../../lib/libjansson/utf.c; sourceTree = "<group>"; };
-		FBB31E502D0A3F76005D1D51 /* pack_unpack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pack_unpack.c; path = ../../../../../../../lib/libjansson/pack_unpack.c; sourceTree = "<group>"; };
-		FBB31E512D0A3F76005D1D51 /* memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = memory.c; path = ../../../../../../../lib/libjansson/memory.c; sourceTree = "<group>"; };
-		FBB31E522D0A3F76005D1D51 /* value.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = value.c; path = ../../../../../../../lib/libjansson/value.c; sourceTree = "<group>"; };
 		FBB31E5E2D0A9FED005D1D51 /* UiDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardView.swift; sourceTree = "<group>"; };
 		FBB31E602D0AAA32005D1D51 /* mudband_ui_enroll.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui_enroll.m; sourceTree = "<group>"; };
 		FBB31E622D0AAAAC005D1D51 /* mudband_ui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_ui.h; sourceTree = "<group>"; };
-		FBDF23752D0B954C002E8735 /* vuuid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vuuid.c; path = ../../../../../../../lib/libmud/vuuid.c; sourceTree = "<group>"; };
-		FBF5D19A2D07F6FA00BF6D73 /* vtc_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vtc_log.c; path = ../../../../../../../lib/libmud/vtc_log.c; sourceTree = "<group>"; };
-		FBF5D19C2D07F78D00BF6D73 /* odr_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = odr_pthread.c; path = ../../../../../../../lib/libmud/odr_pthread.c; sourceTree = "<group>"; };
-		FBF5D19E2D07F97F00BF6D73 /* vsb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsb.c; path = ../../../../../../../lib/libmud/vsb.c; sourceTree = "<group>"; };
-		FBF5D1A02D07F9AB00BF6D73 /* vtim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vtim.c; path = ../../../../../../../lib/libmud/vtim.c; sourceTree = "<group>"; };
-		FBF5D1A22D07F9F300BF6D73 /* odr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = odr.c; path = ../../../../../../../lib/libmud/odr.c; sourceTree = "<group>"; };
+		FBBBA3B42D4B28F300227E55 /* mudband_bpf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mudband_bpf.c; path = ../../../../../../common/mudband_bpf.c; sourceTree = "<group>"; };
+		FBBBA3B52D4B28F300227E55 /* mudband_bpf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mudband_bpf.h; path = ../../../../../../common/mudband_bpf.h; sourceTree = "<group>"; };
+		FBF410012D4ACFBE00F8A45A /* wireguard-platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "wireguard-platform.h"; path = "../../../../../../common/wireguard-platform.h"; sourceTree = "<group>"; };
+		FBF410032D4ACFBE00F8A45A /* crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crypto.h; path = ../../../../../../common/crypto.h; sourceTree = "<group>"; };
+		FBF410052D4ACFBE00F8A45A /* crypto.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crypto.c; path = ../../../../../../common/crypto.c; sourceTree = "<group>"; };
+		FBF410062D4ACFBE00F8A45A /* wireguard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wireguard.c; path = ../../../../../../common/wireguard.c; sourceTree = "<group>"; };
+		FBF410072D4ACFBE00F8A45A /* callout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = callout.h; path = ../../../../../../common/callout.h; sourceTree = "<group>"; };
+		FBF410082D4ACFBE00F8A45A /* wireguard-pbuf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "wireguard-pbuf.c"; path = "../../../../../../common/wireguard-pbuf.c"; sourceTree = "<group>"; };
+		FBF410092D4ACFBE00F8A45A /* wireguard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wireguard.h; path = ../../../../../../common/wireguard.h; sourceTree = "<group>"; };
+		FBF4100A2D4ACFBE00F8A45A /* wireguard-pbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "wireguard-pbuf.h"; path = "../../../../../../common/wireguard-pbuf.h"; sourceTree = "<group>"; };
+		FBF4100B2D4ACFBE00F8A45A /* callout.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = callout.c; path = ../../../../../../common/callout.c; sourceTree = "<group>"; };
+		FBF410152D4AD08B00F8A45A /* odr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = odr.c; path = ../../../../../../../lib/libmud/odr.c; sourceTree = "<group>"; };
+		FBF410162D4AD08B00F8A45A /* odr_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = odr_pthread.c; path = ../../../../../../../lib/libmud/odr_pthread.c; sourceTree = "<group>"; };
+		FBF4101A2D4AD0B700F8A45A /* vuuid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vuuid.c; path = ../../../../../../../lib/libmud/vuuid.c; sourceTree = "<group>"; };
+		FBF4101B2D4AD0B700F8A45A /* vsock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsock.c; path = ../../../../../../../lib/libmud/vsock.c; sourceTree = "<group>"; };
+		FBF4101F2D4AD0E100F8A45A /* strconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strconv.c; path = ../../../../../../../lib/libjansson/strconv.c; sourceTree = "<group>"; };
+		FBF410202D4AD0E100F8A45A /* value.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = value.c; path = ../../../../../../../lib/libjansson/value.c; sourceTree = "<group>"; };
+		FBF410212D4AD0E100F8A45A /* jansson_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jansson_private.h; path = ../../../../../../../lib/libjansson/jansson_private.h; sourceTree = "<group>"; };
+		FBF410222D4AD0E100F8A45A /* utf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utf.c; path = ../../../../../../../lib/libjansson/utf.c; sourceTree = "<group>"; };
+		FBF410232D4AD0E100F8A45A /* utf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf.h; path = ../../../../../../../lib/libjansson/utf.h; sourceTree = "<group>"; };
+		FBF410242D4AD0E100F8A45A /* strbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strbuffer.h; path = ../../../../../../../lib/libjansson/strbuffer.h; sourceTree = "<group>"; };
+		FBF410252D4AD0E100F8A45A /* jansson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jansson.h; path = ../../../../../../../lib/libjansson/jansson.h; sourceTree = "<group>"; };
+		FBF410262D4AD0E100F8A45A /* lookup3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lookup3.h; path = ../../../../../../../lib/libjansson/lookup3.h; sourceTree = "<group>"; };
+		FBF410272D4AD0E100F8A45A /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = error.c; path = ../../../../../../../lib/libjansson/error.c; sourceTree = "<group>"; };
+		FBF410282D4AD0E100F8A45A /* load.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = load.c; path = ../../../../../../../lib/libjansson/load.c; sourceTree = "<group>"; };
+		FBF410292D4AD0E100F8A45A /* strbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strbuffer.c; path = ../../../../../../../lib/libjansson/strbuffer.c; sourceTree = "<group>"; };
+		FBF4102A2D4AD0E100F8A45A /* hashtable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hashtable.h; path = ../../../../../../../lib/libjansson/hashtable.h; sourceTree = "<group>"; };
+		FBF4102B2D4AD0E100F8A45A /* dump.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dump.c; path = ../../../../../../../lib/libjansson/dump.c; sourceTree = "<group>"; };
+		FBF4102C2D4AD0E100F8A45A /* pack_unpack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pack_unpack.c; path = ../../../../../../../lib/libjansson/pack_unpack.c; sourceTree = "<group>"; };
+		FBF4102D2D4AD0E100F8A45A /* memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = memory.c; path = ../../../../../../../lib/libjansson/memory.c; sourceTree = "<group>"; };
+		FBF4102E2D4AD0E100F8A45A /* hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable.c; path = ../../../../../../../lib/libjansson/hashtable.c; sourceTree = "<group>"; };
+		FBF4102F2D4AD0E100F8A45A /* jansson_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jansson_config.h; path = ../../../../../../../lib/libjansson/jansson_config.h; sourceTree = "<group>"; };
+		FBF410302D4AD0E100F8A45A /* hashtable_seed.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable_seed.c; path = ../../../../../../../lib/libjansson/hashtable_seed.c; sourceTree = "<group>"; };
+		FBF4103C2D4AD0FF00F8A45A /* vtc_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vtc_log.c; path = ../../../../../../../lib/libmud/vtc_log.c; sourceTree = "<group>"; };
+		FBF4103E2D4AD11B00F8A45A /* vtim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vtim.c; path = ../../../../../../../lib/libmud/vtim.c; sourceTree = "<group>"; };
+		FBF4103F2D4AD11B00F8A45A /* vsb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsb.c; path = ../../../../../../../lib/libmud/vsb.c; sourceTree = "<group>"; };
+		FBF410462D4AD1A600F8A45A /* chacha20poly1305.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = chacha20poly1305.h; path = ../../../../../../../common/crypto/chacha20poly1305.h; sourceTree = "<group>"; };
+		FBF410472D4AD1A600F8A45A /* blake2s.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = blake2s.h; path = ../../../../../../../common/crypto/blake2s.h; sourceTree = "<group>"; };
+		FBF410482D4AD1A600F8A45A /* blake2s.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = blake2s.c; path = ../../../../../../../common/crypto/blake2s.c; sourceTree = "<group>"; };
+		FBF410492D4AD1A600F8A45A /* poly1305-donna.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "poly1305-donna.c"; path = "../../../../../../../common/crypto/poly1305-donna.c"; sourceTree = "<group>"; };
+		FBF4104A2D4AD1A600F8A45A /* chacha20.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chacha20.c; path = ../../../../../../../common/crypto/chacha20.c; sourceTree = "<group>"; };
+		FBF4104B2D4AD1A600F8A45A /* poly1305-donna.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "poly1305-donna.h"; path = "../../../../../../../common/crypto/poly1305-donna.h"; sourceTree = "<group>"; };
+		FBF4104C2D4AD1A600F8A45A /* chacha20poly1305.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chacha20poly1305.c; path = ../../../../../../../common/crypto/chacha20poly1305.c; sourceTree = "<group>"; };
+		FBF4104D2D4AD1A600F8A45A /* x25519.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = x25519.c; path = ../../../../../../../common/crypto/x25519.c; sourceTree = "<group>"; };
+		FBF4104E2D4AD1A600F8A45A /* poly1305-donna-32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "poly1305-donna-32.h"; path = "../../../../../../../common/crypto/poly1305-donna-32.h"; sourceTree = "<group>"; };
+		FBF4104F2D4AD1A600F8A45A /* chacha20.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = chacha20.h; path = ../../../../../../../common/crypto/chacha20.h; sourceTree = "<group>"; };
+		FBF410502D4AD1A600F8A45A /* x25519.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = x25519.h; path = ../../../../../../../common/crypto/x25519.h; sourceTree = "<group>"; };
+		FBF4106F2D4AF2D800F8A45A /* UiDashboardSetupListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardSetupListView.swift; sourceTree = "<group>"; };
+		FBF410712D4AF36200F8A45A /* UiDashboardDevicesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardDevicesListView.swift; sourceTree = "<group>"; };
+		FBF410732D4AF38D00F8A45A /* UiDashboardStatusListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardStatusListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,6 +224,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBCF074C2D4B2CE400CE7436 /* SwiftyJSON in Frameworks */,
 				FB21382A2D064BBC008C4BB7 /* NetworkExtension.framework in Frameworks */,
 				FB0A10612D0BBAEF00189DA8 /* Alamofire in Frameworks */,
 			);
@@ -206,7 +236,9 @@
 		FB0A105B2D0BBA0100189DA8 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				FB7EA7C02D0FAA2100186AC3 /* libwireguard */,
+				FBF4101E2D4AD0CB00F8A45A /* libjansson */,
+				FBF410142D4AD07000F8A45A /* libmud */,
+				FBF40FFF2D4ACF8A00F8A45A /* libwireguard */,
 				FB0A10642D0BBD2100189DA8 /* FileManagerExtension.swift */,
 				FB0A105C2D0BBA0B00189DA8 /* objc */,
 			);
@@ -310,6 +342,10 @@
 		FB2138402D065C51008C4BB7 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				FBF410712D4AF36200F8A45A /* UiDashboardDevicesListView.swift */,
+				FBF4106F2D4AF2D800F8A45A /* UiDashboardSetupListView.swift */,
+				FBF410732D4AF38D00F8A45A /* UiDashboardStatusListView.swift */,
+				FB6909BC2D4BFFD70086B56F /* UiDashboardListView.swift */,
 				FBB31E5E2D0A9FED005D1D51 /* UiDashboardView.swift */,
 				FB796A592D14DF310061007D /* UiEnrollmentChangeView.swift */,
 				FB2138412D067C01008C4BB7 /* UiEnrollmentNewView.swift */,
@@ -321,79 +357,103 @@
 		FB2138432D067CA7008C4BB7 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				FBB31E472D0A3DB2005D1D51 /* libjansson */,
 				FBA7F4092D09282000C3E25D /* libwireguard */,
-				FBF5D1992D07F6E100BF6D73 /* libmud */,
 				FB2138442D067CBA008C4BB7 /* FileManagerExtension.swift */,
 			);
 			path = lib;
 			sourceTree = "<group>";
 		};
-		FB7EA7C02D0FAA2100186AC3 /* libwireguard */ = {
-			isa = PBXGroup;
-			children = (
-				FB549B9B2D16295B00C1F5F4 /* callout.c */,
-				FB549B9C2D16295B00C1F5F4 /* callout.h */,
-				FB549B8D2D16273200C1F5F4 /* crypto.c */,
-				FB549B912D16276500C1F5F4 /* crypto.h */,
-				FB549B8F2D16273C00C1F5F4 /* wireguard.c */,
-				FB549B922D16278200C1F5F4 /* wireguard.h */,
-			);
-			path = libwireguard;
-			sourceTree = "<group>";
-		};
 		FBA7F4092D09282000C3E25D /* libwireguard */ = {
 			isa = PBXGroup;
 			children = (
-				FBA7F40C2D09298400C3E25D /* crypto */,
 				FBA7F40A2D09284300C3E25D /* libwireguard.c */,
 				FBA7F4102D092AA800C3E25D /* libwireguard.h */,
 			);
 			path = libwireguard;
 			sourceTree = "<group>";
 		};
-		FBA7F40C2D09298400C3E25D /* crypto */ = {
+		FBF40FFF2D4ACF8A00F8A45A /* libwireguard */ = {
 			isa = PBXGroup;
 			children = (
-				FB549B852D1626E000C1F5F4 /* blake2s.c */,
-				FB549B862D1626E000C1F5F4 /* chacha20.c */,
-				FB549B842D1626E000C1F5F4 /* chacha20poly1305.c */,
-				FB549B872D1626E000C1F5F4 /* poly1305-donna.c */,
-				FB549B832D1626E000C1F5F4 /* x25519.c */,
+				FBF410002D4ACFA200F8A45A /* common */,
 			);
-			path = crypto;
+			path = libwireguard;
 			sourceTree = "<group>";
 		};
-		FBB31E472D0A3DB2005D1D51 /* libjansson */ = {
+		FBF410002D4ACFA200F8A45A /* common */ = {
 			isa = PBXGroup;
 			children = (
-				FBB31E4D2D0A3F76005D1D51 /* dump.c */,
-				FBB31E4C2D0A3F75005D1D51 /* error.c */,
-				FBB31E4B2D0A3F75005D1D51 /* hashtable_seed.c */,
-				FBB31E482D0A3F75005D1D51 /* hashtable.c */,
-				FBB31E492D0A3F75005D1D51 /* load.c */,
-				FBB31E512D0A3F76005D1D51 /* memory.c */,
-				FBB31E502D0A3F76005D1D51 /* pack_unpack.c */,
-				FBB31E4E2D0A3F76005D1D51 /* strbuffer.c */,
-				FBB31E4A2D0A3F75005D1D51 /* strconv.c */,
-				FBB31E4F2D0A3F76005D1D51 /* utf.c */,
-				FBB31E522D0A3F76005D1D51 /* value.c */,
+				FBF4100B2D4ACFBE00F8A45A /* callout.c */,
+				FBF410072D4ACFBE00F8A45A /* callout.h */,
+				FBF410452D4AD18B00F8A45A /* crypto */,
+				FBF410052D4ACFBE00F8A45A /* crypto.c */,
+				FBF410032D4ACFBE00F8A45A /* crypto.h */,
+				FBBBA3B42D4B28F300227E55 /* mudband_bpf.c */,
+				FBBBA3B52D4B28F300227E55 /* mudband_bpf.h */,
+				FBF410082D4ACFBE00F8A45A /* wireguard-pbuf.c */,
+				FBF4100A2D4ACFBE00F8A45A /* wireguard-pbuf.h */,
+				FBF410012D4ACFBE00F8A45A /* wireguard-platform.h */,
+				FBF410062D4ACFBE00F8A45A /* wireguard.c */,
+				FBF410092D4ACFBE00F8A45A /* wireguard.h */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		FBF410142D4AD07000F8A45A /* libmud */ = {
+			isa = PBXGroup;
+			children = (
+				FBF410162D4AD08B00F8A45A /* odr_pthread.c */,
+				FBF410152D4AD08B00F8A45A /* odr.c */,
+				FBF4103F2D4AD11B00F8A45A /* vsb.c */,
+				FBF4101B2D4AD0B700F8A45A /* vsock.c */,
+				FBF4103C2D4AD0FF00F8A45A /* vtc_log.c */,
+				FBF4103E2D4AD11B00F8A45A /* vtim.c */,
+				FBF4101A2D4AD0B700F8A45A /* vuuid.c */,
+			);
+			path = libmud;
+			sourceTree = "<group>";
+		};
+		FBF4101E2D4AD0CB00F8A45A /* libjansson */ = {
+			isa = PBXGroup;
+			children = (
+				FBF4102B2D4AD0E100F8A45A /* dump.c */,
+				FBF410272D4AD0E100F8A45A /* error.c */,
+				FBF410302D4AD0E100F8A45A /* hashtable_seed.c */,
+				FBF4102E2D4AD0E100F8A45A /* hashtable.c */,
+				FBF4102A2D4AD0E100F8A45A /* hashtable.h */,
+				FBF4102F2D4AD0E100F8A45A /* jansson_config.h */,
+				FBF410212D4AD0E100F8A45A /* jansson_private.h */,
+				FBF410252D4AD0E100F8A45A /* jansson.h */,
+				FBF410282D4AD0E100F8A45A /* load.c */,
+				FBF410262D4AD0E100F8A45A /* lookup3.h */,
+				FBF4102D2D4AD0E100F8A45A /* memory.c */,
+				FBF4102C2D4AD0E100F8A45A /* pack_unpack.c */,
+				FBF410292D4AD0E100F8A45A /* strbuffer.c */,
+				FBF410242D4AD0E100F8A45A /* strbuffer.h */,
+				FBF4101F2D4AD0E100F8A45A /* strconv.c */,
+				FBF410222D4AD0E100F8A45A /* utf.c */,
+				FBF410232D4AD0E100F8A45A /* utf.h */,
+				FBF410202D4AD0E100F8A45A /* value.c */,
 			);
 			path = libjansson;
 			sourceTree = "<group>";
 		};
-		FBF5D1992D07F6E100BF6D73 /* libmud */ = {
+		FBF410452D4AD18B00F8A45A /* crypto */ = {
 			isa = PBXGroup;
 			children = (
-				FBF5D19C2D07F78D00BF6D73 /* odr_pthread.c */,
-				FBF5D1A22D07F9F300BF6D73 /* odr.c */,
-				FBF5D19E2D07F97F00BF6D73 /* vsb.c */,
-				FBA4CED42D0D4FE100252A0F /* vsock.c */,
-				FBF5D19A2D07F6FA00BF6D73 /* vtc_log.c */,
-				FBF5D1A02D07F9AB00BF6D73 /* vtim.c */,
-				FBDF23752D0B954C002E8735 /* vuuid.c */,
+				FBF410482D4AD1A600F8A45A /* blake2s.c */,
+				FBF410472D4AD1A600F8A45A /* blake2s.h */,
+				FBF4104A2D4AD1A600F8A45A /* chacha20.c */,
+				FBF4104F2D4AD1A600F8A45A /* chacha20.h */,
+				FBF4104C2D4AD1A600F8A45A /* chacha20poly1305.c */,
+				FBF410462D4AD1A600F8A45A /* chacha20poly1305.h */,
+				FBF4104E2D4AD1A600F8A45A /* poly1305-donna-32.h */,
+				FBF410492D4AD1A600F8A45A /* poly1305-donna.c */,
+				FBF4104B2D4AD1A600F8A45A /* poly1305-donna.h */,
+				FBF4104D2D4AD1A600F8A45A /* x25519.c */,
+				FBF410502D4AD1A600F8A45A /* x25519.h */,
 			);
-			path = libmud;
+			path = crypto;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -437,6 +497,7 @@
 			name = "Mud.band Tunnel";
 			packageProductDependencies = (
 				FB0A10602D0BBAEF00189DA8 /* Alamofire */,
+				FBCF074B2D4B2CE400CE7436 /* SwiftyJSON */,
 			);
 			productName = "Mudband Tunnel";
 			productReference = FB2138272D064BBC008C4BB7 /* Mud.band Tunnel.appex */;
@@ -509,39 +570,43 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FB549B892D1626E000C1F5F4 /* chacha20poly1305.c in Sources */,
-				FBB31E5B2D0A3F76005D1D51 /* pack_unpack.c in Sources */,
-				FBB31E5A2D0A3F76005D1D51 /* utf.c in Sources */,
 				FBA7F40B2D09284300C3E25D /* libwireguard.c in Sources */,
-				FBB31E562D0A3F76005D1D51 /* hashtable_seed.c in Sources */,
-				FBF5D1A32D07F9F300BF6D73 /* odr.c in Sources */,
-				FBB31E532D0A3F76005D1D51 /* hashtable.c in Sources */,
-				FBF5D19B2D07F6FA00BF6D73 /* vtc_log.c in Sources */,
 				FB2138172D064BA1008C4BB7 /* UiMainEntryView.swift in Sources */,
 				FBA4CEC42D0D2EC400252A0F /* mudband_ui_progconf.m in Sources */,
-				FB549B9A2D16289100C1F5F4 /* crypto.c in Sources */,
-				FBB31E592D0A3F76005D1D51 /* strbuffer.c in Sources */,
-				FBB31E5C2D0A3F76005D1D51 /* memory.c in Sources */,
-				FB549B882D1626E000C1F5F4 /* x25519.c in Sources */,
-				FBF5D19D2D07F78D00BF6D73 /* odr_pthread.c in Sources */,
 				FB796A5A2D14DF310061007D /* UiEnrollmentChangeView.swift in Sources */,
-				FBDF23762D0B954C002E8735 /* vuuid.c in Sources */,
+				FBF4100F2D4ACFBE00F8A45A /* crypto.c in Sources */,
+				FBF4105A2D4AD1D800F8A45A /* hashtable_seed.c in Sources */,
 				FB2138452D067CBA008C4BB7 /* FileManagerExtension.swift in Sources */,
+				FBF4105B2D4AD1DB00F8A45A /* hashtable.c in Sources */,
+				FBF4106B2D4AD22F00F8A45A /* vtim.c in Sources */,
+				FBF410722D4AF36200F8A45A /* UiDashboardDevicesListView.swift in Sources */,
+				FBF410702D4AF2D800F8A45A /* UiDashboardSetupListView.swift in Sources */,
 				FB2138152D064BA1008C4BB7 /* Mudband.swift in Sources */,
-				FBB31E552D0A3F76005D1D51 /* strconv.c in Sources */,
-				FBF5D1A12D07F9AB00BF6D73 /* vtim.c in Sources */,
-				FBB31E572D0A3F76005D1D51 /* error.c in Sources */,
-				FB549B8B2D1626E000C1F5F4 /* chacha20.c in Sources */,
-				FBB31E542D0A3F76005D1D51 /* load.c in Sources */,
+				FBF4105D2D4AD1E100F8A45A /* memory.c in Sources */,
+				FBF410672D4AD20E00F8A45A /* poly1305-donna.c in Sources */,
 				FB2138392D0655FC008C4BB7 /* VpnManager.swift in Sources */,
-				FB549B8A2D1626E000C1F5F4 /* blake2s.c in Sources */,
+				FBF410562D4AD1C200F8A45A /* odr.c in Sources */,
 				FBB31E5F2D0A9FED005D1D51 /* UiDashboardView.swift in Sources */,
-				FBB31E582D0A3F76005D1D51 /* dump.c in Sources */,
-				FB549B8C2D1626E000C1F5F4 /* poly1305-donna.c in Sources */,
+				FB6909BD2D4BFFD70086B56F /* UiDashboardListView.swift in Sources */,
+				FBF410572D4AD1C500F8A45A /* odr_pthread.c in Sources */,
 				FBB31E612D0AAA32005D1D51 /* mudband_ui_enroll.m in Sources */,
-				FBF5D19F2D07F97F00BF6D73 /* vsb.c in Sources */,
-				FBB31E5D2D0A3F76005D1D51 /* value.c in Sources */,
+				FBF410592D4AD1D500F8A45A /* error.c in Sources */,
 				FB2138422D067C01008C4BB7 /* UiEnrollmentNewView.swift in Sources */,
+				FBF410602D4AD1EA00F8A45A /* strconv.c in Sources */,
+				FBF4105F2D4AD1E700F8A45A /* strbuffer.c in Sources */,
+				FBF410662D4AD20B00F8A45A /* chacha20poly1305.c in Sources */,
+				FBF410652D4AD20800F8A45A /* chacha20.c in Sources */,
+				FBF410692D4AD22300F8A45A /* vtc_log.c in Sources */,
+				FBF410742D4AF38D00F8A45A /* UiDashboardStatusListView.swift in Sources */,
+				FBF410632D4AD1FF00F8A45A /* vuuid.c in Sources */,
+				FBF410682D4AD21100F8A45A /* x25519.c in Sources */,
+				FBF410612D4AD1EC00F8A45A /* utf.c in Sources */,
+				FBF410642D4AD20500F8A45A /* blake2s.c in Sources */,
+				FBF410582D4AD1D300F8A45A /* dump.c in Sources */,
+				FBF4105E2D4AD1E400F8A45A /* pack_unpack.c in Sources */,
+				FBF4105C2D4AD1DE00F8A45A /* load.c in Sources */,
+				FBF410622D4AD1EE00F8A45A /* value.c in Sources */,
+				FBF4106A2D4AD22D00F8A45A /* vsb.c in Sources */,
 				FB21383C2D0656B3008C4BB7 /* mudband_ui.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -550,43 +615,45 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FBA4CED02D0D36E300252A0F /* utf.c in Sources */,
 				FB88BBC52D0E129A0054822E /* mudband_tunnel_stun_client.m in Sources */,
-				FB549B932D1627E700C1F5F4 /* wireguard.c in Sources */,
-				FB549B982D1627FE00C1F5F4 /* poly1305-donna.c in Sources */,
-				FB4E5D712D0BC24500322ECD /* vtc_log.c in Sources */,
+				FBF410352D4AD0E100F8A45A /* load.c in Sources */,
+				FBF410312D4AD0E100F8A45A /* strconv.c in Sources */,
 				FBA4CEC22D0D26FF00252A0F /* mudband_tunnel_enroll.m in Sources */,
-				FBA4CECA2D0D36D600252A0F /* hashtable.c in Sources */,
-				FB4E5D732D0BC25900322ECD /* vsb.c in Sources */,
-				FBA4CECD2D0D36DD00252A0F /* pack_unpack.c in Sources */,
-				FBA4CED52D0D4FE100252A0F /* vsock.c in Sources */,
-				FBA4CEC82D0D36D200252A0F /* error.c in Sources */,
-				FB549B992D16280100C1F5F4 /* x25519.c in Sources */,
+				FBF410442D4AD17300F8A45A /* crypto.c in Sources */,
+				FBF410342D4AD0E100F8A45A /* error.c in Sources */,
+				FBF410402D4AD11B00F8A45A /* vtim.c in Sources */,
+				FBF410422D4AD13E00F8A45A /* wireguard.c in Sources */,
+				FBF410542D4AD1A600F8A45A /* chacha20poly1305.c in Sources */,
+				FBF410372D4AD0E100F8A45A /* dump.c in Sources */,
+				FBF410182D4AD08B00F8A45A /* odr_pthread.c in Sources */,
+				FBF410522D4AD1A600F8A45A /* poly1305-donna.c in Sources */,
+				FBF410192D4AD0A400F8A45A /* wireguard-pbuf.c in Sources */,
 				FB21382D2D064BBC008C4BB7 /* PacketTunnelProvider.swift in Sources */,
-				FB4E5D722D0BC25500322ECD /* odr_pthread.c in Sources */,
-				FBA4CECB2D0D36D900252A0F /* load.c in Sources */,
-				FB9D80082D0FB6EA000D755C /* vuuid.c in Sources */,
+				FBF4101C2D4AD0B700F8A45A /* vuuid.c in Sources */,
 				FB88BBC82D0E69BB0054822E /* mudband_tunnel_tasks.m in Sources */,
-				FBA4CECF2D0D36E100252A0F /* strconv.c in Sources */,
-				FBA4CEC72D0D36CF00252A0F /* dump.c in Sources */,
+				FBBBA3B62D4B28F300227E55 /* mudband_bpf.c in Sources */,
 				FB0A10652D0BBD2100189DA8 /* FileManagerExtension.swift in Sources */,
+				FBF410552D4AD1A600F8A45A /* x25519.c in Sources */,
+				FBF410322D4AD0E100F8A45A /* value.c in Sources */,
+				FBF4103B2D4AD0E100F8A45A /* hashtable_seed.c in Sources */,
+				FBF410172D4AD08B00F8A45A /* odr.c in Sources */,
 				FB0A10672D0BBDB000189DA8 /* mudband_tunnel_confmgr.m in Sources */,
-				FB549B972D1627FC00C1F5F4 /* chacha20poly1305.c in Sources */,
 				FB0A105F2D0BBA2300189DA8 /* mudband_tunnel.m in Sources */,
+				FBF4103D2D4AD0FF00F8A45A /* vtc_log.c in Sources */,
+				FBF410362D4AD0E100F8A45A /* strbuffer.c in Sources */,
+				FBF410412D4AD11B00F8A45A /* vsb.c in Sources */,
 				FB7EA7D12D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m in Sources */,
 				FBA4CED32D0D4CF400252A0F /* mudband_tunnel_connmgr.m in Sources */,
 				FB88BBCB2D0E6BC60054822E /* mudband_tunnel_mqtt.m in Sources */,
-				FBA4CECC2D0D36DB00252A0F /* memory.c in Sources */,
-				FBA4CECE2D0D36DF00252A0F /* strbuffer.c in Sources */,
-				FB549B9D2D16295B00C1F5F4 /* callout.c in Sources */,
-				FB549B942D1627EB00C1F5F4 /* crypto.c in Sources */,
-				FBA4CED12D0D36E600252A0F /* value.c in Sources */,
-				FB4E5D702D0BC23300322ECD /* odr.c in Sources */,
-				FB4E5D742D0BC25C00322ECD /* vtim.c in Sources */,
+				FBF410382D4AD0E100F8A45A /* pack_unpack.c in Sources */,
+				FBF410132D4AD04900F8A45A /* callout.c in Sources */,
+				FBF410532D4AD1A600F8A45A /* chacha20.c in Sources */,
+				FBF410392D4AD0E100F8A45A /* memory.c in Sources */,
+				FBF4103A2D4AD0E100F8A45A /* hashtable.c in Sources */,
+				FBF410332D4AD0E100F8A45A /* utf.c in Sources */,
+				FBF4101D2D4AD0B700F8A45A /* vsock.c in Sources */,
+				FBF410512D4AD1A600F8A45A /* blake2s.c in Sources */,
 				FBA4CEC62D0D36A100252A0F /* mudband_tunnel_progconf.m in Sources */,
-				FB549B962D1627FA00C1F5F4 /* chacha20.c in Sources */,
-				FBA4CEC92D0D36D400252A0F /* hashtable_seed.c in Sources */,
-				FB549B952D1627F700C1F5F4 /* blake2s.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -930,6 +997,11 @@
 			productName = Alamofire;
 		};
 		FBA7F4152D094D5100C3E25D /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FBA7F4142D094D3D00C3E25D /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
+		};
+		FBCF074B2D4B2CE400CE7436 /* SwiftyJSON */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = FBA7F4142D094D3D00C3E25D /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
 			productName = SwiftyJSON;

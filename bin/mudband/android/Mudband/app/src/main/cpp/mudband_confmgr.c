@@ -636,7 +636,7 @@ CNF_acl_build(json_t *jroot)
             return (NULL);
         }
         for (x = 0; x < json_array_size(jinsns); x++) {
-            struct bpf_insn *insn;
+            struct mudband_bpf_insn *insn;
             json_t *jinsn;
 
             jinsn = json_array_get(jinsns, x);
@@ -646,9 +646,9 @@ CNF_acl_build(json_t *jroot)
             insn->code = (uint16_t)json_integer_value(json_array_get(jinsn, 0));
             insn->jt = (uint8_t)json_integer_value(json_array_get(jinsn, 1));
             insn->jf = (uint8_t)json_integer_value(json_array_get(jinsn, 2));
-            insn->k = (bpf_u_int32)json_integer_value(json_array_get(jinsn, 3));
+            insn->k = (mudband_bpf_u_int32)json_integer_value(json_array_get(jinsn, 3));
         }
-        r = bpf_validate(acl_program->insns, acl_program->n_insns);
+        r = mudband_bpf_validate(acl_program->insns, acl_program->n_insns);
         if (r != 1) {
             vtc_log(cnf_vl, 0,
                     "BANDEC_00493: BPF program validation failed:"

@@ -113,13 +113,26 @@ mudband_ui_enroll_get_band_uuid(void)
     return [NSString stringWithUTF8String:p];
 }
 
+bool
+mudband_ui_enroll_is_public(void)
+{
+    json_t *jopt_public;
+    
+    if (enroll_jroot == NULL)
+        return (false);
+    jopt_public = json_object_get(enroll_jroot, "opt_public");
+    AN(jopt_public);
+    assert(json_is_integer(jopt_public));
+    return (json_integer_value(jopt_public) == 1);
+}
+
 static int
 mudband_ui_enroll_get_band_uuidstraversal_dir_callback(struct vtclog *vl,
                                                    const char *name,
                                                    void *orig_arg)
 {
     struct mudband_ui_traversal_dir_arg *arg =
-        (struct mudband_ui_traversal_dir_arg *)orig_arg;
+      (struct mudband_ui_traversal_dir_arg *)orig_arg;
     NSMutableArray *mutableArray = (__bridge NSMutableArray *)arg->arg;
     int namelen;
     char band_uuidstr[64];

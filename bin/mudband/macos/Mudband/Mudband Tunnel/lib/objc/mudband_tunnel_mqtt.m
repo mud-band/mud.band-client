@@ -1719,11 +1719,10 @@ mudband_tunnel_mqtt_subscribe(void)
     if (r == 0) {
         const char *device_uuid;
 
-        device_uuid =
-	  mudband_tunnel_confmgr_get_interface_device_uuid(cnf->jroot);
+        device_uuid = mudband_tunnel_confmgr_get_interface_device_uuid(cnf->jroot);
         AN(device_uuid);
         snprintf(topic, sizeof(topic), "/band/%s/device/%s",
-                 default_band_uuid, device_uuid);
+                 band_uuid, device_uuid);
 
         error = mqtt_subscribe(&mqtt_client, topic, 0);
         assert(error == MQTT_OK);

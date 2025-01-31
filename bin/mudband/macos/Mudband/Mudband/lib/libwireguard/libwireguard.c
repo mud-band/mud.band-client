@@ -24,11 +24,14 @@
  * SUCH DAMAGE.
  */
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
+#include "crypto.h"
 #include "libwireguard.h"
 #include "x25519.h"
 

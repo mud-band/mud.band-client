@@ -57,7 +57,6 @@ OBJS=	\
         ..\..\..\lib\libmud\vtc_log.obj \
         ..\..\..\lib\libmud\vtim.obj \
         ..\..\..\lib\libmud\vuuid.obj \
-	..\common\bpf.obj \
 	..\common\callout.obj \
 	..\common\crypto\blake2s.obj \
 	..\common\crypto\chacha20.obj \
@@ -65,6 +64,7 @@ OBJS=	\
 	..\common\crypto\poly1305-donna.obj \
 	..\common\crypto\x25519.obj \
 	..\common\crypto.obj \
+	..\common\mudband_bpf.obj \
 	..\common\wireguard.obj \
 	..\common\wireguard-pbuf.obj \
 	mudband.obj \

@@ -26,23 +26,12 @@
 
 import SwiftUI
 
-class UiMainEntryModel : ObservableObject {
-    private var mEnrollmentCount: Int32 = -1111
-    
-    func enroll_get_count() -> Int32 {
-        if mEnrollmentCount == -1111 {
-            mEnrollmentCount = mudband_ui_enroll_get_count()
-        }
-        return mEnrollmentCount
-    }
-}
-
 struct UiMainEntryView: View {
-    @ObservedObject private var model = UiMainEntryModel()
+    @EnvironmentObject private var mAppModel: AppModel
     
     @ViewBuilder
     var body: some View {
-        if model.enroll_get_count() >= 0 {
+        if mAppModel.mEnrollmentCount >= 0 {
             UiDashboardView()
         } else {
             VStack {

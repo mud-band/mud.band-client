@@ -50,6 +50,10 @@ struct wireguard_iface_peer {
     } endpoints[WIREGUARD_IFACE_PEER_ENDPOINTS_MAX];
     uint8_t n_endpoints;
     uint16_t keep_alive;
+    
+    bool otp_enabled;
+    uint64_t otp_sender;
+    uint64_t otp_receiver[3];
 };
 
 /* mudband_tunnel.m */
@@ -75,7 +79,9 @@ int     mudband_tunnel_confmgr_get_peer_size(json_t *jroot);
 int     mudband_tunnel_confmgr_fill_iface_peer(json_t *jroot, struct wireguard_iface_peer *peer,
                                                int idx);
 const char *
-	mudband_tunnel_confmgr_get_interface_device_uuid(json_t *jroot);
+        mudband_tunnel_confmgr_get_interface_device_uuid(json_t *jroot);
+struct wireguard_acl *
+        mudband_tunnel_confmgr_acl_build(json_t *jroot);
 
 /* mudband_tunnel_connmgr.m */
 int     mudband_tunnel_connmgr_init(void);

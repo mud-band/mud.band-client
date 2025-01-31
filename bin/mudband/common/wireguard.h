@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "bpf.h"
+#include "mudband_bpf.h"
 #include "callout.h"
 /* Platform-specific functions that need to be implemented per-platform */
 #include "wireguard-platform.h"
@@ -192,7 +192,7 @@ struct wireguard_peer {
 #define	WIREGUARD_ACL_PROGRAM_INSNS_MAX	256
 
 struct wireguard_acl_program {
-	struct bpf_insn insns[256];
+	struct mudband_bpf_insn insns[256];
 	size_t n_insns;
 };
 
