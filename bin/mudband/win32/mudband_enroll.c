@@ -117,7 +117,7 @@ int
 MBE_enroll(const char *token, const char *name, const char *secret)
 {
 	struct vhttps_req req;
-	json_t *jroot, *jstatus, *jband, *juuid, *jband_name;
+	json_t *jroot, *jstatus, *jband, *juuid, *jband_name, *jopt_public;
 	json_error_t jerror;
 	size_t resp_bodylen, wg_pubkeystrlen, wg_privkeystrlen;
 	int r, req_bodylen, status;
@@ -217,6 +217,9 @@ MBE_enroll(const char *token, const char *name, const char *secret)
 	jband_name = json_object_get(jband, "name");
 	AN(jband_name);
 	assert(json_is_string(jband_name));
+	jopt_public = json_object_get(jband, "opt_public");
+	AN(jopt_public);
+	assert(json_is_integer(jopt_public));
 	json_object_set_new(jband, "wireguard_privkey",
 	    json_string(wg_privkeystr));
 	ODR_snprintf(filepath, sizeof(filepath), "%s/band_%s.json",
@@ -226,6 +229,22 @@ MBE_enroll(const char *token, const char *name, const char *secret)
 	MPC_set_default_band_uuid(json_string_value(juuid));
 	vtc_log(mbe_vl, 2, "Enrolled in the band: %s (uuid %s)",
 	    json_string_value(jband_name), json_string_value(juuid));
+	if (json_integer_value(jopt_public) != 0) {
+		vtc_log(mbe_vl, 2, "NOTE: This band is public. This means that");
+		vtc_log(mbe_vl, 2, "* Nobody can connect to your device without your permission.");
+		vtc_log(mbe_vl, 2, "* Your default policy is 'block'.");
+		vtc_log(mbe_vl, 2, "  You can change the default policy by using the following command:");
+		vtc_log(mbe_vl, 2, "  $ mudband --acl-default-policy allow|block");
+		vtc_log(mbe_vl, 2, "* You need to add an ACL rule to allow the connection.");
+		vtc_log(mbe_vl, 2, "* You can add the ACL rule by using the following command:");
+		vtc_log(mbe_vl, 2, "  $ mudband --acl-add <syntax>");
+		vtc_log(mbe_vl, 2, "* For details, please visit https://mud.band/docs/public-band link.");
+	} else {
+		vtc_log(mbe_vl, 2, "NOTE: This band is private. This means that");
+		vtc_log(mbe_vl, 2, "* Band admin only can control ACL rules and the default policy.");
+		vtc_log(mbe_vl, 2, "* You can't control your device.");
+		vtc_log(mbe_vl, 2, "* For details, please visit https://mud.band/docs/private-band link.");
+	}
 	/* delete the previous cached config. */
 	ODR_snprintf(filepath, sizeof(filepath), "%s/conf_%s.json",
 	    band_confdir_enroll, json_string_value(juuid));

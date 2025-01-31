@@ -254,16 +254,18 @@ MBE_enroll(const char *token, const char *name, const char *secret)
 	if (json_integer_value(jopt_public) != 0) {
 		vtc_log(mbe_vl, 2, "NOTE: This band is public. This means that");
 		vtc_log(mbe_vl, 2, "* Nobody can connect to your device without your permission.");
-		vtc_log(mbe_vl, 2, "* You need to add an ACL rule to allow the connection.");
-		vtc_log(mbe_vl, 2, "* You can change the default policy by using the following command:");
+		vtc_log(mbe_vl, 2, "* Your default policy is 'block'.");
+		vtc_log(mbe_vl, 2, "  You can change the default policy by using the following command:");
 		vtc_log(mbe_vl, 2, "  $ mudband --acl-default-policy allow|block");
+		vtc_log(mbe_vl, 2, "* You need to add an ACL rule to allow the connection.");
 		vtc_log(mbe_vl, 2, "* You can add the ACL rule by using the following command:");
 		vtc_log(mbe_vl, 2, "  $ mudband --acl-add <syntax>");
-		vtc_log(mbe_vl, 2, "* For details, please use --help option.");
+		vtc_log(mbe_vl, 2, "* For details, please visit https://mud.band/docs/public-band link.");
 	} else {
 		vtc_log(mbe_vl, 2, "NOTE: This band is private. This means that");
 		vtc_log(mbe_vl, 2, "* Band admin only can control ACL rules and the default policy.");
 		vtc_log(mbe_vl, 2, "* You can't control your device.");
+		vtc_log(mbe_vl, 2, "* For details, please visit https://mud.band/docs/private-band link.");
 	}
 	/* delete the previous cached config. */
 	ODR_snprintf(filepath, sizeof(filepath), "%s/conf_%s.json",
