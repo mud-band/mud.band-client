@@ -30,25 +30,43 @@ import SwiftUI
 import SwiftyJSON
 
 struct UiDashboardListView: View {
-    var mTopView: UiDashboardView
+    @EnvironmentObject private var mAppModel: AppModel
     @State private var selectedItem: String? = "Status"
         
-    @State private var items = [
+    @State private var items_private = [
         "Status",
         "Devices",
         "Setup",
     ]
-        
+
+    @State private var items_public = [
+        "Status",
+        "Devices",
+        "WebCLI",
+        "Setup",
+    ]
+
     var body: some View {
         NavigationSplitView {
-            List(selection: $selectedItem) {
-                ForEach(items, id: \.self) { folder in
-                    NavigationLink(value: folder) {
-                        Text(verbatim: folder)
+            if mAppModel.mBandIsPublic {
+                List(selection: $selectedItem) {
+                    ForEach(items_public, id: \.self) { folder in
+                        NavigationLink(value: folder) {
+                            Text(verbatim: folder)
+                        }
                     }
                 }
+                .navigationTitle("Sidebar")
+            } else {
+                List(selection: $selectedItem) {
+                    ForEach(items_private, id: \.self) { folder in
+                        NavigationLink(value: folder) {
+                            Text(verbatim: folder)
+                        }
+                    }
+                }
+                .navigationTitle("Sidebar")
             }
-            .navigationTitle("Sidebar")
         } detail: {
             if let selectedItem {
                 if selectedItem == "Status" {
@@ -58,7 +76,7 @@ struct UiDashboardListView: View {
                     UiDashboardDevicesListView()
                         .tag("Devices")
                 } else if selectedItem == "Setup" {
-                    UiDashboardSetupListView(mTopView: mTopView)
+                    UiDashboardSetupListView()
                         .tag("Setup")
                 } else {
                     NavigationLink(value: selectedItem) {
