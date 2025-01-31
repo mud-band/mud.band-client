@@ -36,7 +36,7 @@ struct UiDashboardView: View {
     var body: some View {
         VStack {
             if mAppModel.mEnrollmentCount > 0 {
-                UiDashboardListView()
+                UiDashboardSplitView()
             } else {
                 NavigationStack {
                     VStack {

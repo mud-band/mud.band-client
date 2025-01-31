@@ -29,7 +29,7 @@ import NetworkExtension
 import SwiftUI
 import SwiftyJSON
 
-struct UiDashboardListView: View {
+struct UiDashboardSplitView: View {
     @EnvironmentObject private var mAppModel: AppModel
     @Environment(\.openURL) var openURL
     @State private var selectedItem: String? = "Status"
@@ -37,12 +37,14 @@ struct UiDashboardListView: View {
     @State private var items_private = [
         "Status",
         "Devices",
+        "Links",
         "Setup",
     ]
 
     @State private var items_public = [
         "Status",
         "Devices",
+        "Links",
         "WebCLI",
         "Setup",
     ]
@@ -115,6 +117,9 @@ struct UiDashboardListView: View {
                 } else if selectedItem == "Devices" {
                     UiDashboardDevicesListView()
                         .tag("Devices")
+                } else if selectedItem == "Links" {
+                    UiDashboardLinksListView()
+                        .tag("Links")
                 } else if selectedItem == "Setup" {
                     UiDashboardSetupListView()
                         .tag("Setup")
