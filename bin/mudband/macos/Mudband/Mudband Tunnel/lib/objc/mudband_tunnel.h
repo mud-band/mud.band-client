@@ -74,6 +74,9 @@ const char *
 int     mudband_tunnel_confmgr_get_peer_size(json_t *jroot);
 int     mudband_tunnel_confmgr_fill_iface_peer(json_t *jroot, struct wireguard_iface_peer *peer,
                                                int idx);
+const char *
+	mudband_tunnel_confmgr_get_interface_device_uuid(json_t *jroot);
+
 /* mudband_tunnel_connmgr.m */
 int     mudband_tunnel_connmgr_init(void);
 void    mudband_tunnel_confmgr_nuke(void);
