@@ -31,6 +31,7 @@ import SwiftyJSON
 
 struct UiDashboardListView: View {
     @EnvironmentObject private var mAppModel: AppModel
+    @Environment(\.openURL) var openURL
     @State private var selectedItem: String? = "Status"
         
     @State private var items_private = [
@@ -45,6 +46,45 @@ struct UiDashboardListView: View {
         "WebCLI",
         "Setup",
     ]
+    
+    func getWebCliUrl() {
+        var headers: HTTPHeaders = []
+        if let jwt = mudband_ui_enroll_get_jwt() {
+            headers["Authorization"] = jwt
+        } else {
+            mudband_ui_log(0, "BANDEC_00515: mudband_ui_enroll_get_jwt() failed.")
+            return
+        }
+        AF.request("https://www.mud.band/webcli/signin",
+                   method: .get,
+                   headers: headers,
+                   interceptor: .retryPolicy).responseString { resp in
+            switch resp.result {
+            case .success(let resp_body):
+                guard let obj = try? JSON(data: Data(resp_body.utf8)) else {
+                    mudband_ui_log(0, "BANDEC_00516: Failed to parse the JSON response.")
+                    return
+                }
+                if obj["status"].intValue != 200 {
+                    let msg = obj["msg"].stringValue
+                    mudband_ui_log(0, "BANDEC_00517: Failed with the error message: \(msg)")
+                    return
+                }
+                if let urlString = obj["url"].string, let url = URL(string: urlString) {
+                    openURL(url)
+                } else {
+                    mudband_ui_log(0, "BANDEC_00518: Failed to retrieve or open the SSO URL.")
+                }
+            case .failure(let error):
+                guard let statusCode = resp.response?.statusCode else {
+                    mudband_ui_log(0, "BANDEC_00519: Failed to set the status code.")
+                    return
+                }
+                mudband_ui_log(0, "BANDEC_00520: \(statusCode) \(error)")
+                return
+            }
+        }
+    }
 
     var body: some View {
         NavigationSplitView {
@@ -78,6 +118,10 @@ struct UiDashboardListView: View {
                 } else if selectedItem == "Setup" {
                     UiDashboardSetupListView()
                         .tag("Setup")
+                } else if selectedItem == "WebCLI" {
+                    Button("Open WebCLI") {
+                        getWebCliUrl()
+                    }
                 } else {
                     NavigationLink(value: selectedItem) {
                         Text(verbatim: selectedItem)
