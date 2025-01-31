@@ -48,13 +48,19 @@ struct UiDashboardDevicesListView: View {
     
     @ViewBuilder
     var body: some View {
-        List(devices, id: \.id) { device in
-            VStack(alignment: .leading) {
-                Text(device.name).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                Text("Private IP: \(device.private_ip)")
+        VStack {
+            if devices.isEmpty {
+                Text("No devices found.")
+            } else {
+                List(devices, id: \.id) { device in
+                    VStack(alignment: .leading) {
+                        Text(device.name).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                        Text("Private IP: \(device.private_ip)")
+                    }
+                }
+                .padding()
             }
         }
-        .padding()
         .onAppear() {
             update_device_list()
         }

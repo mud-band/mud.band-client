@@ -22,8 +22,9 @@
 		FB21383C2D0656B3008C4BB7 /* mudband_ui.m in Sources */ = {isa = PBXBuildFile; fileRef = FB21383B2D0656B3008C4BB7 /* mudband_ui.m */; };
 		FB2138422D067C01008C4BB7 /* UiEnrollmentNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2138412D067C01008C4BB7 /* UiEnrollmentNewView.swift */; };
 		FB2138452D067CBA008C4BB7 /* FileManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2138442D067CBA008C4BB7 /* FileManagerExtension.swift */; };
-		FB6909BD2D4BFFD70086B56F /* UiDashboardListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB6909BC2D4BFFD70086B56F /* UiDashboardListView.swift */; };
+		FB6909BD2D4BFFD70086B56F /* UiDashboardSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB6909BC2D4BFFD70086B56F /* UiDashboardSplitView.swift */; };
 		FB796A5A2D14DF310061007D /* UiEnrollmentChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB796A592D14DF310061007D /* UiEnrollmentChangeView.swift */; };
+		FB7CEF812D4D80250010D660 /* UiDashboardLinksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB7CEF802D4D80250010D660 /* UiDashboardLinksListView.swift */; };
 		FB7EA7D12D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m in Sources */ = {isa = PBXBuildFile; fileRef = FB7EA7D02D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m */; };
 		FB88BBC52D0E129A0054822E /* mudband_tunnel_stun_client.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBC42D0E129A0054822E /* mudband_tunnel_stun_client.m */; };
 		FB88BBC82D0E69BB0054822E /* mudband_tunnel_tasks.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBC72D0E69BB0054822E /* mudband_tunnel_tasks.m */; };
@@ -140,8 +141,9 @@
 		FB2138412D067C01008C4BB7 /* UiEnrollmentNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiEnrollmentNewView.swift; sourceTree = "<group>"; };
 		FB2138442D067CBA008C4BB7 /* FileManagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerExtension.swift; sourceTree = "<group>"; };
 		FB4E5D6F2D0BC0E100322ECD /* mudband_tunnel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_tunnel.h; sourceTree = "<group>"; };
-		FB6909BC2D4BFFD70086B56F /* UiDashboardListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardListView.swift; sourceTree = "<group>"; };
+		FB6909BC2D4BFFD70086B56F /* UiDashboardSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardSplitView.swift; sourceTree = "<group>"; };
 		FB796A592D14DF310061007D /* UiEnrollmentChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiEnrollmentChangeView.swift; sourceTree = "<group>"; };
+		FB7CEF802D4D80250010D660 /* UiDashboardLinksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardLinksListView.swift; sourceTree = "<group>"; };
 		FB7EA7D02D0FAB9F00186AC3 /* mudband_tunnel_wireguard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_wireguard.m; sourceTree = "<group>"; };
 		FB7EA7D32D0FAC2400186AC3 /* mudband_tunnel_wireguard_platform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_tunnel_wireguard_platform.h; sourceTree = "<group>"; };
 		FB88BBC42D0E129A0054822E /* mudband_tunnel_stun_client.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_stun_client.m; sourceTree = "<group>"; };
@@ -342,10 +344,8 @@
 		FB2138402D065C51008C4BB7 /* ui */ = {
 			isa = PBXGroup;
 			children = (
-				FBF410712D4AF36200F8A45A /* UiDashboardDevicesListView.swift */,
-				FBF4106F2D4AF2D800F8A45A /* UiDashboardSetupListView.swift */,
-				FBF410732D4AF38D00F8A45A /* UiDashboardStatusListView.swift */,
-				FB6909BC2D4BFFD70086B56F /* UiDashboardListView.swift */,
+				FB7CEF7F2D4D7FE70010D660 /* dashboard */,
+				FB6909BC2D4BFFD70086B56F /* UiDashboardSplitView.swift */,
 				FBB31E5E2D0A9FED005D1D51 /* UiDashboardView.swift */,
 				FB796A592D14DF310061007D /* UiEnrollmentChangeView.swift */,
 				FB2138412D067C01008C4BB7 /* UiEnrollmentNewView.swift */,
@@ -361,6 +361,17 @@
 				FB2138442D067CBA008C4BB7 /* FileManagerExtension.swift */,
 			);
 			path = lib;
+			sourceTree = "<group>";
+		};
+		FB7CEF7F2D4D7FE70010D660 /* dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				FBF410712D4AF36200F8A45A /* UiDashboardDevicesListView.swift */,
+				FBF4106F2D4AF2D800F8A45A /* UiDashboardSetupListView.swift */,
+				FBF410732D4AF38D00F8A45A /* UiDashboardStatusListView.swift */,
+				FB7CEF802D4D80250010D660 /* UiDashboardLinksListView.swift */,
+			);
+			path = dashboard;
 			sourceTree = "<group>";
 		};
 		FBA7F4092D09282000C3E25D /* libwireguard */ = {
@@ -587,7 +598,7 @@
 				FB2138392D0655FC008C4BB7 /* VpnManager.swift in Sources */,
 				FBF410562D4AD1C200F8A45A /* odr.c in Sources */,
 				FBB31E5F2D0A9FED005D1D51 /* UiDashboardView.swift in Sources */,
-				FB6909BD2D4BFFD70086B56F /* UiDashboardListView.swift in Sources */,
+				FB6909BD2D4BFFD70086B56F /* UiDashboardSplitView.swift in Sources */,
 				FBF410572D4AD1C500F8A45A /* odr_pthread.c in Sources */,
 				FBB31E612D0AAA32005D1D51 /* mudband_ui_enroll.m in Sources */,
 				FBF410592D4AD1D500F8A45A /* error.c in Sources */,
@@ -595,6 +606,7 @@
 				FBF410602D4AD1EA00F8A45A /* strconv.c in Sources */,
 				FBF4105F2D4AD1E700F8A45A /* strbuffer.c in Sources */,
 				FBF410662D4AD20B00F8A45A /* chacha20poly1305.c in Sources */,
+				FB7CEF812D4D80250010D660 /* UiDashboardLinksListView.swift in Sources */,
 				FBF410652D4AD20800F8A45A /* chacha20.c in Sources */,
 				FBF410692D4AD22300F8A45A /* vtc_log.c in Sources */,
 				FBF410742D4AF38D00F8A45A /* UiDashboardStatusListView.swift in Sources */,
