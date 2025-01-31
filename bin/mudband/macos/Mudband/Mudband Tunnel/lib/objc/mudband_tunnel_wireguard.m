@@ -1392,8 +1392,7 @@ wireguard_iface_process_data_message(struct wireguard_device *device,
             }
             if (!dest_ok)
                 goto drop;
-            if (device->acl.n_programs > 0 &&
-                wireguard_iface_apply_acl(device, pbuf))
+            if (wireguard_iface_apply_acl(device, pbuf))
                 goto drop;
             wireguard_iface_tun_write(device, pbuf);
         }
