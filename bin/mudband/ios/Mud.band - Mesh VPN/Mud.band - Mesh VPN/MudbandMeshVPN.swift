@@ -28,10 +28,29 @@ import SwiftUI
 
 class AppModel: ObservableObject {
     @Published var mVpnManager: VpnManager;
-    
+    @Published var mVPNStatusString = "Unknown"
+    @Published var mEnrollmentCount: Int32 = mudband_ui_enroll_get_count()
+    @Published var mBandIsPublic: Bool = mudband_ui_enroll_is_public()
+    @Published var mBandName: String = ""
+
     init() {
         mVpnManager = VpnManager()
         mVpnManager.initVPNTunnelProviderManager()
+    }
+    
+    func update_enrollments() {
+        mEnrollmentCount = mudband_ui_enroll_get_count()
+        let r = mudband_ui_enroll_load()
+        if r != 0 {
+            mudband_ui_log(0, "BANDEC_XXXXX: mudband_ui_enroll_load() failed")
+            return
+        }
+        mBandIsPublic = mudband_ui_enroll_is_public()
+        mBandName = mudband_ui_enroll_get_band_name()
+    }
+    
+    func update_vpn_status() {
+        mVPNStatusString = mVpnManager.getVPNStatusString()
     }
 }
 

@@ -31,6 +31,7 @@ import SwiftyJSON
 struct UiEnrollmentChangeView: View {
     @EnvironmentObject private var mAppModel: AppModel
     @Environment(\.dismiss) var dismiss
+    
     struct Enrollment: Identifiable {
         var id = UUID()
         var name: String

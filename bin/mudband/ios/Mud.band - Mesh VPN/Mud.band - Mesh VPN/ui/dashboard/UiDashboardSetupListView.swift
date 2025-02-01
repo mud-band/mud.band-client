@@ -25,7 +25,7 @@
 //
 
 import Alamofire
-import Foundation
+import NetworkExtension
 import SwiftUI
 import SwiftyJSON
 
@@ -40,7 +40,7 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
     
     func mudband_unenroll(unenrollCompletionHandler: @escaping (Error?) -> Void) {
         guard let band_uuid = mudband_ui_enroll_get_band_uuid() else {
-            mudband_ui_log(0, "BANDEC_00421: mudband_ui_enroll_get_band_uuid() failed.")
+            mudband_ui_log(0, "BANDEC_00284: mudband_ui_enroll_get_band_uuid() failed.")
             unenrollCompletionHandler(band_ui_error.no_band_uuid_found)
             return
         }
@@ -48,7 +48,7 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
         if let jwt = mudband_ui_enroll_get_jwt() {
             headers["Authorization"] = jwt
         } else {
-            mudband_ui_log(0, "BANDEC_00422: mudband_tunnel_enroll_get_jwt() failed.")
+            mudband_ui_log(0, "BANDEC_00285: mudband_tunnel_enroll_get_jwt() failed.")
             unenrollCompletionHandler(band_ui_error.no_jwt_token_found)
             return
         }
@@ -61,12 +61,12 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
             case .success(let body):
                 if let obj = try? JSON(data: Data(body.utf8)) {
                     guard let status = obj["status"].int else {
-                        mudband_ui_log(0, "BANDEC_00423: No status field in the response.")
+                        mudband_ui_log(0, "BANDEC_00286: No status field in the response.")
                         unenrollCompletionHandler(band_ui_error.response_body_error)
                         return
                     }
                     if status != 200 {
-                        mudband_ui_log(0, "BANDEC_00424: Failed to unenroll: status \(status)")
+                        mudband_ui_log(0, "BANDEC_00287: Failed to unenroll: status \(status)")
                         unenrollCompletionHandler(band_ui_error.response_body_status_error)
                         return
                     }
@@ -76,11 +76,11 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
                 break
             case .failure(let error):
                 guard let statusCode = resp.response?.statusCode else {
-                    mudband_ui_log(0, "BANDEC_00425: Failed to set the status code.")
+                    mudband_ui_log(0, "BANDEC_00288: Failed to set the status code.")
                     unenrollCompletionHandler(band_ui_error.response_status_error)
                     return
                 }
-                mudband_ui_log(0, "BANDEC_00426: \(statusCode) \(error)")
+                mudband_ui_log(0, "BANDEC_00289: \(statusCode) \(error)")
                 unenrollCompletionHandler(error)
                 break
             }
@@ -90,15 +90,22 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
 
 struct UiDashboardSetupDangerZoneUnenrollView: View {
     @EnvironmentObject private var mAppModel: AppModel
+    @Environment(\.dismiss) var dismiss
     @ObservedObject private var mUnenrollModel = UiDashboardSetupDangerZoneUnenrollModel()
     @State private var mNeedToShowPopupConnect = false
     @State private var mUnenrollAlertNeed = false
     @State private var mUnenrollAlertMessage = ""
     @State private var mCanUnenroll = true
+
+    private func need_enrollment_count_refresh() {
+        DispatchQueue.main.async {
+            /* XXX */
+        }
+    }
     
     private func isUnenrollable() -> Bool {
         if mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" ||
-           mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
+            mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
             return true
         }
         return false
@@ -157,9 +164,9 @@ struct UiDashboardSetupEnrollmentChangeView: View {
     @EnvironmentObject private var mAppModel: AppModel
     @State var mCanChangeEnrollment = true
     
-    func isChangable() -> Bool {
-        if mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" ||
-           mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" {
+    private func isChangable() -> Bool {
+        if mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" ||
+            mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
             return true
         }
         return false
@@ -185,10 +192,10 @@ struct UiDashboardSetupEnrollmentChangeView: View {
 struct UiDashboardSetupEnrollmentNewView: View {
     @EnvironmentObject private var mAppModel: AppModel
     @State private var mCanEnroll = true
-    
+
     private func isEnrollable() -> Bool {
         if mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" ||
-           mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
+            mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
             return true
         }
         return false
@@ -214,16 +221,14 @@ struct UiDashboardSetupEnrollmentNewView: View {
 struct UiDashboardSetupListView: View {
     @ViewBuilder
     var body: some View {
-        VStack {
-            List {
-                Section(header: Text("Enrollment")) {
-                    UiDashboardSetupEnrollmentNewView()
-                    UiDashboardSetupEnrollmentChangeView()
-                }
-                Section(header: Text("DANGER ZONE")) {
-                    UiDashboardSetupDangerZoneUnenrollView()
-                }
-            }.padding()
+        List {
+            Section(header: Text("Enrollment")) {
+                UiDashboardSetupEnrollmentNewView()
+                UiDashboardSetupEnrollmentChangeView()
+            }
+            Section(header: Text("DANGER ZONE")) {
+                UiDashboardSetupDangerZoneUnenrollView()
+            }
         }
     }
 }

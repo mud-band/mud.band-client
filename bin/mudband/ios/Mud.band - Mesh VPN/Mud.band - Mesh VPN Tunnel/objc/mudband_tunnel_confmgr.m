@@ -39,6 +39,8 @@
 #include "vqueue.h"
 #include "vtc_log.h"
 
+#include "wireguard.h"
+
 #include "mudband_tunnel.h"
 #include "mudband_tunnel_stun_client.h"
 
@@ -51,6 +53,7 @@ static struct vtclog *confmgr_vl;
 NSMutableArray *
 mudband_tunnel_confmgr_getifaddrs(void)
 {
+#define CNF_IFADDRS_MAX 16
     struct ifaddrs *ifap, *ifa;
     struct sockaddr_in *sin;
     in_addr_t addr_198_18, mask_198_18, ifaddrs[CNF_IFADDRS_MAX];
@@ -95,7 +98,7 @@ mudband_tunnel_confmgr_getifaddrs(void)
             n_ifaddrs++;
         }
         if (n_ifaddrs >= CNF_IFADDRS_MAX) {
-            vtc_log(cnf_vl, 1,
+            vtc_log(confmgr_vl, 1,
                     "BANDEC_00309: Too many addresses."
                     " Only 16 addresses are used.");
             break;
@@ -333,6 +336,107 @@ mudband_tunnel_confmgr_get_interface_nat_type_by_obj(json_t *jroot)
     return ((int)(json_integer_value(nat_type)));
 }
 
+const char *
+mudband_tunnel_confmgr_get_interface_device_uuid(json_t *jroot)
+{
+    json_t *interface, *device_uuid;
+
+    AN(jroot);
+    interface = json_object_get(jroot, "interface");
+    AN(interface);
+    assert(json_is_object(interface));
+    device_uuid = json_object_get(interface, "device_uuid");
+    AN(device_uuid);
+    assert(json_is_string(device_uuid));
+    assert(json_string_length(device_uuid) > 0);
+    return (json_string_value(device_uuid));
+}
+
+struct wireguard_acl *
+mudband_tunnel_confmgr_acl_build(json_t *jroot)
+{
+    struct wireguard_acl *acl;
+    json_t *jacl, *jprograms, *jdefault_policy;
+    int i, r, x;
+
+    AN(jroot);
+
+    jacl = json_object_get(jroot, "acl");
+    AN(jacl);
+    assert(json_is_object(jacl));
+    jprograms = json_object_get(jacl, "programs");
+    AN(jprograms);
+    assert(json_is_array(jprograms));
+
+    acl = calloc(1, sizeof(*acl));
+    AN(acl);
+    acl->n_programs = json_array_size(jprograms);
+    if (acl->n_programs >= WIREGUARD_ACL_PROGRAM_MAX) {
+        vtc_log(confmgr_vl, 0, "BANDEC_00511: Too many BPF programs: %d",
+            acl->n_programs);
+        free(acl);
+        return (NULL);
+    }
+    jdefault_policy = json_object_get(jacl, "default_policy");
+    AN(jdefault_policy);
+    assert(json_is_string(jdefault_policy));
+    assert(json_string_length(jdefault_policy) > 0);
+    if (!strcmp(json_string_value(jdefault_policy), "allow"))
+        acl->default_policy = WIREGUARD_ACL_POLICY_ALLOW;
+    else if (!strcmp(json_string_value(jdefault_policy), "block"))
+        acl->default_policy = WIREGUARD_ACL_POLICY_BLOCK;
+    else {
+        vtc_log(confmgr_vl, 0, "BANDEC_00512: Invalid default_policy: %s",
+            json_string_value(jdefault_policy));
+        free(acl);
+        return (NULL);
+    }
+    for (i = 0; i < json_array_size(jprograms); i++) {
+        struct wireguard_acl_program *acl_program;
+        json_t *jinsns;
+
+        jinsns = json_array_get(jprograms, i);
+        AN(jinsns);
+        assert(json_is_array(jinsns));
+
+        acl_program = &acl->programs[i];
+        acl_program->n_insns = json_array_size(jinsns);
+        if (acl_program->n_insns >= WIREGUARD_ACL_PROGRAM_INSNS_MAX) {
+            vtc_log(confmgr_vl, 0,
+                "BANDEC_00513: Too many BPF instructions: %d",
+                acl_program->n_insns);
+            free(acl);
+            return (NULL);
+        }
+        for (x = 0; x < json_array_size(jinsns); x++) {
+            struct mudband_bpf_insn *insn;
+            json_t *jinsn;
+
+            jinsn = json_array_get(jinsns, x);
+            AN(jinsn);
+            assert(json_array_size(jinsn) == 4);
+            insn = &acl_program->insns[x];
+            insn->code =
+                (uint16_t)json_integer_value(json_array_get(jinsn, 0));
+            insn->jt =
+                (uint8_t)json_integer_value(json_array_get(jinsn, 1));
+            insn->jf =
+                (uint8_t)json_integer_value(json_array_get(jinsn, 2));
+            insn->k =
+                (mudband_bpf_u_int32)json_integer_value(json_array_get(jinsn, 3));
+        }
+        r = mudband_bpf_validate(acl_program->insns, (int)acl_program->n_insns);
+        if (r != 1) {
+            vtc_log(confmgr_vl, 0,
+                "BANDEC_00514: BPF program validation failed:"
+                " r %d n_insns %d", r, acl_program->n_insns);
+            free(acl);
+            return (NULL);
+        }
+    }
+    return (acl);
+}
+
 int
 mudband_tunnel_confmgr_fill_iface_peer(json_t *jroot, struct wireguard_iface_peer *peer,
     int idx)
@@ -350,15 +454,25 @@ mudband_tunnel_confmgr_fill_iface_peer(json_t *jroot, struct wireguard_iface_pee
         json_t *jpeer, *jprivate_ip;
         json_t *jwireguard_pubkey, *jprivate_mask;
         json_t *jdevice_addresses, *jdevice_address;
-        json_t *jnat_type;
+        json_t *jnat_type, *jotp_sender, *jotp_receiver;
         int peer_nat_type;
-        size_t x;
+        size_t x, z;
 
         if (i != idx)
             continue;
         jpeer = json_array_get(jpeers, i);
         AN(jpeer);
         assert(json_is_object(jpeer));
+        /* otp_sender */
+        jotp_sender = json_object_get(jpeer, "otp_sender");
+        AN(jotp_sender);
+        assert(json_is_string(jotp_sender));
+        assert(json_string_length(jotp_sender) > 0);
+        /* otp_receiver */
+        jotp_receiver = json_object_get(jpeer, "otp_receiver");
+        AN(jotp_receiver);
+        assert(json_is_array(jotp_receiver));
+        assert(json_array_size(jotp_receiver) == 3);
         /* wireguard_pubkey */
         jwireguard_pubkey = json_object_get(jpeer, "wireguard_pubkey");
         AN(jwireguard_pubkey);
@@ -445,6 +559,23 @@ mudband_tunnel_confmgr_fill_iface_peer(json_t *jroot, struct wireguard_iface_pee
             (uint32_t)inet_addr(json_string_value(jprivate_mask));
         /* XXX */
         peer->iface_addr = peer->allowed_ip;
+        peer->otp_sender = (uint64_t)strtoull(json_string_value(jotp_sender), NULL, 16);
+        for (z = 0; z < json_array_size(jotp_receiver); z++) {
+            json_t *jone;
+            
+            jone = json_array_get(jotp_receiver, z);
+            AN(jone);
+            assert(json_is_string(jone));
+            assert(json_string_length(jone) > 0);
+            peer->otp_receiver[z] =
+            (uint64_t)strtoull(json_string_value(jone), NULL,
+                               16);
+        }
+        peer->otp_enabled = false;
+        if (peer->otp_receiver[0] != 0 || peer->otp_receiver[1] != 0 ||
+            peer->otp_receiver[2] != 0) {
+            peer->otp_enabled = true;
+        }
         return (0);
     }
     return (-1);

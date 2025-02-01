@@ -105,7 +105,7 @@ static struct callout_block wg_cb;
 static struct vtclog *stats_vl;
 static struct vtclog *wg_vl;
 struct wireguard_device *wg_device;
-int wg_band_need_iface_peers_update;
+int wg_band_need_iface_sync;
 PacketTunnelProvider *wg_tunnel_provider;
 
 uint32_t
@@ -561,6 +561,35 @@ wireguard_iface_init(struct wireguard_iface_init_data *init_data)
     return (device);
 }
 
+static int
+wireguard_iface_otp_reusable(struct wireguard_peer *peer,
+    struct wireguard_iface_peer *p)
+{
+    int i;
+
+    if (peer->otp_enabled != p->otp_enabled)
+        return (0);
+    if (peer->otp_sender != p->otp_sender)
+        return (0);
+    for (i = 0; i < 3; i++) {
+        if (peer->otp_receiver[i] != p->otp_receiver[i])
+            return (0);
+    }
+    return (1);
+}
+
+static void
+wireguard_iface_otp_update(struct wireguard_peer *peer,
+    struct wireguard_iface_peer *p)
+{
+    int i;
+
+    peer->otp_enabled = p->otp_enabled;
+    peer->otp_sender = p->otp_sender;
+    for (i = 0; i < 3; i++)
+        peer->otp_receiver[i] = p->otp_receiver[i];
+}
+
 static struct wireguard_peer *
 wireguard_iface_reusable_old_peer_by_pubkey(struct wireguard_peer *peers,
     int peers_count, uint8_t *public_key)
@@ -610,6 +639,8 @@ wireguard_iface_reusable_old_peer(struct wireguard_peer *peers,
         if (peer->endpoints[i].port != p->endpoints[i].port)
             return (NULL);
     }
+    if (!wireguard_iface_otp_reusable(peer, p))
+        return (NULL);
     return (peer);
 }
 
@@ -706,6 +737,7 @@ wireguard_iface_add_peer(struct wireguard_device *device,
                 "BANDEC_00328: wireguard_peer_init() failed");
         return (-1);
     }
+    wireguard_iface_otp_update(peer, p);
     peer->iface_addr = p->iface_addr;
     for (i = 0; i < p->n_endpoints; i++) {
         peer->endpoints[i].alive = false;
@@ -762,13 +794,13 @@ wireguard_iface_connect(struct wireguard_device *device, int peer_index)
 
     result = wireguard_iface_lookup_peer(device, peer_index, &peer);
     if (result == -1) {
-        vtc_log(band_vl, 0,
+        vtc_log(wg_vl, 0,
 		"BANDEC_00329: wireguard_iface_lookup_peer() failed");
         return (-1);
     }
     /* Check that a valid connect ip and port have been set */
     if (peer->endpoints[0].ip == INADDR_ANY || peer->endpoints[0].port == 0) {
-        vtc_log(band_vl, 0,
+        vtc_log(wg_vl, 0,
 		"BANDEC_00330: Invalid endpoint ip/port for peer");
         return (-1);
     }
@@ -781,9 +813,8 @@ wireguard_iface_connect(struct wireguard_device *device, int peer_index)
 }
 
 static void
-wireguard_iface_peers_update(struct wireguard_device *device)
+wireguard_iface_peers_update(struct wireguard_device *device, struct mudband_tunnel_bandconf *cnf)
 {
-    struct mudband_tunnel_bandconf *cnf;
     struct wireguard_peer *old_peers;
     int i, n_peers, r;
     int peer_index, old_peers_count;
@@ -793,8 +824,6 @@ wireguard_iface_peers_update(struct wireguard_device *device)
 
     old_peers_count = device->peers_count;
     old_peers = device->peers;
-    r = mudband_tunnel_confmgr_get(&cnf);
-    assert(r == 0);
     n_peers = mudband_tunnel_confmgr_get_peer_size(cnf->jroot);
     if (n_peers == 0) {
         device->peers_count = 0;
@@ -839,17 +868,41 @@ wireguard_iface_peers_update(struct wireguard_device *device)
             new_peer = wireguard_peer_alloc(device);
             AN(new_peer);
             *new_peer = *old_peer;
+            wireguard_iface_otp_update(new_peer, &iface_peer);
             n_reuse++;
         }
     }
 done:
-    mudband_tunnel_confmgr_rel(&cnf);
     if (old_peers != NULL)
         free(old_peers);
     vtc_log(wg_vl, 2,
             "Completed to update the wireguard peers information."
             " (%d peers %d create %d reuse %d failure)",
             n_peers, n_create, n_reuse, n_failure);
+}
+
+static void
+wireguard_iface_bpf_update(struct wireguard_device *device,
+                           struct mudband_tunnel_bandconf *cnf)
+{
+    struct wireguard_acl *acl;
+
+    acl = mudband_tunnel_confmgr_acl_build(cnf->jroot);
+    if (acl == NULL)
+        return;
+    device->acl = *acl;
+    free(acl);
+}
+
+static void
+wireguard_iface_sync(struct wireguard_device *device)
+{
+    struct mudband_tunnel_bandconf *cnf;
+
+    mudband_tunnel_confmgr_get(&cnf);
+    wireguard_iface_peers_update(device, cnf);
+    wireguard_iface_bpf_update(device, cnf);
+    mudband_tunnel_confmgr_rel(&cnf);
 }
 
 static char *
@@ -925,9 +978,9 @@ void
 mudband_tunnel_wireguard_ticks(void)
 {
 
-    if (wg_band_need_iface_peers_update) {
-        wg_band_need_iface_peers_update = 0;
-        wireguard_iface_peers_update(wg_device);
+    if (wg_band_need_iface_sync) {
+        wg_band_need_iface_sync = 0;
+        wireguard_iface_sync(wg_device);
     }
     COT_ticks(&wg_cb);
     COT_clock(&wg_cb);
@@ -1548,7 +1601,7 @@ void
 mudband_tunnel_iface_need_peers_update(void)
 {
     
-    wg_band_need_iface_peers_update = 1;
+    wg_band_need_iface_sync = 1;
 }
 
 int

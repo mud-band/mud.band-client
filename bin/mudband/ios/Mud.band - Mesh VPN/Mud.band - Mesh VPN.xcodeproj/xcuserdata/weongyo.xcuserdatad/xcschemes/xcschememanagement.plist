@@ -7,12 +7,12 @@
 		<key>Mud.band - Mesh VPN Tunnel.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 		<key>Mud.band - Mesh VPN.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>5</integer>
+			<integer>0</integer>
 		</dict>
 		<key>Playground (Playground) 1.xcscheme</key>
 		<dict>

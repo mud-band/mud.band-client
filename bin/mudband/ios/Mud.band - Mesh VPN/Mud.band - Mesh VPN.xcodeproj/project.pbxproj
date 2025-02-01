@@ -13,22 +13,6 @@
 		FB418AFD2D16528600E3897F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB418AFC2D16528600E3897F /* Preview Assets.xcassets */; };
 		FB418B042D1656BD00E3897F /* VpnManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB418B032D1656BD00E3897F /* VpnManager.swift */; };
 		FB418B082D16570500E3897F /* mudband_ui.m in Sources */ = {isa = PBXBuildFile; fileRef = FB418B072D16570500E3897F /* mudband_ui.m */; };
-		FB418B0C2D16579900E3897F /* vtc_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B0B2D16579900E3897F /* vtc_log.c */; };
-		FB418B0F2D1657BE00E3897F /* vtim.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B0D2D1657BE00E3897F /* vtim.c */; };
-		FB418B102D1657BE00E3897F /* vsb.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B0E2D1657BE00E3897F /* vsb.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB418B132D1657D900E3897F /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B112D1657D900E3897F /* odr.c */; };
-		FB418B142D1657D900E3897F /* odr_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B122D1657D900E3897F /* odr_pthread.c */; };
-		FB418B212D16587700E3897F /* dump.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B162D16587700E3897F /* dump.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB418B222D16587700E3897F /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B172D16587700E3897F /* memory.c */; };
-		FB418B232D16587700E3897F /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B182D16587700E3897F /* hashtable.c */; };
-		FB418B242D16587700E3897F /* strbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B192D16587700E3897F /* strbuffer.c */; };
-		FB418B252D16587700E3897F /* hashtable_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1A2D16587700E3897F /* hashtable_seed.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB418B262D16587700E3897F /* pack_unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1B2D16587700E3897F /* pack_unpack.c */; };
-		FB418B272D16587700E3897F /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1C2D16587700E3897F /* load.c */; };
-		FB418B282D16587700E3897F /* strconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1D2D16587700E3897F /* strconv.c */; };
-		FB418B292D16587700E3897F /* utf.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1E2D16587700E3897F /* utf.c */; };
-		FB418B2A2D16587700E3897F /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1F2D16587700E3897F /* value.c */; };
-		FB418B2B2D16587700E3897F /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B202D16587700E3897F /* error.c */; };
 		FB418B302D16593400E3897F /* libwireguard.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B2F2D16593400E3897F /* libwireguard.c */; };
 		FB418B382D16596600E3897F /* chacha20poly1305.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B332D16596600E3897F /* chacha20poly1305.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		FB418B392D16596600E3897F /* poly1305-donna.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B342D16596600E3897F /* poly1305-donna.c */; };
@@ -37,7 +21,6 @@
 		FB418B3C2D16596600E3897F /* blake2s.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B372D16596600E3897F /* blake2s.c */; };
 		FB418B3E2D1659B400E3897F /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B3D2D1659B400E3897F /* crypto.c */; };
 		FB418B402D165A3100E3897F /* mudband_ui_enroll.m in Sources */ = {isa = PBXBuildFile; fileRef = FB418B3F2D165A3000E3897F /* mudband_ui_enroll.m */; };
-		FB418B422D166C8300E3897F /* vuuid.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B412D166C8300E3897F /* vuuid.c */; };
 		FB418B442D166CAB00E3897F /* mudband_ui_progconf.m in Sources */ = {isa = PBXBuildFile; fileRef = FB418B432D166CAB00E3897F /* mudband_ui_progconf.m */; };
 		FB418B472D166DB700E3897F /* UiDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB418B462D166DB700E3897F /* UiDashboardView.swift */; };
 		FB418B4A2D166DE900E3897F /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = FB418B492D166DE900E3897F /* Alamofire */; };
@@ -52,40 +35,64 @@
 		FB71A7932D1674A900E739B0 /* mudband_tunnel.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7922D1674A900E739B0 /* mudband_tunnel.m */; };
 		FB71A7982D16758000E739B0 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = FB71A7972D16758000E739B0 /* Alamofire */; };
 		FB71A79A2D16758300E739B0 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = FB71A7992D16758300E739B0 /* SwiftyJSON */; };
-		FB71A79B2D1675A100E739B0 /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B112D1657D900E3897F /* odr.c */; };
-		FB71A79C2D1675A300E739B0 /* odr_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B122D1657D900E3897F /* odr_pthread.c */; };
 		FB71A79E2D1675D000E739B0 /* mudband_tunnel_confmgr.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A79D2D1675D000E739B0 /* mudband_tunnel_confmgr.m */; };
-		FB71A79F2D1675E000E739B0 /* dump.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B162D16587700E3897F /* dump.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB71A7A02D1675E300E739B0 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B202D16587700E3897F /* error.c */; };
-		FB71A7A12D1675E500E739B0 /* hashtable_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1A2D16587700E3897F /* hashtable_seed.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB71A7A22D1675E700E739B0 /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B182D16587700E3897F /* hashtable.c */; };
-		FB71A7A32D1675E900E739B0 /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1C2D16587700E3897F /* load.c */; };
-		FB71A7A42D1675EB00E739B0 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B172D16587700E3897F /* memory.c */; };
-		FB71A7A52D1675EE00E739B0 /* pack_unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1B2D16587700E3897F /* pack_unpack.c */; };
-		FB71A7A62D1675F000E739B0 /* strbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B192D16587700E3897F /* strbuffer.c */; };
-		FB71A7A72D1675F200E739B0 /* strconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1D2D16587700E3897F /* strconv.c */; };
-		FB71A7A82D1675F500E739B0 /* utf.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1E2D16587700E3897F /* utf.c */; };
-		FB71A7A92D1675F700E739B0 /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B1F2D16587700E3897F /* value.c */; };
 		FB71A7AB2D16761400E739B0 /* mudband_tunnel_connmgr.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7AA2D16761400E739B0 /* mudband_tunnel_connmgr.m */; };
 		FB71A7AD2D16763600E739B0 /* mudband_tunnel_enroll.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7AC2D16763600E739B0 /* mudband_tunnel_enroll.m */; };
 		FB71A7AF2D16765D00E739B0 /* mudband_tunnel_mqtt.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7AE2D16765D00E739B0 /* mudband_tunnel_mqtt.m */; };
 		FB71A7B12D16769100E739B0 /* mudband_tunnel_wireguard.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7B02D16769100E739B0 /* mudband_tunnel_wireguard.m */; };
-		FB71A7B42D16777100E739B0 /* callout.c in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7B32D16777100E739B0 /* callout.c */; };
-		FB71A7B52D16778000E739B0 /* vuuid.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B412D166C8300E3897F /* vuuid.c */; };
 		FB71A7B72D1677B800E739B0 /* mudband_tunnel_stun_client.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7B62D1677B800E739B0 /* mudband_tunnel_stun_client.m */; };
-		FB71A7B92D1677EB00E739B0 /* wireguard.c in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7B82D1677EB00E739B0 /* wireguard.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		FB71A7BA2D1677FC00E739B0 /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B3D2D1659B400E3897F /* crypto.c */; };
 		FB71A7BB2D1677FE00E739B0 /* blake2s.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B372D16596600E3897F /* blake2s.c */; };
 		FB71A7BC2D16780100E739B0 /* chacha20.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B362D16596600E3897F /* chacha20.c */; };
 		FB71A7BD2D16780300E739B0 /* chacha20poly1305.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B332D16596600E3897F /* chacha20poly1305.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		FB71A7BE2D16780500E739B0 /* poly1305-donna.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B342D16596600E3897F /* poly1305-donna.c */; };
 		FB71A7BF2D16780700E739B0 /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B352D16596600E3897F /* x25519.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		FB71A7C02D16781500E739B0 /* vtc_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B0B2D16579900E3897F /* vtc_log.c */; };
-		FB71A7C12D16782200E739B0 /* vsb.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B0E2D1657BE00E3897F /* vsb.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		FB71A7C32D16784400E739B0 /* mudband_tunnel_tasks.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7C22D16784400E739B0 /* mudband_tunnel_tasks.m */; };
 		FB71A7C52D16786B00E739B0 /* mudband_tunnel_progconf.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7C42D16786B00E739B0 /* mudband_tunnel_progconf.m */; };
-		FB71A7C62D16787C00E739B0 /* vtim.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B0D2D1657BE00E3897F /* vtim.c */; };
-		FB71A7C82D16789F00E739B0 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7C72D16789F00E739B0 /* vsock.c */; };
+		FBE9F1DC2D4DD9A600E87EE3 /* wireguard.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1DA2D4DD9A600E87EE3 /* wireguard.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBE9F1DD2D4DD9A600E87EE3 /* callout.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1DB2D4DD9A600E87EE3 /* callout.c */; };
+		FBE9F1EE2D4DD9E200E87EE3 /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E02D4DD9E200E87EE3 /* load.c */; };
+		FBE9F1EF2D4DD9E200E87EE3 /* strconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E12D4DD9E200E87EE3 /* strconv.c */; };
+		FBE9F1F02D4DD9E200E87EE3 /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E42D4DD9E200E87EE3 /* hashtable.c */; };
+		FBE9F1F12D4DD9E200E87EE3 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E72D4DD9E200E87EE3 /* memory.c */; };
+		FBE9F1F22D4DD9E200E87EE3 /* strbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E82D4DD9E200E87EE3 /* strbuffer.c */; };
+		FBE9F1F32D4DD9E200E87EE3 /* pack_unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1EB2D4DD9E200E87EE3 /* pack_unpack.c */; };
+		FBE9F1F42D4DD9E200E87EE3 /* utf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1EC2D4DD9E200E87EE3 /* utf.c */; };
+		FBE9F1F52D4DD9E200E87EE3 /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1ED2D4DD9E200E87EE3 /* value.c */; };
+		FBE9F1F82D4DDA4300E87EE3 /* wireguard-pbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1F62D4DDA4300E87EE3 /* wireguard-pbuf.c */; };
+		FBE9F1F92D4DDA4300E87EE3 /* mudband_bpf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1F72D4DDA4300E87EE3 /* mudband_bpf.c */; };
+		FBE9F1FA2D4DDA5800E87EE3 /* hashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E42D4DD9E200E87EE3 /* hashtable.c */; };
+		FBE9F1FB2D4DDA5B00E87EE3 /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E02D4DD9E200E87EE3 /* load.c */; };
+		FBE9F1FC2D4DDA5E00E87EE3 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E72D4DD9E200E87EE3 /* memory.c */; };
+		FBE9F1FD2D4DDA6000E87EE3 /* pack_unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1EB2D4DD9E200E87EE3 /* pack_unpack.c */; };
+		FBE9F1FE2D4DDA6300E87EE3 /* strbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E82D4DD9E200E87EE3 /* strbuffer.c */; };
+		FBE9F1FF2D4DDA6600E87EE3 /* strconv.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E12D4DD9E200E87EE3 /* strconv.c */; };
+		FBE9F2002D4DDA6800E87EE3 /* utf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1EC2D4DD9E200E87EE3 /* utf.c */; };
+		FBE9F2012D4DDA6B00E87EE3 /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1ED2D4DD9E200E87EE3 /* value.c */; };
+		FBE9F2092D4DDA9A00E87EE3 /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2032D4DDA9A00E87EE3 /* odr.c */; };
+		FBE9F20A2D4DDA9A00E87EE3 /* vuuid.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2042D4DDA9A00E87EE3 /* vuuid.c */; };
+		FBE9F20B2D4DDA9A00E87EE3 /* vtc_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2052D4DDA9A00E87EE3 /* vtc_log.c */; };
+		FBE9F20C2D4DDA9A00E87EE3 /* odr_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2062D4DDA9A00E87EE3 /* odr_pthread.c */; };
+		FBE9F20D2D4DDA9A00E87EE3 /* vtim.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2072D4DDA9A00E87EE3 /* vtim.c */; };
+		FBE9F20E2D4DDA9A00E87EE3 /* vsb.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2082D4DDA9A00E87EE3 /* vsb.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBE9F2102D4DDAB700E87EE3 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F20F2D4DDAB700E87EE3 /* vsock.c */; };
+		FBE9F2142D4DDAE200E87EE3 /* hashtable_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2112D4DDAE200E87EE3 /* hashtable_seed.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBE9F2152D4DDAE200E87EE3 /* hashtable_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2112D4DDAE200E87EE3 /* hashtable_seed.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBE9F2162D4DDAE200E87EE3 /* dump.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2122D4DDAE200E87EE3 /* dump.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBE9F2172D4DDAE200E87EE3 /* dump.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2122D4DDAE200E87EE3 /* dump.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBE9F2182D4DDAE200E87EE3 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2132D4DDAE200E87EE3 /* error.c */; };
+		FBE9F2192D4DDAE200E87EE3 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2132D4DDAE200E87EE3 /* error.c */; };
+		FBE9F21A2D4DDAFB00E87EE3 /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2032D4DDA9A00E87EE3 /* odr.c */; };
+		FBE9F21B2D4DDB0700E87EE3 /* vtc_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2052D4DDA9A00E87EE3 /* vtc_log.c */; };
+		FBE9F21C2D4DDB0900E87EE3 /* vuuid.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2042D4DDA9A00E87EE3 /* vuuid.c */; };
+		FBE9F21D2D4DDB1300E87EE3 /* odr_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2062D4DDA9A00E87EE3 /* odr_pthread.c */; };
+		FBE9F21E2D4DDB1600E87EE3 /* vsb.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2082D4DDA9A00E87EE3 /* vsb.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		FBE9F21F2D4DDB1E00E87EE3 /* vtim.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2072D4DDA9A00E87EE3 /* vtim.c */; };
+		FBE9F2212D4DDDAC00E87EE3 /* UiDashboardSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2202D4DDDAC00E87EE3 /* UiDashboardSplitView.swift */; };
+		FBE9F2242D4DDDDA00E87EE3 /* UiDashboardSetupListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2232D4DDDDA00E87EE3 /* UiDashboardSetupListView.swift */; };
+		FBE9F2262D4DDE1E00E87EE3 /* UiDashboardStatusListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2252D4DDE1E00E87EE3 /* UiDashboardStatusListView.swift */; };
+		FBE9F2282D4DDE5100E87EE3 /* UiDashboardDevicesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2272D4DDE5100E87EE3 /* UiDashboardDevicesListView.swift */; };
+		FBE9F22A2D4DDFD800E87EE3 /* UiDashboardLinksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F2292D4DDFD800E87EE3 /* UiDashboardLinksListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,22 +128,6 @@
 		FB418B032D1656BD00E3897F /* VpnManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VpnManager.swift; sourceTree = "<group>"; };
 		FB418B062D16570500E3897F /* Mud.band - Mesh VPN-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mud.band - Mesh VPN-Bridging-Header.h"; sourceTree = "<group>"; };
 		FB418B072D16570500E3897F /* mudband_ui.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui.m; sourceTree = "<group>"; };
-		FB418B0B2D16579900E3897F /* vtc_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vtc_log.c; path = ../../../../../../../lib/libmud/vtc_log.c; sourceTree = "<group>"; };
-		FB418B0D2D1657BE00E3897F /* vtim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vtim.c; path = ../../../../../../../lib/libmud/vtim.c; sourceTree = "<group>"; };
-		FB418B0E2D1657BE00E3897F /* vsb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsb.c; path = ../../../../../../../lib/libmud/vsb.c; sourceTree = "<group>"; };
-		FB418B112D1657D900E3897F /* odr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = odr.c; path = ../../../../../../../lib/libmud/odr.c; sourceTree = "<group>"; };
-		FB418B122D1657D900E3897F /* odr_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = odr_pthread.c; path = ../../../../../../../lib/libmud/odr_pthread.c; sourceTree = "<group>"; };
-		FB418B162D16587700E3897F /* dump.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dump.c; path = ../../../../../../../lib/libjansson/dump.c; sourceTree = "<group>"; };
-		FB418B172D16587700E3897F /* memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = memory.c; path = ../../../../../../../lib/libjansson/memory.c; sourceTree = "<group>"; };
-		FB418B182D16587700E3897F /* hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable.c; path = ../../../../../../../lib/libjansson/hashtable.c; sourceTree = "<group>"; };
-		FB418B192D16587700E3897F /* strbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strbuffer.c; path = ../../../../../../../lib/libjansson/strbuffer.c; sourceTree = "<group>"; };
-		FB418B1A2D16587700E3897F /* hashtable_seed.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable_seed.c; path = ../../../../../../../lib/libjansson/hashtable_seed.c; sourceTree = "<group>"; };
-		FB418B1B2D16587700E3897F /* pack_unpack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pack_unpack.c; path = ../../../../../../../lib/libjansson/pack_unpack.c; sourceTree = "<group>"; };
-		FB418B1C2D16587700E3897F /* load.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = load.c; path = ../../../../../../../lib/libjansson/load.c; sourceTree = "<group>"; };
-		FB418B1D2D16587700E3897F /* strconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strconv.c; path = ../../../../../../../lib/libjansson/strconv.c; sourceTree = "<group>"; };
-		FB418B1E2D16587700E3897F /* utf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utf.c; path = ../../../../../../../lib/libjansson/utf.c; sourceTree = "<group>"; };
-		FB418B1F2D16587700E3897F /* value.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = value.c; path = ../../../../../../../lib/libjansson/value.c; sourceTree = "<group>"; };
-		FB418B202D16587700E3897F /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = error.c; path = ../../../../../../../lib/libjansson/error.c; sourceTree = "<group>"; };
 		FB418B2C2D1658C700E3897F /* mudband_ui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_ui.h; sourceTree = "<group>"; };
 		FB418B2E2D16590F00E3897F /* libwireguard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libwireguard.h; sourceTree = "<group>"; };
 		FB418B2F2D16593400E3897F /* libwireguard.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libwireguard.c; sourceTree = "<group>"; };
@@ -147,7 +138,6 @@
 		FB418B372D16596600E3897F /* blake2s.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = blake2s.c; path = ../../../../../../common/crypto/blake2s.c; sourceTree = "<group>"; };
 		FB418B3D2D1659B400E3897F /* crypto.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crypto.c; path = ../../../../../../common/crypto.c; sourceTree = "<group>"; };
 		FB418B3F2D165A3000E3897F /* mudband_ui_enroll.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui_enroll.m; sourceTree = "<group>"; };
-		FB418B412D166C8300E3897F /* vuuid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vuuid.c; path = ../../../../../../../lib/libmud/vuuid.c; sourceTree = "<group>"; };
 		FB418B432D166CAB00E3897F /* mudband_ui_progconf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui_progconf.m; sourceTree = "<group>"; };
 		FB418B462D166DB700E3897F /* UiDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardView.swift; sourceTree = "<group>"; };
 		FB418B502D166E3500E3897F /* FileManagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerExtension.swift; sourceTree = "<group>"; };
@@ -170,12 +160,43 @@
 		FB71A7AC2D16763600E739B0 /* mudband_tunnel_enroll.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_enroll.m; sourceTree = "<group>"; };
 		FB71A7AE2D16765D00E739B0 /* mudband_tunnel_mqtt.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_mqtt.m; sourceTree = "<group>"; };
 		FB71A7B02D16769100E739B0 /* mudband_tunnel_wireguard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_wireguard.m; sourceTree = "<group>"; };
-		FB71A7B32D16777100E739B0 /* callout.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = callout.c; path = ../../../../common/callout.c; sourceTree = "<group>"; };
 		FB71A7B62D1677B800E739B0 /* mudband_tunnel_stun_client.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_stun_client.m; sourceTree = "<group>"; };
-		FB71A7B82D1677EB00E739B0 /* wireguard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wireguard.c; path = ../../../../common/wireguard.c; sourceTree = "<group>"; };
 		FB71A7C22D16784400E739B0 /* mudband_tunnel_tasks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_tasks.m; sourceTree = "<group>"; };
 		FB71A7C42D16786B00E739B0 /* mudband_tunnel_progconf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_progconf.m; sourceTree = "<group>"; };
-		FB71A7C72D16789F00E739B0 /* vsock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsock.c; path = ../../../../../../../lib/libmud/vsock.c; sourceTree = "<group>"; };
+		FBE9F1DA2D4DD9A600E87EE3 /* wireguard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wireguard.c; path = ../../../../common/wireguard.c; sourceTree = "<group>"; };
+		FBE9F1DB2D4DD9A600E87EE3 /* callout.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = callout.c; path = ../../../../common/callout.c; sourceTree = "<group>"; };
+		FBE9F1DF2D4DD9E200E87EE3 /* lookup3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lookup3.h; path = ../../../../../../../lib/libjansson/lookup3.h; sourceTree = "<group>"; };
+		FBE9F1E02D4DD9E200E87EE3 /* load.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = load.c; path = ../../../../../../../lib/libjansson/load.c; sourceTree = "<group>"; };
+		FBE9F1E12D4DD9E200E87EE3 /* strconv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strconv.c; path = ../../../../../../../lib/libjansson/strconv.c; sourceTree = "<group>"; };
+		FBE9F1E22D4DD9E200E87EE3 /* jansson_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jansson_private.h; path = ../../../../../../../lib/libjansson/jansson_private.h; sourceTree = "<group>"; };
+		FBE9F1E32D4DD9E200E87EE3 /* utf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf.h; path = ../../../../../../../lib/libjansson/utf.h; sourceTree = "<group>"; };
+		FBE9F1E42D4DD9E200E87EE3 /* hashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable.c; path = ../../../../../../../lib/libjansson/hashtable.c; sourceTree = "<group>"; };
+		FBE9F1E52D4DD9E200E87EE3 /* hashtable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hashtable.h; path = ../../../../../../../lib/libjansson/hashtable.h; sourceTree = "<group>"; };
+		FBE9F1E62D4DD9E200E87EE3 /* jansson_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jansson_config.h; path = ../../../../../../../lib/libjansson/jansson_config.h; sourceTree = "<group>"; };
+		FBE9F1E72D4DD9E200E87EE3 /* memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = memory.c; path = ../../../../../../../lib/libjansson/memory.c; sourceTree = "<group>"; };
+		FBE9F1E82D4DD9E200E87EE3 /* strbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strbuffer.c; path = ../../../../../../../lib/libjansson/strbuffer.c; sourceTree = "<group>"; };
+		FBE9F1E92D4DD9E200E87EE3 /* jansson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jansson.h; path = ../../../../../../../lib/libjansson/jansson.h; sourceTree = "<group>"; };
+		FBE9F1EA2D4DD9E200E87EE3 /* strbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strbuffer.h; path = ../../../../../../../lib/libjansson/strbuffer.h; sourceTree = "<group>"; };
+		FBE9F1EB2D4DD9E200E87EE3 /* pack_unpack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pack_unpack.c; path = ../../../../../../../lib/libjansson/pack_unpack.c; sourceTree = "<group>"; };
+		FBE9F1EC2D4DD9E200E87EE3 /* utf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utf.c; path = ../../../../../../../lib/libjansson/utf.c; sourceTree = "<group>"; };
+		FBE9F1ED2D4DD9E200E87EE3 /* value.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = value.c; path = ../../../../../../../lib/libjansson/value.c; sourceTree = "<group>"; };
+		FBE9F1F62D4DDA4300E87EE3 /* wireguard-pbuf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "wireguard-pbuf.c"; path = "../../../../common/wireguard-pbuf.c"; sourceTree = "<group>"; };
+		FBE9F1F72D4DDA4300E87EE3 /* mudband_bpf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mudband_bpf.c; path = ../../../../common/mudband_bpf.c; sourceTree = "<group>"; };
+		FBE9F2032D4DDA9A00E87EE3 /* odr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = odr.c; path = ../../../../../../../lib/libmud/odr.c; sourceTree = "<group>"; };
+		FBE9F2042D4DDA9A00E87EE3 /* vuuid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vuuid.c; path = ../../../../../../../lib/libmud/vuuid.c; sourceTree = "<group>"; };
+		FBE9F2052D4DDA9A00E87EE3 /* vtc_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vtc_log.c; path = ../../../../../../../lib/libmud/vtc_log.c; sourceTree = "<group>"; };
+		FBE9F2062D4DDA9A00E87EE3 /* odr_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = odr_pthread.c; path = ../../../../../../../lib/libmud/odr_pthread.c; sourceTree = "<group>"; };
+		FBE9F2072D4DDA9A00E87EE3 /* vtim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vtim.c; path = ../../../../../../../lib/libmud/vtim.c; sourceTree = "<group>"; };
+		FBE9F2082D4DDA9A00E87EE3 /* vsb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsb.c; path = ../../../../../../../lib/libmud/vsb.c; sourceTree = "<group>"; };
+		FBE9F20F2D4DDAB700E87EE3 /* vsock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsock.c; path = ../../../../../../../lib/libmud/vsock.c; sourceTree = "<group>"; };
+		FBE9F2112D4DDAE200E87EE3 /* hashtable_seed.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hashtable_seed.c; path = ../../../../../../../lib/libjansson/hashtable_seed.c; sourceTree = "<group>"; };
+		FBE9F2122D4DDAE200E87EE3 /* dump.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dump.c; path = ../../../../../../../lib/libjansson/dump.c; sourceTree = "<group>"; };
+		FBE9F2132D4DDAE200E87EE3 /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = error.c; path = ../../../../../../../lib/libjansson/error.c; sourceTree = "<group>"; };
+		FBE9F2202D4DDDAC00E87EE3 /* UiDashboardSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardSplitView.swift; sourceTree = "<group>"; };
+		FBE9F2232D4DDDDA00E87EE3 /* UiDashboardSetupListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardSetupListView.swift; sourceTree = "<group>"; };
+		FBE9F2252D4DDE1E00E87EE3 /* UiDashboardStatusListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardStatusListView.swift; sourceTree = "<group>"; };
+		FBE9F2272D4DDE5100E87EE3 /* UiDashboardDevicesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardDevicesListView.swift; sourceTree = "<group>"; };
+		FBE9F2292D4DDFD800E87EE3 /* UiDashboardLinksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardLinksListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -258,44 +279,12 @@
 		FB418B092D16577B00E3897F /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				FBE9F2022D4DDA7900E87EE3 /* libmud */,
+				FBE9F1DE2D4DD9C800E87EE3 /* libjansson */,
 				FB418B502D166E3500E3897F /* FileManagerExtension.swift */,
-				FB418B152D16585A00E3897F /* libjansson */,
-				FB418B0A2D16578400E3897F /* libmud */,
 				FB418B2D2D1658FD00E3897F /* libwireguard */,
 			);
 			path = lib;
-			sourceTree = "<group>";
-		};
-		FB418B0A2D16578400E3897F /* libmud */ = {
-			isa = PBXGroup;
-			children = (
-				FB418B122D1657D900E3897F /* odr_pthread.c */,
-				FB418B112D1657D900E3897F /* odr.c */,
-				FB418B0E2D1657BE00E3897F /* vsb.c */,
-				FB71A7C72D16789F00E739B0 /* vsock.c */,
-				FB418B0B2D16579900E3897F /* vtc_log.c */,
-				FB418B0D2D1657BE00E3897F /* vtim.c */,
-				FB418B412D166C8300E3897F /* vuuid.c */,
-			);
-			path = libmud;
-			sourceTree = "<group>";
-		};
-		FB418B152D16585A00E3897F /* libjansson */ = {
-			isa = PBXGroup;
-			children = (
-				FB418B162D16587700E3897F /* dump.c */,
-				FB418B202D16587700E3897F /* error.c */,
-				FB418B1A2D16587700E3897F /* hashtable_seed.c */,
-				FB418B182D16587700E3897F /* hashtable.c */,
-				FB418B1C2D16587700E3897F /* load.c */,
-				FB418B172D16587700E3897F /* memory.c */,
-				FB418B1B2D16587700E3897F /* pack_unpack.c */,
-				FB418B192D16587700E3897F /* strbuffer.c */,
-				FB418B1D2D16587700E3897F /* strconv.c */,
-				FB418B1E2D16587700E3897F /* utf.c */,
-				FB418B1F2D16587700E3897F /* value.c */,
-			);
-			path = libjansson;
 			sourceTree = "<group>";
 		};
 		FB418B2D2D1658FD00E3897F /* libwireguard */ = {
@@ -324,6 +313,8 @@
 		FB418B452D166D5100E3897F /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				FBE9F2222D4DDDB200E87EE3 /* dashboard */,
+				FBE9F2202D4DDDAC00E87EE3 /* UiDashboardSplitView.swift */,
 				FB418B462D166DB700E3897F /* UiDashboardView.swift */,
 				FB418B552D166EBE00E3897F /* UiEnrollmentChangeView.swift */,
 				FB418B532D166E9C00E3897F /* UiEnrollmentNewView.swift */,
@@ -343,7 +334,7 @@
 		FB71A7812D16724100E739B0 /* Mud.band - Mesh VPN Tunnel */ = {
 			isa = PBXGroup;
 			children = (
-				FB71A7B22D16774F00E739B0 /* common */,
+				FBE9F1D92D4DD99400E87EE3 /* common */,
 				FB71A7902D16749900E739B0 /* objc */,
 				FB71A78D2D16746D00E739B0 /* lib */,
 				FB71A7822D16724100E739B0 /* PacketTunnelProvider.swift */,
@@ -381,13 +372,65 @@
 			path = objc;
 			sourceTree = "<group>";
 		};
-		FB71A7B22D16774F00E739B0 /* common */ = {
+		FBE9F1D92D4DD99400E87EE3 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				FB71A7B32D16777100E739B0 /* callout.c */,
-				FB71A7B82D1677EB00E739B0 /* wireguard.c */,
+				FBE9F1F72D4DDA4300E87EE3 /* mudband_bpf.c */,
+				FBE9F1F62D4DDA4300E87EE3 /* wireguard-pbuf.c */,
+				FBE9F1DB2D4DD9A600E87EE3 /* callout.c */,
+				FBE9F1DA2D4DD9A600E87EE3 /* wireguard.c */,
 			);
 			path = common;
+			sourceTree = "<group>";
+		};
+		FBE9F1DE2D4DD9C800E87EE3 /* libjansson */ = {
+			isa = PBXGroup;
+			children = (
+				FBE9F1E42D4DD9E200E87EE3 /* hashtable.c */,
+				FBE9F2122D4DDAE200E87EE3 /* dump.c */,
+				FBE9F2132D4DDAE200E87EE3 /* error.c */,
+				FBE9F2112D4DDAE200E87EE3 /* hashtable_seed.c */,
+				FBE9F1E52D4DD9E200E87EE3 /* hashtable.h */,
+				FBE9F1E62D4DD9E200E87EE3 /* jansson_config.h */,
+				FBE9F1E22D4DD9E200E87EE3 /* jansson_private.h */,
+				FBE9F1E92D4DD9E200E87EE3 /* jansson.h */,
+				FBE9F1E02D4DD9E200E87EE3 /* load.c */,
+				FBE9F1DF2D4DD9E200E87EE3 /* lookup3.h */,
+				FBE9F1E72D4DD9E200E87EE3 /* memory.c */,
+				FBE9F1EB2D4DD9E200E87EE3 /* pack_unpack.c */,
+				FBE9F1E82D4DD9E200E87EE3 /* strbuffer.c */,
+				FBE9F1EA2D4DD9E200E87EE3 /* strbuffer.h */,
+				FBE9F1E12D4DD9E200E87EE3 /* strconv.c */,
+				FBE9F1EC2D4DD9E200E87EE3 /* utf.c */,
+				FBE9F1E32D4DD9E200E87EE3 /* utf.h */,
+				FBE9F1ED2D4DD9E200E87EE3 /* value.c */,
+			);
+			path = libjansson;
+			sourceTree = "<group>";
+		};
+		FBE9F2022D4DDA7900E87EE3 /* libmud */ = {
+			isa = PBXGroup;
+			children = (
+				FBE9F20F2D4DDAB700E87EE3 /* vsock.c */,
+				FBE9F2062D4DDA9A00E87EE3 /* odr_pthread.c */,
+				FBE9F2032D4DDA9A00E87EE3 /* odr.c */,
+				FBE9F2082D4DDA9A00E87EE3 /* vsb.c */,
+				FBE9F2052D4DDA9A00E87EE3 /* vtc_log.c */,
+				FBE9F2072D4DDA9A00E87EE3 /* vtim.c */,
+				FBE9F2042D4DDA9A00E87EE3 /* vuuid.c */,
+			);
+			path = libmud;
+			sourceTree = "<group>";
+		};
+		FBE9F2222D4DDDB200E87EE3 /* dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				FBE9F2272D4DDE5100E87EE3 /* UiDashboardDevicesListView.swift */,
+				FBE9F2292D4DDFD800E87EE3 /* UiDashboardLinksListView.swift */,
+				FBE9F2232D4DDDDA00E87EE3 /* UiDashboardSetupListView.swift */,
+				FBE9F2252D4DDE1E00E87EE3 /* UiDashboardStatusListView.swift */,
+			);
+			path = dashboard;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -504,40 +547,45 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBE9F21E2D4DDB1600E87EE3 /* vsb.c in Sources */,
+				FBE9F1F52D4DD9E200E87EE3 /* value.c in Sources */,
+				FBE9F2262D4DDE1E00E87EE3 /* UiDashboardStatusListView.swift in Sources */,
+				FBE9F2142D4DDAE200E87EE3 /* hashtable_seed.c in Sources */,
 				FB418B542D166E9C00E3897F /* UiEnrollmentNewView.swift in Sources */,
 				FB418B302D16593400E3897F /* libwireguard.c in Sources */,
 				FB418B472D166DB700E3897F /* UiDashboardView.swift in Sources */,
 				FB418AF82D16528500E3897F /* UiMainEntryView.swift in Sources */,
 				FB418AF62D16528500E3897F /* MudbandMeshVPN.swift in Sources */,
-				FB418B422D166C8300E3897F /* vuuid.c in Sources */,
+				FBE9F2282D4DDE5100E87EE3 /* UiDashboardDevicesListView.swift in Sources */,
 				FB418B042D1656BD00E3897F /* VpnManager.swift in Sources */,
-				FB418B142D1657D900E3897F /* odr_pthread.c in Sources */,
-				FB418B132D1657D900E3897F /* odr.c in Sources */,
-				FB418B212D16587700E3897F /* dump.c in Sources */,
-				FB418B242D16587700E3897F /* strbuffer.c in Sources */,
+				FBE9F2242D4DDDDA00E87EE3 /* UiDashboardSetupListView.swift in Sources */,
+				FBE9F1EF2D4DD9E200E87EE3 /* strconv.c in Sources */,
+				FBE9F1F12D4DD9E200E87EE3 /* memory.c in Sources */,
+				FBE9F21D2D4DDB1300E87EE3 /* odr_pthread.c in Sources */,
+				FBE9F2182D4DDAE200E87EE3 /* error.c in Sources */,
+				FBE9F1F32D4DD9E200E87EE3 /* pack_unpack.c in Sources */,
 				FB418B442D166CAB00E3897F /* mudband_ui_progconf.m in Sources */,
+				FBE9F1EE2D4DD9E200E87EE3 /* load.c in Sources */,
+				FBE9F21A2D4DDAFB00E87EE3 /* odr.c in Sources */,
 				FB418B392D16596600E3897F /* poly1305-donna.c in Sources */,
-				FB418B272D16587700E3897F /* load.c in Sources */,
 				FB418B512D166E3600E3897F /* FileManagerExtension.swift in Sources */,
 				FB418B082D16570500E3897F /* mudband_ui.m in Sources */,
+				FBE9F1F22D4DD9E200E87EE3 /* strbuffer.c in Sources */,
+				FBE9F1F02D4DD9E200E87EE3 /* hashtable.c in Sources */,
+				FBE9F22A2D4DDFD800E87EE3 /* UiDashboardLinksListView.swift in Sources */,
+				FBE9F21C2D4DDB0900E87EE3 /* vuuid.c in Sources */,
+				FBE9F2212D4DDDAC00E87EE3 /* UiDashboardSplitView.swift in Sources */,
 				FB418B382D16596600E3897F /* chacha20poly1305.c in Sources */,
-				FB418B2A2D16587700E3897F /* value.c in Sources */,
-				FB418B292D16587700E3897F /* utf.c in Sources */,
-				FB418B0C2D16579900E3897F /* vtc_log.c in Sources */,
 				FB418B3B2D16596600E3897F /* chacha20.c in Sources */,
 				FB418B3A2D16596600E3897F /* x25519.c in Sources */,
-				FB418B232D16587700E3897F /* hashtable.c in Sources */,
-				FB418B262D16587700E3897F /* pack_unpack.c in Sources */,
-				FB418B2B2D16587700E3897F /* error.c in Sources */,
 				FB418B3C2D16596600E3897F /* blake2s.c in Sources */,
-				FB418B222D16587700E3897F /* memory.c in Sources */,
+				FBE9F21B2D4DDB0700E87EE3 /* vtc_log.c in Sources */,
 				FB418B3E2D1659B400E3897F /* crypto.c in Sources */,
-				FB418B102D1657BE00E3897F /* vsb.c in Sources */,
-				FB418B282D16587700E3897F /* strconv.c in Sources */,
+				FBE9F21F2D4DDB1E00E87EE3 /* vtim.c in Sources */,
+				FBE9F2162D4DDAE200E87EE3 /* dump.c in Sources */,
+				FBE9F1F42D4DD9E200E87EE3 /* utf.c in Sources */,
 				FB418B562D166EBE00E3897F /* UiEnrollmentChangeView.swift in Sources */,
 				FB418B402D165A3100E3897F /* mudband_ui_enroll.m in Sources */,
-				FB418B0F2D1657BE00E3897F /* vtim.c in Sources */,
-				FB418B252D16587700E3897F /* hashtable_seed.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,43 +593,45 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FB71A7C12D16782200E739B0 /* vsb.c in Sources */,
 				FB71A79E2D1675D000E739B0 /* mudband_tunnel_confmgr.m in Sources */,
 				FB71A7B12D16769100E739B0 /* mudband_tunnel_wireguard.m in Sources */,
 				FB71A7BF2D16780700E739B0 /* x25519.c in Sources */,
+				FBE9F2192D4DDAE200E87EE3 /* error.c in Sources */,
 				FB71A7AF2D16765D00E739B0 /* mudband_tunnel_mqtt.m in Sources */,
-				FB71A7A32D1675E900E739B0 /* load.c in Sources */,
 				FB71A7BA2D1677FC00E739B0 /* crypto.c in Sources */,
 				FB71A7932D1674A900E739B0 /* mudband_tunnel.m in Sources */,
-				FB71A7A22D1675E700E739B0 /* hashtable.c in Sources */,
-				FB71A7C02D16781500E739B0 /* vtc_log.c in Sources */,
-				FB71A7B52D16778000E739B0 /* vuuid.c in Sources */,
-				FB71A7A72D1675F200E739B0 /* strconv.c in Sources */,
 				FB71A7AD2D16763600E739B0 /* mudband_tunnel_enroll.m in Sources */,
-				FB71A7A82D1675F500E739B0 /* utf.c in Sources */,
 				FB71A7BB2D1677FE00E739B0 /* blake2s.c in Sources */,
+				FBE9F20B2D4DDA9A00E87EE3 /* vtc_log.c in Sources */,
+				FBE9F1FA2D4DDA5800E87EE3 /* hashtable.c in Sources */,
+				FBE9F2092D4DDA9A00E87EE3 /* odr.c in Sources */,
 				FB71A7C52D16786B00E739B0 /* mudband_tunnel_progconf.m in Sources */,
-				FB71A7A02D1675E300E739B0 /* error.c in Sources */,
+				FBE9F1FC2D4DDA5E00E87EE3 /* memory.c in Sources */,
 				FB71A7BD2D16780300E739B0 /* chacha20poly1305.c in Sources */,
-				FB71A7A92D1675F700E739B0 /* value.c in Sources */,
+				FBE9F1DC2D4DD9A600E87EE3 /* wireguard.c in Sources */,
+				FBE9F2172D4DDAE200E87EE3 /* dump.c in Sources */,
+				FBE9F20C2D4DDA9A00E87EE3 /* odr_pthread.c in Sources */,
 				FB71A7C32D16784400E739B0 /* mudband_tunnel_tasks.m in Sources */,
 				FB71A7BE2D16780500E739B0 /* poly1305-donna.c in Sources */,
+				FBE9F1F82D4DDA4300E87EE3 /* wireguard-pbuf.c in Sources */,
+				FBE9F2152D4DDAE200E87EE3 /* hashtable_seed.c in Sources */,
 				FB71A7832D16724100E739B0 /* PacketTunnelProvider.swift in Sources */,
 				FB71A78F2D16747F00E739B0 /* FileManagerExtension.swift in Sources */,
 				FB71A7B72D1677B800E739B0 /* mudband_tunnel_stun_client.m in Sources */,
-				FB71A79B2D1675A100E739B0 /* odr.c in Sources */,
-				FB71A7B42D16777100E739B0 /* callout.c in Sources */,
-				FB71A7A12D1675E500E739B0 /* hashtable_seed.c in Sources */,
-				FB71A79F2D1675E000E739B0 /* dump.c in Sources */,
+				FBE9F20A2D4DDA9A00E87EE3 /* vuuid.c in Sources */,
+				FBE9F1FF2D4DDA6600E87EE3 /* strconv.c in Sources */,
+				FBE9F1FE2D4DDA6300E87EE3 /* strbuffer.c in Sources */,
+				FBE9F2002D4DDA6800E87EE3 /* utf.c in Sources */,
+				FBE9F1DD2D4DD9A600E87EE3 /* callout.c in Sources */,
+				FBE9F1FD2D4DDA6000E87EE3 /* pack_unpack.c in Sources */,
+				FBE9F1FB2D4DDA5B00E87EE3 /* load.c in Sources */,
+				FBE9F20D2D4DDA9A00E87EE3 /* vtim.c in Sources */,
+				FBE9F2102D4DDAB700E87EE3 /* vsock.c in Sources */,
+				FBE9F2012D4DDA6B00E87EE3 /* value.c in Sources */,
 				FB71A7BC2D16780100E739B0 /* chacha20.c in Sources */,
-				FB71A7A42D1675EB00E739B0 /* memory.c in Sources */,
-				FB71A7C82D16789F00E739B0 /* vsock.c in Sources */,
-				FB71A7B92D1677EB00E739B0 /* wireguard.c in Sources */,
+				FBE9F1F92D4DDA4300E87EE3 /* mudband_bpf.c in Sources */,
+				FBE9F20E2D4DDA9A00E87EE3 /* vsb.c in Sources */,
 				FB71A7AB2D16761400E739B0 /* mudband_tunnel_connmgr.m in Sources */,
-				FB71A7A52D1675EE00E739B0 /* pack_unpack.c in Sources */,
-				FB71A79C2D1675A300E739B0 /* odr_pthread.c in Sources */,
-				FB71A7A62D1675F000E739B0 /* strbuffer.c in Sources */,
-				FB71A7C62D16787C00E739B0 /* vtim.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
