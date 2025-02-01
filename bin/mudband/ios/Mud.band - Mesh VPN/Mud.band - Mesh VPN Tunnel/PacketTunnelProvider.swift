@@ -66,6 +66,7 @@ import SwiftyJSON
         case no_private_ip_mask_found
         case wrong_mtu_found
         case response_status_error
+        case mfa_required
     }
     
     func ipv4ToInt64(_ ipv4: String) -> Int64? {
@@ -89,13 +90,13 @@ import SwiftyJSON
         return "\(octet1).\(octet2).\(octet3).\(octet4)"
     }
     
-    func mudband_tunnel_confmgr_fetch(fetchType: String, fetchCompletionHandler: @escaping (Error?) -> Void) {
+    func mudband_tunnel_confmgr_fetch(fetchType: String, fetchCompletionHandler: @escaping (Error?, String) -> Void) {
         var headers: HTTPHeaders = []
         if let jwt = mudband_tunnel_enroll_get_jwt() {
             headers["Authorization"] = jwt
         } else {
             mudband_tunnel_log(0, "BANDEC_00291: mudband_tunnel_enroll_get_jwt() failed.")
-            fetchCompletionHandler(band_tunnel_error.no_jwt_token_found)
+            fetchCompletionHandler(band_tunnel_error.no_jwt_token_found, "No JWT token found")
             return
         }
         if let etag = mudband_tunnel_confmgr_get_etag() {
@@ -106,7 +107,7 @@ import SwiftyJSON
         let maddresses = mudband_tunnel_confmgr_getifaddrs()
         if maddresses == nil {
             mudband_tunnel_log(0, "BANDEC_00292: mudband_tunnel_confmgr_getifaddrs() failed.")
-            fetchCompletionHandler(band_tunnel_error.getifaddrs_failure)
+            fetchCompletionHandler(band_tunnel_error.getifaddrs_failure, "getifaddrs(3) failed")
             return
         }
         if let addresses = maddresses as? [String] {
@@ -125,41 +126,53 @@ import SwiftyJSON
             .responseString { resp in
                 switch resp.result {
                 case .success(let resp_body):
+                    if let obj = try? JSON(data: Data(resp_body.utf8)) {
+                        if obj["status"].intValue == 301 {
+                            fetchCompletionHandler(band_tunnel_error.mfa_required, obj["sso_url"].stringValue)
+                            return
+                        }
+                    }
                     let etag = resp.response?.allHeaderFields["Etag"] as? String
                     let rv = mudband_tunnel_confmgr_parse_response(etag, resp_body)
                     if rv != 0 {
                         mudband_tunnel_log(0, "BANDEC_00293: mudband_tunnel_confmgr_parse_response() failed.")
-                        fetchCompletionHandler(band_tunnel_error.response_parse_failure)
+                        fetchCompletionHandler(band_tunnel_error.response_parse_failure, "Response parsing error")
                         return
                     }
-                    fetchCompletionHandler(nil)
+                    fetchCompletionHandler(nil, "Okay")
                     break
                 case .failure(let error):
                     guard let statusCode = resp.response?.statusCode else {
                         mudband_tunnel_log(0, "BANDEC_00294: Failed to set the status code.")
-                        fetchCompletionHandler(band_tunnel_error.response_status_error)
+                        fetchCompletionHandler(band_tunnel_error.response_status_error, "Response status error")
                         return
                     }
                     if statusCode != 304 {
                         mudband_tunnel_log(0, "BANDEC_00295: \(statusCode) \(error)")
-                        fetchCompletionHandler(error)
+                        fetchCompletionHandler(error, "\(error)")
                         return
                     }
                     mudband_tunnel_log(2, "No config changed.")
-                    fetchCompletionHandler(nil)
+                    fetchCompletionHandler(nil, "No config changed")
                     break
                 }
             }
         } else {
             mudband_tunnel_log(0, "BANDEC_00296: failed to convert NSMutableArray to Swift string array.")
-            fetchCompletionHandler(band_tunnel_error.variable_cast_failure)
+            fetchCompletionHandler(band_tunnel_error.variable_cast_failure, "Cast failure")
         }
     }
     
     @objc func mudband_tunnel_confmgr_fetch_mqtt_event() {
         self.mudband_tunnel_confmgr_fetch(fetchType: "when_it_gots_a_event",
-                                          fetchCompletionHandler: { (error) -> Void in
+                                          fetchCompletionHandler: { (error, msg) -> Void in
             if let error = error {
+                if error as! PacketTunnelProvider.band_tunnel_error == band_tunnel_error.mfa_required {
+                    mudband_tunnel_log(0, "BANDEC_XXXXX: MFA required to start the tunnel. Please visit URL: \(msg)")
+                    self.mMfaRequired = true
+                    self.mMfaURL = msg
+                    return
+                }
                 mudband_tunnel_log(0, "BANDEC_00297: \(error)")
                 return
             }
@@ -216,8 +229,16 @@ import SwiftyJSON
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
         self.reasserting = false
         self.mudband_tunnel_confmgr_fetch(fetchType: "when_it_runs_first",
-                                          fetchCompletionHandler: { (error) -> Void in
+                                          fetchCompletionHandler: { (error, msg) -> Void in
             if let error = error {
+                if error as! PacketTunnelProvider.band_tunnel_error == band_tunnel_error.mfa_required {
+                    completionHandler(error)
+                    mudband_tunnel_log(0, "BANDEC_XXXXX: MFA required to start the tunnel. Please visit URL: \(msg)")
+                    self.mMfaRequired = true
+                    self.mMfaURL = msg
+                    return
+                }
+                mudband_tunnel_log(0, "BANDEC_XXXXX: \(error) \(msg)")
                 completionHandler(error)
                 return
             }

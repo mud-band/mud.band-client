@@ -83,7 +83,6 @@ struct UiDashboardLinksListView: View {
                         }
                     }
                 }
-                .padding()
             }
         }
         .onAppear() {
