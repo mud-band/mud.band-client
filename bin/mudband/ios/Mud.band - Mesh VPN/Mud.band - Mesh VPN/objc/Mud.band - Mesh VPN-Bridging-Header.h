@@ -48,6 +48,7 @@ NSString *
 NSMutableArray *
         mudband_ui_enroll_get_band_uuids(void);
 void    mudband_ui_enroll_unenroll(NSString *band_uuid);
+bool    mudband_ui_enroll_is_public(void);
 
 /* mudband_ui_progconf.m */
 

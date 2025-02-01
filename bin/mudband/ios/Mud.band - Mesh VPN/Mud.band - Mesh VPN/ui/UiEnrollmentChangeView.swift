@@ -28,12 +28,10 @@ import Alamofire
 import SwiftUI
 import SwiftyJSON
 
-class UiEnrollmentChangeModel : ObservableObject {
-}
-
 struct UiEnrollmentChangeView: View {
-    @ObservedObject private var model = UiEnrollmentChangeModel()
+    @EnvironmentObject private var mAppModel: AppModel
     @Environment(\.dismiss) var dismiss
+    
     struct Enrollment: Identifiable {
         var id = UUID()
         var name: String
@@ -71,6 +69,7 @@ struct UiEnrollmentChangeView: View {
     
     private func change_enrollment_default_band_uuid(band_uuid: String) {
         mudband_ui_progconf_set_default_band_uuid_objc(band_uuid)
+        mAppModel.update_enrollments()
         self.dismiss()
     }
     

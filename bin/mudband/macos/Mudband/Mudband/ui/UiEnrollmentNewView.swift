@@ -167,12 +167,12 @@ struct UiEnrollmentNewView: View {
                 }
                 .disabled(mIsEnrolling == true)
                 .alert("Enrollment Error", isPresented: $mErrorAlertNeed) {
-                    Button("OK", role: .cancel) { }
+                    Button("Dismiss", role: .cancel) { }
                 } message: {
                     Text(mErrorAlertMessage)
                 }
                 .alert("MFA Required", isPresented: $mMfaAlertNeed) {
-                    Button("Open URL", role: .cancel) {
+                    Button("Open URL") {
                         if let url = URL(string: mMfaAlertURL) {
                             openURL(url)
                         }
@@ -181,7 +181,7 @@ struct UiEnrollmentNewView: View {
                         
                     }
                 } message: {
-                    Text("MFS required to enroll")
+                    Text("MFA required to enroll")
                 }
             }
         }

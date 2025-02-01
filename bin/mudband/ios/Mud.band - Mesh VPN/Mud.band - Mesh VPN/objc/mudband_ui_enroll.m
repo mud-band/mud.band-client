@@ -210,6 +210,19 @@ mudband_ui_enroll_get_count(void)
     return (dir_arg.n_enroll);
 }
 
+bool
+mudband_ui_enroll_is_public(void)
+{
+    json_t *jopt_public;
+    
+    if (enroll_jroot == NULL)
+        return (false);
+    jopt_public = json_object_get(enroll_jroot, "opt_public");
+    AN(jopt_public);
+    assert(json_is_integer(jopt_public));
+    return (json_integer_value(jopt_public) == 1);
+}
+
 int
 mudband_ui_enroll_load(void)
 {

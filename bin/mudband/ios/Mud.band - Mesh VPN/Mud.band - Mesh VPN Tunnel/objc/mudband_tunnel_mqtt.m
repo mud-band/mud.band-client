@@ -1700,7 +1700,9 @@ mudband_tunnel_mqtt_sync(void)
 void
 mudband_tunnel_mqtt_subscribe(void)
 {
+    struct mudband_tunnel_bandconf *cnf;
     enum mqtt_error error;
+    int r;
     const char *band_uuid;
     char topic[128];
 
@@ -1712,6 +1714,23 @@ mudband_tunnel_mqtt_subscribe(void)
     assert(error == MQTT_OK);
 
     vtc_log(mqtt_vl, 2, "Subscribed to %s topic.", topic);
+    
+    r = mudband_tunnel_confmgr_get(&cnf);
+    if (r == 0) {
+        const char *device_uuid;
+
+        device_uuid = mudband_tunnel_confmgr_get_interface_device_uuid(cnf->jroot);
+        AN(device_uuid);
+        snprintf(topic, sizeof(topic), "/band/%s/device/%s",
+                 band_uuid, device_uuid);
+
+        error = mqtt_subscribe(&mqtt_client, topic, 0);
+        assert(error == MQTT_OK);
+
+        vtc_log(mqtt_vl, 2, "Subscribed to %s topic.", topic);
+
+        mudband_tunnel_confmgr_rel(&cnf);
+    }
 }
 
 static void

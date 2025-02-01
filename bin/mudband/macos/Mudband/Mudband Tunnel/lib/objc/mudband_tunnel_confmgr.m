@@ -422,7 +422,6 @@ mudband_tunnel_confmgr_get_interface_device_uuid(json_t *jroot)
     return (json_string_value(device_uuid));
 }
 
-
 static int
 mudband_tunnel_confmgr_get_interface_nat_type_by_obj(json_t *jroot)
 {

@@ -24,74 +24,64 @@
 // SUCH DAMAGE.
 //
 
-import Foundation
+import Alamofire
+import NetworkExtension
 import SwiftUI
 import SwiftyJSON
 
-struct UiDashboardLinksListView: View {
-    @Environment(\.openURL) var openURL
-    struct Link: Identifiable {
+struct UiDashboardDevicesListView: View {
+    struct Device: Identifiable {
         var id = UUID()
         var name: String
-        var url: String
+        var private_ip: String
     }
-    @State var links: [Link] = []
+    @State var devices: [Device] = []
     
     private func read_band_conf() -> JSON? {
         guard let band_uuid = mudband_ui_enroll_get_band_uuid() else {
-            mudband_ui_log(0, "BANDEC_XXXXX: Can't get the default band UUID.")
+            mudband_ui_log(0, "BANDEC_00280: Can't get the default band UUID.")
             return nil
         }
         guard let enroll_dir = FileManager.EnrollDirURL?.path else {
-            mudband_ui_log(0, "BANDEC_XXXXX: Failed to get the enroll dir.")
+            mudband_ui_log(0, "BANDEC_00281: Failed to get the enroll dir.")
             return nil
         }
         let filepath = enroll_dir + "/conf_\(band_uuid).json"
         guard let str = try? String(contentsOfFile: filepath, encoding: String.Encoding.utf8) else {
-            mudband_ui_log(0, "BANDEC_XXXXX: Failed to parse the band config: \(filepath)")
+            mudband_ui_log(0, "BANDEC_00282: Failed to parse the band config: \(filepath)")
             return nil
         }
         return JSON(parseJSON: str)
     }
     
-    private func update_link_list() {
-        links.removeAll()
+    private func update_device_list() {
+        devices.removeAll()
         guard let obj = read_band_conf() else {
-            mudband_ui_log(0, "BANDEC_XXXXX: read_band_conf() failed")
+            mudband_ui_log(0, "BANDEC_00283: read_band_conf() failed")
             return
         }
-        for (_, link) in obj["links"] {
-            links.append(Link(name: link["name"].stringValue,
-                              url: link["url"].stringValue))
+        for (_, peer) in obj["peers"] {
+            devices.append(Device(name: peer["name"].stringValue,
+                                  private_ip: peer["private_ip"].stringValue))
         }
     }
     
     @ViewBuilder
     var body: some View {
         VStack {
-            if links.isEmpty {
-                Text("No links found.")
+            if devices.isEmpty {
+                Text("No devices found.")
             } else {
-                List(links, id: \.id) { link in
+                List(devices, id: \.id) { device in
                     VStack(alignment: .leading) {
-                        Text(link.name).fontWeight(.bold)
-                        Text("URL: \(link.url)")
-                    }
-                    .onTapGesture {
-                        if let url = URL(string: link.url) {
-                            openURL(url)
-                        }
+                        Text(device.name).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                        Text("Private IP: \(device.private_ip)")
                     }
                 }
-                .padding()
             }
         }
         .onAppear() {
-            update_link_list()
+            update_device_list()
         }
     }
-}
-
-#Preview {
-    UiDashboardLinksListView()
 }

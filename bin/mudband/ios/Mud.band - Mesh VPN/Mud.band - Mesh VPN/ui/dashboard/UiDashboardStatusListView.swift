@@ -29,40 +29,38 @@ import NetworkExtension
 import SwiftUI
 import SwiftyJSON
 
-struct UiDashboardView: View {
+struct UiDashboardStatusListView: View {
     @EnvironmentObject private var mAppModel: AppModel
-    
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
     @ViewBuilder
     var body: some View {
         VStack {
-            if mAppModel.mEnrollmentCount > 0 {
-                UiDashboardSplitView()
-            } else {
-                NavigationStack {
-                    VStack {
-                        Image(systemName: "globe")
-                            .imageScale(.large)
-                            .foregroundStyle(.tint)
-                        HStack {
-                            Text("No enrollment found.  Please enroll first.")
-                        }
-                        NavigationLink("Enroll", destination: UiEnrollmentNewView())
-                    }
-                    .navigationTitle("Mud.band")
-                    Spacer().frame(height: 50)
-                    VStack {
-                        Text("New to Mud.band? Create a band.")
-                        Link("Create", destination: URL(string: "https://mud.band")!)
-                    }
-                }
+            Image(systemName: "globe")
+                .imageScale(.large)
+                .foregroundStyle(.tint)
+            HStack {
+                Text("Band name:")
+                Text(mAppModel.mBandName)
             }
-        }
-        .onAppear() {
-            mAppModel.update_enrollments()
+            if mAppModel.mVPNStatusString == "Connected" {
+                Button("Disconnect") {
+                    mAppModel.mVpnManager.disconnectVPN()
+                }
+            } else if mAppModel.mVPNStatusString == "Disconnected" ||
+                      mAppModel.mVPNStatusString == "Not_ready" {
+                Button("Connect") {
+                    mAppModel.mVpnManager.connectVPN()
+                }
+            } else {
+                Button(action: {
+                    
+                }) {
+                    Text(mAppModel.mVPNStatusString)
+                }.disabled(true)
+            }
+        }.onReceive(timer) { _ in
+            mAppModel.update_vpn_status()
         }
     }
-}
-
-#Preview {
-    UiDashboardView()
 }

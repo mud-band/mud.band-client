@@ -28,10 +28,13 @@ import Alamofire
 import Foundation
 import NetworkExtension
 import os
+import SwiftyJSON
 
 @objc class PacketTunnelProvider: NEPacketTunnelProvider {
     private let mPacketSerialQueue = DispatchQueue(label: "mudband tunnel packet serial queue")
     private let mUdpListenQueue = DispatchQueue(label: "mudband tunnel udp listen queue")
+    private var mMfaRequired: Bool = false
+    private var mMfaURL: String = ""
 
     override init() {
         FileManager.initMudbandTunnelGroupDirs()
@@ -268,10 +271,42 @@ import os
     }
     
     override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
-        // Add code here to handle the message.
-        os_log("[WEONGYO] --> handleAppMessage")
-        if let handler = completionHandler {
-            handler(messageData)
+        guard let messageString = NSString(data: messageData, encoding: String.Encoding.utf8.rawValue) else {
+            mudband_tunnel_log(0, "BANDEC_00509: Failed to parse the messageData.")
+            let jsonResponse = JSON([
+                "status": 501,
+                "msg": "Failed to parse the messageData"
+            ])
+            let responseData = try? jsonResponse.rawData()
+            completionHandler?(responseData)
+            return
+        }
+        if messageString == "ping" {
+            if (self.mMfaRequired) {
+                let jsonResponse = JSON([
+                    "status": 301,
+                    "sso_url": self.mMfaURL
+                ])
+                self.mMfaRequired = false
+                self.mMfaURL = ""
+                let responseData = try? jsonResponse.rawData()
+                completionHandler?(responseData)
+            } else {
+                let jsonResponse = JSON([
+                    "status": 200,
+                    "msg": "Okay"
+                ])
+                let responseData = try? jsonResponse.rawData()
+                completionHandler?(responseData)
+            }
+        } else {
+            mudband_tunnel_log(0, "BANDEC_00510: Unknown message \(messageString)")
+            let jsonResponse = JSON([
+                "status": 502,
+                "msg": "Unknown message \(messageString)"
+            ])
+            let responseData = try? jsonResponse.rawData()
+            completionHandler?(responseData)
         }
     }
     
