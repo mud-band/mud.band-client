@@ -1255,6 +1255,36 @@ wireguard_iface_tun_write(struct wireguard_device *device, struct pbuf *p)
     mudband_tunnel_iface_write(p->payload, p->tot_len);
 }
 
+static bool
+wireguard_iface_apply_acl(struct wireguard_device *device, struct pbuf *pbuf)
+{
+    struct wireguard_acl *acl = &device->acl;
+    size_t i;
+    uint32_t r;
+    bool need_drop = false;
+
+    for (i = 0; i < acl->n_programs; i++) {
+        struct wireguard_acl_program *acl_program;
+
+        acl_program = &acl->programs[i];
+        r = mudband_bpf_filter(acl_program->insns, pbuf->payload,
+                               (uint32_t)pbuf->tot_len,
+                               (uint32_t)pbuf->tot_len);
+        if (r != 0) {
+            /* matched */
+            if (acl->default_policy == WIREGUARD_ACL_POLICY_ALLOW)
+                return (true);
+            else if (acl->default_policy == WIREGUARD_ACL_POLICY_BLOCK)
+                return (false);
+            else
+                assert(0 == 1);
+        }
+    }
+    if (acl->default_policy == WIREGUARD_ACL_POLICY_BLOCK)
+        need_drop = true;
+    return (need_drop);
+}
+
 static void
 wireguard_iface_process_data_message(struct wireguard_device *device,
     struct wireguard_peer *peer, struct wireguard_msg_transport_data *data_hdr,
@@ -1360,6 +1390,8 @@ wireguard_iface_process_data_message(struct wireguard_device *device,
                 goto drop;
             }
             if (!dest_ok)
+                goto drop;
+            if (wireguard_iface_apply_acl(device, pbuf))
                 goto drop;
             wireguard_iface_tun_write(device, pbuf);
         }
