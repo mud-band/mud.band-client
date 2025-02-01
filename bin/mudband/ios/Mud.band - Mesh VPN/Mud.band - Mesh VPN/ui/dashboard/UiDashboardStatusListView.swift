@@ -43,6 +43,7 @@ struct UiDashboardStatusListView: View {
                 Text("Band name:")
                 Text(mAppModel.mBandName)
             }
+            Spacer().frame(height: 25)
             if mAppModel.mVPNStatusString == "Connected" {
                 Button("Disconnect") {
                     mAppModel.mVpnManager.disconnectVPN()
