@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TOPDIR=../../bin/mudband/linux
-VERSION=0.0.7
+VERSION=0.0.9
 
 (cd ${TOPDIR} && make -f Makefile.musl clean && make -f Makefile.musl)
 
