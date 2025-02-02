@@ -56,7 +56,7 @@ class MainApplication: Application() {
         val filesDir: File
         val context: Context = this.applicationContext
         filesDir = context.filesDir
-        var r = jni.init(filesDir.absolutePath)
+        var r = jni.initJni(filesDir.absolutePath)
         if (r != 0) {
             Log.e(tag, "BANDEC_00161: JniLibInit() failed.")
         }

@@ -431,7 +431,7 @@ CNF_load(void)
                 filepath, jerror.line, jerror.text);
         return (-2);
     }
-    vtc_log(cnf_vl, 1, "JSON conf %s", json_dumps(jroot, 0));
+    vtc_log(cnf_vl, 2, "JSON conf %s", json_dumps(jroot, 0));
     assert(json_is_object(jroot));
     {
         struct cnf *cnf;

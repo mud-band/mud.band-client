@@ -28,7 +28,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include <assert.h>
 #include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -36,14 +35,15 @@
 #include <string.h>
 #include <time.h>
 
-#include "mudband.h"
-#include "mudband_mqtt.h"
-#include "mudband_stun_client.h"
-
 #include "callout.h"
 #include "odr.h"
 #include "odr_pthread.h"
+#include "vassert.h"
 #include "vtc_log.h"
+
+#include "mudband.h"
+#include "mudband_mqtt.h"
+#include "mudband_stun_client.h"
 
 static struct vtclog *mbt_vl;
 static struct callout_block mbt_cb;
