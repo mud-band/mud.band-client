@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TOPDIR=../../bin/mudband/android/Mudband
-VERSION=0.0.8
+VERSION=0.0.9
 
 (cd ${TOPDIR} && ./gradlew clean && ./gradlew build)
 
