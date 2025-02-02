@@ -168,7 +168,7 @@ import SwiftyJSON
                                           fetchCompletionHandler: { (error, msg) -> Void in
             if let error = error {
                 if error as! PacketTunnelProvider.band_tunnel_error == band_tunnel_error.mfa_required {
-                    mudband_tunnel_log(0, "BANDEC_XXXXX: MFA required to start the tunnel. Please visit URL: \(msg)")
+                    mudband_tunnel_log(0, "BANDEC_00538: MFA required to start the tunnel. Please visit URL: \(msg)")
                     self.mMfaRequired = true
                     self.mMfaURL = msg
                     return
@@ -233,12 +233,12 @@ import SwiftyJSON
             if let error = error {
                 if error as! PacketTunnelProvider.band_tunnel_error == band_tunnel_error.mfa_required {
                     completionHandler(error)
-                    mudband_tunnel_log(0, "BANDEC_XXXXX: MFA required to start the tunnel. Please visit URL: \(msg)")
+                    mudband_tunnel_log(0, "BANDEC_00539: MFA required to start the tunnel. Please visit URL: \(msg)")
                     self.mMfaRequired = true
                     self.mMfaURL = msg
                     return
                 }
-                mudband_tunnel_log(0, "BANDEC_XXXXX: \(error) \(msg)")
+                mudband_tunnel_log(0, "BANDEC_00540: \(error) \(msg)")
                 completionHandler(error)
                 return
             }
