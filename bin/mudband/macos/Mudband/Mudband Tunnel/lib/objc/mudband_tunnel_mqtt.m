@@ -1646,7 +1646,7 @@ mqtt_publish_callback(void** unused, struct mqtt_response_publish *published)
     jroot = json_loadb(published->application_message,
         published->application_message_size, 0, &jerror);
     if (jroot == NULL) {
-        vtc_log(mqtt_vl, 0, "BANDEC_XXXXX: Failed to parse JSON: %s",
+        vtc_log(mqtt_vl, 0, "BANDEC_00543: Failed to parse JSON: %s",
 		jerror.text);
         return;
     }
@@ -1657,7 +1657,7 @@ mqtt_publish_callback(void** unused, struct mqtt_response_publish *published)
     if (strcmp(json_string_value(jevent), "conf") == 0) {
         mudband_tunnek_tasks_conf_fetcher_trigger();
     } else {
-        vtc_log(mqtt_vl, 0, "BANDEC_XXXXX: Unexpected event: %s",
+        vtc_log(mqtt_vl, 0, "BANDEC_00544: Unexpected event: %s",
 		json_string_value(jevent));
     }
     json_decref(jroot);

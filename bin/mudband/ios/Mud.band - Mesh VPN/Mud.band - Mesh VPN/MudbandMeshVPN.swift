@@ -42,7 +42,7 @@ class AppModel: ObservableObject {
         mEnrollmentCount = mudband_ui_enroll_get_count()
         let r = mudband_ui_enroll_load()
         if r != 0 {
-            mudband_ui_log(0, "BANDEC_XXXXX: mudband_ui_enroll_load() failed")
+            mudband_ui_log(0, "BANDEC_00527: mudband_ui_enroll_load() failed")
             return
         }
         mBandIsPublic = mudband_ui_enroll_is_public()
