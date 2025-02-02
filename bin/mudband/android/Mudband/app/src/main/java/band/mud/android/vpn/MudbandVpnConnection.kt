@@ -181,7 +181,7 @@ class MudbandVpnConnection(
                     reportError(401, result.msg)
                     return
                 }
-                reportError(301, "BANDEC_00183: fetchConfAndConnect() failed.")
+                reportError(301, "BANDEC_00183: fetchConfAndConnect() failed: ${result.status}")
                 return
             }
             val conf = app.jni.getVpnServiceConfig()

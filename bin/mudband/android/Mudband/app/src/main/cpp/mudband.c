@@ -786,7 +786,7 @@ done:
 }
 
 jint
-Java_band_mud_android_JniWrapper_init(JNIEnv *env, jobject thiz, jstring mRootDir)
+Java_band_mud_android_JniWrapper_initJni(JNIEnv *env, jobject thiz, jstring mRootDir)
 {
     int r;
     const char *root_dir;

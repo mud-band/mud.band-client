@@ -69,5 +69,5 @@ class JniWrapper private constructor() {
     external fun tunnelLoop(): Int
     external fun tunnelFini()
 
-    external fun init(rootDir: String?): Int
+    external fun initJni(rootDir: String?): Int
 }

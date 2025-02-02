@@ -179,6 +179,10 @@ fun UiDashboardStatusScreen(
                 connectButtonEnabled = true
             }
 
+            202 -> {
+                /* This code means that VPN service is connecting.  Nothing to do at this moment. */
+            }
+
             in 300..399 -> {
                 MudbandLog.e("BANDEC_00429: VPN connection error: $resultCode")
                 connectErrorAlertDialogOpen.value = true

@@ -28,7 +28,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include <assert.h>
 #include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -36,11 +35,13 @@
 #include <string.h>
 #include <time.h>
 
+#include "odr.h"
+#include "vassert.h"
+#include "vtc_log.h"
+
 #include "mudband.h"
 #include "mudband_stun_client.h"
 
-#include "odr.h"
-#include "vtc_log.h"
 
 static struct vtclog *stunc_vl;
 
