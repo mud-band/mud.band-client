@@ -54,7 +54,7 @@ struct UiDashboardSplitView: View {
         if let jwt = mudband_ui_enroll_get_jwt() {
             headers["Authorization"] = jwt
         } else {
-            mudband_ui_log(0, "BANDEC_XXXXX: mudband_ui_enroll_get_jwt() failed.")
+            mudband_ui_log(0, "BANDEC_00528: mudband_ui_enroll_get_jwt() failed.")
             return
         }
         AF.request("https://www.mud.band/webcli/signin",
@@ -64,25 +64,25 @@ struct UiDashboardSplitView: View {
             switch resp.result {
             case .success(let resp_body):
                 guard let obj = try? JSON(data: Data(resp_body.utf8)) else {
-                    mudband_ui_log(0, "BANDEC_XXXXX: Failed to parse the JSON response.")
+                    mudband_ui_log(0, "BANDEC_00529: Failed to parse the JSON response.")
                     return
                 }
                 if obj["status"].intValue != 200 {
                     let msg = obj["msg"].stringValue
-                    mudband_ui_log(0, "BANDEC_XXXXX: Failed with the error message: \(msg)")
+                    mudband_ui_log(0, "BANDEC_00530: Failed with the error message: \(msg)")
                     return
                 }
                 if let urlString = obj["url"].string, let url = URL(string: urlString) {
                     openURL(url)
                 } else {
-                    mudband_ui_log(0, "BANDEC_XXXXX: Failed to retrieve or open the SSO URL.")
+                    mudband_ui_log(0, "BANDEC_00531: Failed to retrieve or open the SSO URL.")
                 }
             case .failure(let error):
                 guard let statusCode = resp.response?.statusCode else {
-                    mudband_ui_log(0, "BANDEC_XXXXX: Failed to set the status code.")
+                    mudband_ui_log(0, "BANDEC_00532: Failed to set the status code.")
                     return
                 }
-                mudband_ui_log(0, "BANDEC_XXXXX: \(statusCode) \(error)")
+                mudband_ui_log(0, "BANDEC_00533: \(statusCode) \(error)")
                 return
             }
         }
