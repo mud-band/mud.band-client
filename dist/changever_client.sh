@@ -34,6 +34,7 @@ changeit ../bin/mudband/linux/mudband.c
 changeit ../bin/mudband/win32/mudband.c
 changeit ../bin/mudband/win32/NMakefile
 changeit ../bin/mudband/win32/NMakefile.x64
+changeit android/package.sh
 changeit tags_client.sh
 
 changever ../bin/mudband/android/Mudband/app/build.gradle.kts
