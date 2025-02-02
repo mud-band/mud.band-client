@@ -1380,7 +1380,7 @@ STUNC_test(void)
     sc.step = STUN_STEP_FIRST;
     sc.src.addr = 0;
     sc.src.port = stun_random_port();
-    sc.dst.addr = ntohl(inet_addr("77.72.169.213"));
+    sc.dst.addr = ntohl(inet_addr("13.56.166.106"));
     sc.dst.port = 3478;
     sc.fd = -1;
     stun_client_perform(&sc);
