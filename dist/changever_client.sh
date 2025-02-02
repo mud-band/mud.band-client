@@ -3,10 +3,10 @@
 #
 # All strings are the regular expressions.
 #
-PREV=0\\.0\\.7
-NEXT=0\\.0\\.8
-PREVC=1000007
-NEXTC=1000008
+PREV=0\\.0\\.8
+NEXT=0\\.0\\.9
+PREVC=1000008
+NEXTC=1000009
 
 changeit() {
 	DST=$1

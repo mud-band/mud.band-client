@@ -56,7 +56,7 @@
 #include "mudband_mqtt.h"
 #include "mudband_stun_client.h"
 
-#define	MUDBAND_VERSION		"v0.0.8"
+#define	MUDBAND_VERSION		"v0.0.9"
 
 #define WIREGUARD_IFACE_DEFAULT_PORT		(51820)
 #define WIREGUARD_IFACE_KEEPALIVE_DEFAULT	(0xFFFF)
