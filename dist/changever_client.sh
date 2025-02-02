@@ -3,10 +3,10 @@
 #
 # All strings are the regular expressions.
 #
-PREV=0\\.0\\.6
-NEXT=0\\.0\\.7
-PREVC=0x000006
-NEXTC=0x000007
+PREV=0\\.0\\.7
+NEXT=0\\.0\\.8
+PREVC=1000007
+NEXTC=1000008
 
 changeit() {
 	DST=$1
@@ -34,11 +34,6 @@ changeit ../bin/mudband/linux/mudband.c
 changeit ../bin/mudband/win32/mudband.c
 changeit ../bin/mudband/win32/NMakefile
 changeit ../bin/mudband/win32/NMakefile.x64
-changeit linux/dist_x86_64.sh
-changeit linux/package_x86_64.sh
 changeit tags_client.sh
-changeit windows/dist.sh
-changeit windows/package_x86.bat
-changeit windows/package_x86_64.bat
 
 changever ../bin/mudband/android/Mudband/app/build.gradle.kts
