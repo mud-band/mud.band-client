@@ -39,16 +39,16 @@ struct UiDashboardLinksListView: View {
     
     private func read_band_conf() -> JSON? {
         guard let band_uuid = mudband_ui_enroll_get_band_uuid() else {
-            mudband_ui_log(0, "BANDEC_XXXXX: Can't get the default band UUID.")
+            mudband_ui_log(0, "BANDEC_00534: Can't get the default band UUID.")
             return nil
         }
         guard let enroll_dir = FileManager.EnrollDirURL?.path else {
-            mudband_ui_log(0, "BANDEC_XXXXX: Failed to get the enroll dir.")
+            mudband_ui_log(0, "BANDEC_00535: Failed to get the enroll dir.")
             return nil
         }
         let filepath = enroll_dir + "/conf_\(band_uuid).json"
         guard let str = try? String(contentsOfFile: filepath, encoding: String.Encoding.utf8) else {
-            mudband_ui_log(0, "BANDEC_XXXXX: Failed to parse the band config: \(filepath)")
+            mudband_ui_log(0, "BANDEC_00536: Failed to parse the band config: \(filepath)")
             return nil
         }
         return JSON(parseJSON: str)
@@ -57,7 +57,7 @@ struct UiDashboardLinksListView: View {
     private func update_link_list() {
         links.removeAll()
         guard let obj = read_band_conf() else {
-            mudband_ui_log(0, "BANDEC_XXXXX: read_band_conf() failed")
+            mudband_ui_log(0, "BANDEC_00537: read_band_conf() failed")
             return
         }
         for (_, link) in obj["links"] {

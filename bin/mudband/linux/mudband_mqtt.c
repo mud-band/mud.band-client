@@ -1651,7 +1651,7 @@ mqtt_publish_callback(void** unused, struct mqtt_response_publish *published)
 	jroot = json_loadb(published->application_message,
 	    published->application_message_size, 0, &jerror);
 	if (jroot == NULL) {
-		vtc_log(mqtt_vl, 0, "Failed to parse JSON: %s",
+		vtc_log(mqtt_vl, 0, "BANDEC_00523: Failed to parse JSON: %s",
 		    jerror.text);
 		return;
 	}
@@ -1659,8 +1659,12 @@ mqtt_publish_callback(void** unused, struct mqtt_response_publish *published)
 	jevent = json_object_get(jroot, "event");
 	AN(jevent);
 	assert(json_is_string(jevent));
-	if (strcmp(json_string_value(jevent), "conf") == 0)
+	if (strcmp(json_string_value(jevent), "conf") == 0) {
 		MBT_conf_fetcher_trigger();
+	} else {
+		vtc_log(mqtt_vl, 0, "BANDEC_00524: Unexpected event: %s",
+		    json_string_value(jevent));
+	}
 	json_decref(jroot);
 }
 
