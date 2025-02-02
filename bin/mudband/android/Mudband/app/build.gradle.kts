@@ -12,8 +12,8 @@ android {
         applicationId = "band.mud.android"
         minSdk = 33
         targetSdk = 35
-        versionCode = 1000007
-        versionName = "0.0.7"
+        versionCode = 1000008
+        versionName = "0.0.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

@@ -83,7 +83,7 @@ VERPATCH= \
 
 mudband: $(OBJS)
 	$(LINK32) $(LINK32_FLAGS) $(LIB_DIRS) $(LIBS) $(OBJS)
-	$(VERPATCH) $(EXE) /va "0.0.7" /pv "0.0.7" \
+	$(VERPATCH) $(EXE) /va "0.0.8" /pv "0.0.8" \
 	    /s desc "Mudband" \
 	    /s copyright "Copyright (c) 2024 by Mudfish Networks" \
 	    /s product "Mudband"
