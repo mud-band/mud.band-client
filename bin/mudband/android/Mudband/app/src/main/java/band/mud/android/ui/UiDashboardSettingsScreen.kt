@@ -350,7 +350,12 @@ suspend fun makeUnenrollRequest(): UnenrollmentResult {
         val jsonWithUnknownKeys = Json { ignoreUnknownKeys = true }
         val obj = jsonWithUnknownKeys.decodeFromString<EnrollmentResponseData>(responseData)
         if (obj.status != 200) {
-            return returnUnenrollResult(-5, obj.msg ?: "BANDEC_00172: msg is null")
+            if (obj.status == 505 /* No band found */ ||
+                obj.status == 506 /* No device found */) {
+                /* do nothing and fallthrough. */
+            } else {
+                return returnUnenrollResult(-5, obj.msg ?: "BANDEC_00172: msg is null")
+            }
         }
         val r = app.jni.parseUnenrollmentResponse(responseData)
         if (r != 0) {
