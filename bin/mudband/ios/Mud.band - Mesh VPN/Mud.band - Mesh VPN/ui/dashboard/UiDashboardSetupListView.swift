@@ -66,9 +66,13 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
                         return
                     }
                     if status != 200 {
-                        mudband_ui_log(0, "BANDEC_00287: Failed to unenroll: status \(status)")
-                        unenrollCompletionHandler(band_ui_error.response_body_status_error)
-                        return
+                        if status == 505 /* No band found */ || status == 506 /* No device found */ {
+                            /* do nothing and fallthrough to force the unenrollment. */
+                        } else {
+                            mudband_ui_log(0, "BANDEC_00287: Failed to unenroll: status \(status)")
+                            unenrollCompletionHandler(band_ui_error.response_body_status_error)
+                            return
+                        }
                     }
                 }
                 mudband_ui_enroll_unenroll(band_uuid)

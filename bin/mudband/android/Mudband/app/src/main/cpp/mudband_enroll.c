@@ -131,6 +131,11 @@ MBE_parse_unenroll_response(const char *body)
     if (status != 200) {
         json_t *jmsg;
 
+        if (status == 505 /* No band found */ ||
+            status == 506 /* No device found */) {
+            goto unenroll_force;
+        }
+
         jmsg = json_object_get(jroot, "msg");
         AN(jmsg);
         assert(json_is_string(jmsg));
@@ -140,6 +145,7 @@ MBE_parse_unenroll_response(const char *body)
         json_decref(jroot);
         return (-1);
     }
+unenroll_force:
     json_decref(jroot);
 
     default_band_uuid = MPC_get_default_band_uuid();
