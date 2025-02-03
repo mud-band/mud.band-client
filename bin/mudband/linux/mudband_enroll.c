@@ -406,7 +406,7 @@ MBE_check_and_read(void)
 	if (band_b_arg != NULL) {
 		if (!dir_arg.b_arg_found) {
 			vtc_log(mbe_vl, 1,
-			    "BANDEC_00160: Enrollment for the band ID %d"
+			    "BANDEC_00160: Enrollment for the band ID %s"
 			    " not found.", band_b_arg);
 			return (-1);
 		}
