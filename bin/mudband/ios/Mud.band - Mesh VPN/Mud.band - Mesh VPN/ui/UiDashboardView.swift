@@ -35,7 +35,9 @@ struct UiDashboardView: View {
     @ViewBuilder
     var body: some View {
         VStack {
-            if mAppModel.mEnrollmentCount > 0 {
+            if !mAppModel.mUserTosAgreed {
+                UiDashboardUserTosAgreement()
+            } else if mAppModel.mEnrollmentCount > 0 {
                 UiDashboardSplitView()
             } else {
                 NavigationStack {

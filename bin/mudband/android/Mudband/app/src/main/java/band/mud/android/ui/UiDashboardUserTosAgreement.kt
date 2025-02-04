@@ -88,6 +88,10 @@ fun UiDashboardUserTosAgreement(
                     text = "Private / Local IP",
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
+                Text(
+                    text = "NAT type",
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
             }
             item {
                 Text(

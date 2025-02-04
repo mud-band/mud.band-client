@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FB0C309E2D52B9010071F768 /* UiDashboardUserTosAgreement.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C309D2D52B9010071F768 /* UiDashboardUserTosAgreement.swift */; };
 		FB418AF62D16528500E3897F /* MudbandMeshVPN.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB418AF52D16528500E3897F /* MudbandMeshVPN.swift */; };
 		FB418AF82D16528500E3897F /* UiMainEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB418AF72D16528500E3897F /* UiMainEntryView.swift */; };
 		FB418AFA2D16528600E3897F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB418AF92D16528600E3897F /* Assets.xcassets */; };
@@ -120,6 +121,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FB0C309D2D52B9010071F768 /* UiDashboardUserTosAgreement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiDashboardUserTosAgreement.swift; sourceTree = "<group>"; };
 		FB418AF22D16528500E3897F /* Mud.band - Mesh VPN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mud.band - Mesh VPN.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB418AF52D16528500E3897F /* MudbandMeshVPN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MudbandMeshVPN.swift; sourceTree = "<group>"; };
 		FB418AF72D16528500E3897F /* UiMainEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiMainEntryView.swift; sourceTree = "<group>"; };
@@ -316,6 +318,7 @@
 				FBE9F2222D4DDDB200E87EE3 /* dashboard */,
 				FBE9F2202D4DDDAC00E87EE3 /* UiDashboardSplitView.swift */,
 				FB418B462D166DB700E3897F /* UiDashboardView.swift */,
+				FB0C309D2D52B9010071F768 /* UiDashboardUserTosAgreement.swift */,
 				FB418B552D166EBE00E3897F /* UiEnrollmentChangeView.swift */,
 				FB418B532D166E9C00E3897F /* UiEnrollmentNewView.swift */,
 				FB418AF72D16528500E3897F /* UiMainEntryView.swift */,
@@ -576,6 +579,7 @@
 				FBE9F21C2D4DDB0900E87EE3 /* vuuid.c in Sources */,
 				FBE9F2212D4DDDAC00E87EE3 /* UiDashboardSplitView.swift in Sources */,
 				FB418B382D16596600E3897F /* chacha20poly1305.c in Sources */,
+				FB0C309E2D52B9010071F768 /* UiDashboardUserTosAgreement.swift in Sources */,
 				FB418B3B2D16596600E3897F /* chacha20.c in Sources */,
 				FB418B3A2D16596600E3897F /* x25519.c in Sources */,
 				FB418B3C2D16596600E3897F /* blake2s.c in Sources */,
@@ -774,7 +778,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Mud.band - Mesh VPN/Mud.band - Mesh VPN.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Mud.band - Mesh VPN/Preview Content\"";
 				DEVELOPMENT_TEAM = H84YML94ZH;
 				ENABLE_PREVIEWS = YES;
@@ -816,7 +820,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Mud.band - Mesh VPN/Mud.band - Mesh VPN.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Mud.band - Mesh VPN/Preview Content\"";
 				DEVELOPMENT_TEAM = H84YML94ZH;
 				ENABLE_PREVIEWS = YES;

@@ -32,10 +32,21 @@ class AppModel: ObservableObject {
     @Published var mEnrollmentCount: Int32 = mudband_ui_enroll_get_count()
     @Published var mBandIsPublic: Bool = mudband_ui_enroll_is_public()
     @Published var mBandName: String = ""
+    @Published var mUserTosAgreed: Bool
     
     init() {
+        mUserTosAgreed = UserDefaults.standard.bool(forKey: "user_tos_agreed")
         mVpnManager = VpnManager()
         mVpnManager.initVPNTunnelProviderManager()
+    }
+    
+    func sync_user_tos_agreement() {
+        mUserTosAgreed = UserDefaults.standard.bool(forKey: "user_tos_agreed")
+    }
+    
+    func set_user_tos_agreement(agreed: Bool) {
+        UserDefaults.standard.set(true, forKey: "user_tos_agreed")
+        sync_user_tos_agreement()
     }
     
     func update_enrollments() {
