@@ -1,4 +1,4 @@
-set VERSION=0.0.7
+set VERSION=0.0.9
 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86
 cd ..
 mkdir releases\%VERSION%\windows\x86
