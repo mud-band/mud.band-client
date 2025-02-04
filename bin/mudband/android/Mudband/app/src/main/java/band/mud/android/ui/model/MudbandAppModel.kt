@@ -86,6 +86,7 @@ data class MudbandAppUiState(
     var isEnrolled: Boolean = false,
     var isConnected: Boolean = false,
     var isConfigurationReady: Boolean = false,
+    var isUserTosAgreed: Boolean = false,
     var activeBandName: String = "",
     var dashboardScreenName: String = "status",
     var topAppBarTitle: String = "Mud.band",
@@ -114,6 +115,24 @@ class MudbandAppViewModel(application: Application) : AndroidViewModel(applicati
         }
         setBandPublic(app.jni.isBandPublic())
         updateMfaStatus()
+        syncUserTosAgreement()
+    }
+
+    private fun syncUserTosAgreement() {
+        var isUserTosAgreed = sharedPreferences.getBoolean("USER_TOS_AGREED", false)
+        _uiState.update { currentState ->
+            currentState.copy(
+                isUserTosAgreed = isUserTosAgreed,
+            )
+        }
+    }
+
+    fun setUserTosAgreement(agreed: Boolean) {
+        with(sharedPreferences.edit()) {
+            putBoolean("USER_TOS_AGREED", agreed)
+            apply()
+        }
+        syncUserTosAgreement()
     }
 
     private fun updateMfaStatus() {
