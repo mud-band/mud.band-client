@@ -78,7 +78,7 @@ struct MudbandApp: App {
         WindowGroup {
             UiMainEntryView()
                 .environmentObject(model)
-                .frame(minWidth: 400, maxWidth: 400, minHeight: 500, maxHeight: 500)
+                .frame(minWidth: 400, minHeight: 500)
         }.windowResizability(.contentSize)
     }
 }
