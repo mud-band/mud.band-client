@@ -416,7 +416,7 @@ MBE_check_and_read(void)
     }
     if (!dir_arg.b_arg_found) {
         vtc_log(mbe_vl, 1,
-                "BANDEC_00242: Enrollment for the band ID %d not found.",
+                "BANDEC_00242: Enrollment for the band ID %s not found.",
                 MPC_get_default_band_uuid());
         return (-1);
     }
