@@ -45,7 +45,13 @@ fun UiDashboardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    if (uiState.isEnrolled) {
+    if (!uiState.isUserTosAgreed) {
+        UiDashboardUserTosAgreement(
+            viewModel = viewModel,
+            navController = navController,
+            modifier = modifier
+        )
+    } else if (uiState.isEnrolled) {
         if (uiState.dashboardScreenName == "status") {
             UiDashboardStatusScreen(
                 viewModel = viewModel,
