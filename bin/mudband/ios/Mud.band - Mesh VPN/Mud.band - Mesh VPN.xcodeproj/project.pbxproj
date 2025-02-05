@@ -778,7 +778,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Mud.band - Mesh VPN/Mud.band - Mesh VPN.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Mud.band - Mesh VPN/Preview Content\"";
 				DEVELOPMENT_TEAM = H84YML94ZH;
 				ENABLE_PREVIEWS = YES;
@@ -820,7 +820,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Mud.band - Mesh VPN/Mud.band - Mesh VPN.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Mud.band - Mesh VPN/Preview Content\"";
 				DEVELOPMENT_TEAM = H84YML94ZH;
 				ENABLE_PREVIEWS = YES;
