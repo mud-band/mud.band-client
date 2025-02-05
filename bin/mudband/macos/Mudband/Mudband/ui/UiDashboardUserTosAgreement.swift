@@ -31,6 +31,7 @@ import SwiftUI
 
 struct UiDashboardUserTosAgreement: View {
     @EnvironmentObject private var mAppModel: AppModel
+    @Environment(\.openURL) var openURL
 
     var body: some View {
         VStack {
@@ -47,10 +48,19 @@ struct UiDashboardUserTosAgreement: View {
             }
             Text("No other information except above are logged at mud.band server side." + " " + "By clicking \"I agree\", you agree to our terms of service and privacy policy. ")
                 .padding()
-            Button {
-                mAppModel.set_user_tos_agreement(agreed: true)
-            } label: {
-              Text("I agree")
+            HStack {
+                Button {
+                    mAppModel.set_user_tos_agreement(agreed: true)
+                } label: {
+                    Text("I agree")
+                }
+                Button {
+                    if let url = URL(string: "https://www.mud.band/policy/tos") {
+                        openURL(url)
+                    }
+                } label: {
+                    Text("View ToS / Privacy Policy")
+                }
             }
             .padding()
         }
