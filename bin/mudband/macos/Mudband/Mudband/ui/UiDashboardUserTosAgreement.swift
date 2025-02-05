@@ -46,7 +46,7 @@ struct UiDashboardUserTosAgreement: View {
                     Text("NAT type")
                 }
             }
-            Text("No other information except above are logged at mud.band server side." + " " + "By clicking \"I agree\", you agree to our terms of service and privacy policy. ")
+            Text("No other information except for the above is logged on the mud.band server, and the data will not be shared with any third parties." + " " + "By clicking the \"I agree\" button, you agree to our Terms of Service and Privacy Policy.")
                 .padding()
             HStack {
                 Button {
