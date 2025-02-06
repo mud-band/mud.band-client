@@ -12,7 +12,7 @@ android {
         applicationId = "band.mud.android"
         minSdk = 33
         targetSdk = 35
-        versionCode = 1000009
+        versionCode = 100000900
         versionName = "0.0.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
