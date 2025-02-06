@@ -9,5 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Build on ubuntu-latest
+    - name: Build mudband
       run: (cd bin/mudband/linux && make clean && make)
+    - name: Build mudband_service
+      run: (cd bin/mudband_service/linux && make clean && make)
