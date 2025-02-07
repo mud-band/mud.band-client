@@ -11,3 +11,5 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build on ubuntu-24.04-arm
       run: (cd bin/mudband/linux && make clean && make)
+    - name: Build mudband_service
+      run: (cd bin/mudband_service/linux && make clean && make)
