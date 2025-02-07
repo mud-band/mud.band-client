@@ -27,15 +27,19 @@
 package band.mud.android.ui.model
 
 import android.app.Application
+import android.app.ActivityManager;
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import band.mud.android.MainApplication
+import band.mud.android.util.MudbandLog
+import band.mud.android.vpn.MudbandVpnService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+
 
 @Serializable
 data class MudbandConfigInterfaceJson(
@@ -101,6 +105,20 @@ class MudbandAppViewModel(application: Application) : AndroidViewModel(applicati
     private val _uiState = MutableStateFlow(MudbandAppUiState())
     val uiState: StateFlow<MudbandAppUiState> = _uiState.asStateFlow()
 
+    private fun isServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = app.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+        manager?.getRunningServices(Int.MAX_VALUE)?.forEach { service ->
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun syncConnectStatus() {
+        setConnectStatus(isServiceRunning(MudbandVpnService::class.java))
+    }
+
     fun setEnrollStatus(enrolled: Boolean) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -116,6 +134,7 @@ class MudbandAppViewModel(application: Application) : AndroidViewModel(applicati
         setBandPublic(app.jni.isBandPublic())
         updateMfaStatus()
         syncUserTosAgreement()
+        syncConnectStatus()
     }
 
     private fun syncUserTosAgreement() {

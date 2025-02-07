@@ -66,11 +66,11 @@ class MudbandVpnService : VpnService(), Handler.Callback {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        mResultReceiver = intent.getParcelableExtra("$packageName.RESULT_RECEIVER");
         if ("DISCONNECT" == intent.action) {
             disconnect()
             return (START_NOT_STICKY)
         }
-        mResultReceiver = intent.getParcelableExtra("$packageName.RESULT_RECEIVER");
         connect()
         return (START_STICKY)
     }
@@ -136,6 +136,7 @@ class MudbandVpnService : VpnService(), Handler.Callback {
         setConnectingThread(null)
         setConnection(null)
         stopForeground(true)
+        stopSelf();
     }
 
     private fun updateForegroundNotification(message: Int) {
