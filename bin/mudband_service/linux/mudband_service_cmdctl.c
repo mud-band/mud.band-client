@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <ctype.h>
 
 #include "miniobj.h"
 #include "odr.h"
@@ -134,6 +135,59 @@ pdeathsig(void)
 		    strerror(errno));
 }
 
+static char **
+parse_command(const char *cmd, int *argc)
+{
+	char **argv;
+	char *token, *str, *tofree;
+	int count;
+
+	argv = NULL;
+	count = 0;
+	tofree = str = strdup(cmd);
+	if (str == NULL)
+		return (NULL);
+	token = str;
+	while (*token != '\0') {
+		while (*token != '\0' && isspace(*token))
+			token++;
+		if (*token != '\0') {
+			count++;
+			while (*token != '\0' && !isspace(*token))
+				token++;
+		}
+	}
+	argv = calloc(count + 1, sizeof(char *));
+	if (argv == NULL) {
+		free(tofree);
+		return (NULL);
+	}
+	str = tofree;
+	count = 0;
+	while ((token = strsep(&str, " \t\n")) != NULL) {
+		if (*token != '\0') {
+			argv[count] = strdup(token);
+			count++;
+		}
+	}
+	argv[count] = NULL;
+	*argc = count;
+	free(tofree);
+	return (argv);
+}
+
+static void
+free_argv(char **argv)
+{
+	char **p;
+
+	if (argv == NULL)
+		return;
+	for (p = argv; *p != NULL; p++)
+		free(*p);
+	free(argv);
+}
+
 static void
 CMD_RunChild(void)
 {
@@ -157,20 +211,20 @@ CMD_RunChild(void)
 	setbuf(stdout, NULL);
 	setbuf(stderr, NULL);
 	CMD_nonblocking(cmdctl->fds[4]);
-        while (1) {
-                fds = &fd;
-                memset(fds, 0, sizeof *fds);
-                fds->fd = cmdctl->fds[4];
-                fds->events = POLLIN;
-                i = poll(fds, 1, 1000);
-                if (i == 0)
-                        continue;
-                if (fds->revents & (POLLERR|POLLHUP))
-                        break;
-                i = read(cmdctl->fds[4], buf + offset, sizeof buf - 1 - offset);
-                if (i <= 0)
-                        break;
-                buf[i] = '\0';
+	while (1) {
+		fds = &fd;
+		memset(fds, 0, sizeof *fds);
+		fds->fd = cmdctl->fds[4];
+		fds->events = POLLIN;
+		i = poll(fds, 1, 1000);
+		if (i == 0)
+			continue;
+		if (fds->revents & (POLLERR|POLLHUP))
+			break;
+		i = read(cmdctl->fds[4], buf + offset, sizeof buf - 1 - offset);
+		if (i <= 0)
+			break;
+		buf[i] = '\0';
 		p = buf;
 		while (1) {
 			q = strchr(p, '\n');
@@ -183,6 +237,8 @@ CMD_RunChild(void)
 			*q = '\0';
 			{
 				struct cmdctl *v;
+				char **argv;
+				int argc;
 
 				v = (struct cmdctl *)calloc(sizeof(*v), 1);
 				AN(v);
@@ -191,6 +247,17 @@ CMD_RunChild(void)
 				v->prefix = "";
 				v->vl_log = 0;
 				v->wait = (p[0] == '!') ? 1 : 0;
+
+				argv = parse_command(p + 1, &argc);
+				if (!argv || argc == 0) {
+					vtc_log(cmdctl->vl, 0,
+					    "Failed to parse command: %s",
+					    p + 1);
+					free_argv(argv);
+					free(v);
+					continue;
+				}
+
 				v->pid = fork();
 				assert(v->pid >= 0);
 				if (v->pid == 0) {
@@ -201,15 +268,18 @@ CMD_RunChild(void)
 					AZ(close(v->fds[1]));
 					AZ(close(v->fds[2]));
 					AZ(close(v->fds[3]));
-					for (i = 3; i <getdtablesize(); i++)
+					for (i = 3; i < getdtablesize(); i++)
 						(void)close(i);
 					pdeathsig();
 					printf("Executing %s (wait %d)\n",
 					    p + 1, v->wait);
-					AZ(execl("/bin/sh", "/bin/sh", "-c",
-					    p + 1, NULL));
+					i = execvp(argv[0], argv);
+					assert(i == -1);
+					printf("Failed to execute %s: %s\n",
+					    argv[0], strerror(errno));
 					exit(1);
 				}
+				free_argv(argv);
 				close(v->fds[0]);
 				close(v->fds[3]);
 				v->fds[0] = v->fds[2];
@@ -220,7 +290,7 @@ CMD_RunChild(void)
 			}
 			p = q + 1;
 		}
-        }
+	}
 	vtc_log(cmdctl->vl, 0, "Command controller exited.\n");
 	exit(1);
 }

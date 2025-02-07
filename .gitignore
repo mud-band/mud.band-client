@@ -68,3 +68,5 @@ vendor
 .aider*
 xcuserdata
 xcshareddata
+Cargo.lock
+bin/mudband_service/linux/mudband_service

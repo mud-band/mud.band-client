@@ -9,6 +9,7 @@
             "includePath": [
                 "../../../lib/libjansson",
                 "../../../lib/libmud",
+		"../../mudband/common",
                 "./"
             ],
             "compilerPath": "/usr/bin/gcc"
