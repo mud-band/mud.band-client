@@ -253,7 +253,7 @@ check_process_running(const char *pidfile)
 		if (errno == ENOENT)
 			return (0);
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-		    "BANDEC_XXXXX: Failed to open PID file: %s",
+		    "BANDEC_00549: Failed to open PID file: %s",
 		    strerror(errno));
 		return (-1);
 	}
@@ -281,18 +281,18 @@ PID_init(const char *P_arg)
 	if (pfh == NULL) {
 		if (errno == EAGAIN) {
 			vtc_log(vl, VTCLOG_LEVEL_WARNING,
-			    "BANDEC_XXXXX: muddog_srv is already running."
+			    "BANDEC_00550: muddog_srv is already running."
 			    "  Exit.");
 			exit(1);
 		}
 		vtc_log(vl, VTCLOG_LEVEL_WARNING,
-		    "BANDEC_XXXXX: VPF_Open() failed: %d %s", errno,
+		    "BANDEC_00551: VPF_Open() failed: %d %s", errno,
 	    	    strerror(errno));
 		exit(0);
 	}
 	if (VPF_Write(pfh)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR,
-		    "BANDEC_XXXXX: Could not write PID file.");
+		    "BANDEC_00552: Could not write PID file.");
 		exit(1);
 	}
 }
@@ -433,7 +433,7 @@ main_loop(int fd)
 
 		rv = select(fd + 1, &set, NULL, NULL, &tv);
 		if (rv == -1) {
-			vtc_log(vl, 0, "BANDEC_XXXXX: select(2) error: %d %s",
+			vtc_log(vl, 0, "BANDEC_00553: select(2) error: %d %s",
 			    errno, strerror(errno));
 			sleep(1);
 			continue;
@@ -448,7 +448,7 @@ main_loop(int fd)
 		fromlen = sizeof(from);
 		cfd = accept(fd, (struct sockaddr *)&from, &fromlen);
 		if (cfd == -1) {
-			vtc_log(vl, 0, "BANDEC_XXXXX: accept(2) error: %d %s",
+			vtc_log(vl, 0, "BANDEC_00554: accept(2) error: %d %s",
 			    errno, strerror(errno));
 			sleep(1);
 			continue;
@@ -456,13 +456,13 @@ main_loop(int fd)
 
 		buflen = read(cfd, buf, sizeof(buf));
 		if (buflen < 0) {
-			vtc_log(vl, 0, "BANDEC_XXXXX: read(2) failed: %d %s",
+			vtc_log(vl, 0, "BANDEC_00555: read(2) failed: %d %s",
 			    errno, strerror(errno));
 			sleep(1);
 			goto next;
 		}
 		if (buflen == 0) {
-			vtc_log(vl, 0, "BANDEC_XXXXX: Too short message.");
+			vtc_log(vl, 0, "BANDEC_00556: Too short message.");
 			sleep(1);
 			goto next;
 		}
@@ -472,18 +472,18 @@ main_loop(int fd)
 
 		root = json_loads(buf, 0, &error);
 		if (root == NULL) {
-			vtc_log(vl, 0, "BANDEC_XXXXX: json_loads() failed: %s",
+			vtc_log(vl, 0, "BANDEC_00557: json_loads() failed: %s",
 			    error.text);
 			goto next;
 		}
 		if (!json_is_object(root)) {
-			vtc_log(vl, 0, "BANDEC_XXXXX: Invalid message");
+			vtc_log(vl, 0, "BANDEC_00558: Invalid message");
 			goto next;
 		}
 
 		cmd = json_object_get(root, "cmd");
 		if (!json_is_string(cmd)) {
-			vtc_log(vl, 0, "BANDEC_XXXXX: Invalid message");
+			vtc_log(vl, 0, "BANDEC_00559: Invalid message");
 			goto next;
 		}
 
@@ -503,13 +503,13 @@ main_loop(int fd)
 		else if (strcmp(cmdval, "tunnel_disconnect") == 0)
 			outlen = cmd_tunnel_disconnect(out, sizeof(out));
 		else {
-			vtc_log(vl, 0, "BANDEC_XXXXX: Unknown command: %s",
+			vtc_log(vl, 0, "BANDEC_00560: Unknown command: %s",
 			    json_string_value(cmd));
 			goto next;
 		}
 
 		if (outlen < 0) {
-			vtc_log(vl, 0, "BANDEC_XXXXX: %s command failed",
+			vtc_log(vl, 0, "BANDEC_00561: %s command failed",
 			    cmdval);
 			goto next;
 		}
@@ -519,7 +519,7 @@ main_loop(int fd)
 
 		rv = write(cfd, out, outlen);
 		if (rv < 0) {
-			vtc_log(vl, 0, "BANDEC_XXXXX: sendto(2) failed: %d %s",
+			vtc_log(vl, 0, "BANDEC_00562: sendto(2) failed: %d %s",
 			    errno, strerror(errno));
 			goto next;
 		}
@@ -557,7 +557,7 @@ check_tunnel_status(void)
 	is_running = check_process_running("/var/run/mudband.pid");
 	if (is_running < 0) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR,
-			"BANDEC_XXXXX: Failed to check running process");
+			"BANDEC_00563: Failed to check running process");
 		return;
 	}
 	if (is_running > 0) {
@@ -581,7 +581,7 @@ init(const char *pidpath)
 	rv = ODR_corefile_init();
 	if (rv != 0) {
 		vtc_log(vl, 1,
-		    "BANDEC_XXXXX: Failed to initialize the corefile"
+		    "BANDEC_00564: Failed to initialize the corefile"
 		    " handler: %d %s", ODR_errno(), ODR_strerror(ODR_errno()));
 	}
 	CMD_ctl();
@@ -639,7 +639,7 @@ main(int argc, char *argv[])
 	init(P_arg);
 
 	if ((fd = socket(PF_UNIX, SOCK_STREAM, 0)) < 0) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: socket(2) failed: %d %s", errno,
+		vtc_log(vl, 0, "BANDEC_00565: socket(2) failed: %d %s", errno,
 		    strerror(errno));
 		return (1);
 	}
@@ -648,12 +648,12 @@ main(int argc, char *argv[])
 	addr.sun_family = AF_UNIX;
 	strcpy(addr.sun_path, S_arg);
 	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: bind(2) failed: %d %s", errno,
+		vtc_log(vl, 0, "BANDEC_00566: bind(2) failed: %d %s", errno,
 		    strerror(errno));
 		return (1);
 	}
 	if (listen(fd, 32) < 0) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: listen(2) failed: %d %s", errno,
+		vtc_log(vl, 0, "BANDEC_00567: listen(2) failed: %d %s", errno,
 		    strerror(errno));
 		return (1);
 	}

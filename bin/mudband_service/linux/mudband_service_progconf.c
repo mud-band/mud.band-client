@@ -64,14 +64,14 @@ MPC_read(void)
 	snprintf(filepath, sizeof(filepath), "%s/mudband.conf",
 	    band_confdir_root);
 	if (access(filepath, F_OK) == -1) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: File not found: %s",
+		vtc_log(vl, 0, "BANDEC_00568: File not found: %s",
 		    filepath);
 		return (NULL);
 	}
 	jroot = json_load_file(filepath, 0, &jerror);
 	if (jroot == NULL) {
 		vtc_log(vl, 1,
-		    "BANDEC_XXXXX: error while reading JSON format:"
+		    "BANDEC_00569: error while reading JSON format:"
 		    " on line %d: %s", jerror.line, jerror.text);
 		return (NULL);
 	}
@@ -90,14 +90,14 @@ MPC_write(void)
 	    band_confdir_root);
 	fp = fopen(filepath, "w+");
 	if (fp == NULL) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: Failed to open file %s: %s",
+		vtc_log(vl, 0, "BANDEC_00570: Failed to open file %s: %s",
 		    filepath, strerror(errno));
 		return (-1);
 	}
 	r = json_dumpf(mpc_jroot, fp, 0);
 	if (r == -1) {
 		vtc_log(vl, 0,
-		    "BANDEC_XXXXX: Failed to write JSON to file %s: %s",
+		    "BANDEC_00571: Failed to write JSON to file %s: %s",
 		    filepath, strerror(errno));
 		fclose(fp);
 		return (-1);
@@ -157,12 +157,12 @@ MPC_get_default_band_uuid(void)
 		    (void *)&dir_arg);
 		if (r != 0) {
 			vtc_log(vl, 0,
-			    "BANDEC_00122: ODR_traversal_dir() failed");
+			    "BANDEC_00572: ODR_traversal_dir() failed");
 			return (NULL);
 		}
 		if (dir_arg.n_enroll == 0) {
 			vtc_log(vl, 0,
-			    "BANDEC_00123: No enrollments found.");
+			    "BANDEC_00573: No enrollments found.");
 			return (NULL);
 		}
 		assert(dir_arg.n_enroll > 0);
