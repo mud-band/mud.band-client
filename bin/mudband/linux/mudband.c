@@ -1728,9 +1728,11 @@ mudband_init(void)
 	cdir = ODR_confdir();
 	ODR_mkdir_recursive(cdir);
 	band_confdir_root = ODR_strdup(cdir);
+	AN(band_confdir_root);
 	ODR_snprintf(edir, sizeof(edir), "%s/enroll", band_confdir_root);
 	ODR_mkdir_recursive(edir);
 	band_confdir_enroll = ODR_strdup(edir);
+	AN(band_confdir_enroll);
 	PBUF_init();
 	MBE_init();
 	MCM_init();
