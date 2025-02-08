@@ -6,7 +6,11 @@ import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useNavigate } from "react-router-dom"
 
-export default function EnrollmentPage() {
+interface EnrollmentNewDialogProps {
+    onSuccess?: () => void;
+}
+
+export default function EnrollmentNewDialog({ onSuccess }: EnrollmentNewDialogProps) {
     const navigate = useNavigate()
     const { toast } = useToast()
     const [enrollmentToken, setEnrollmentToken] = useState("")
@@ -35,54 +39,59 @@ export default function EnrollmentPage() {
                 description: "Enrollment successful.",
             });
             navigate("/")
+            onSuccess?.();
         } catch (error) {
-            console.error("Enrollment failed:", error)
-            setErrorMessage("Encountered an error while enrolling.")
+            setErrorMessage(`Encountered an error while enrolling: ${error}`)
         }
     }
 
     return (
-        <div className="container mx-auto py-10">
-            <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-sm">
-                <div className="mb-6">
-                    <h1 className="text-2xl font-bold">Enrollment</h1>
-                    <p className="text-gray-500 mt-1">Please enter the following information to enroll.</p>
-                </div>
-                
+        <div className="max-w-2xl w-full">
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold">New Enrollment</h2>
+                <p className="text-muted-foreground">
+                    Please enter the following information to enroll.
+                </p>
+            </div>
+            
+            <div>
                 {errorMessage && (
-                    <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-md">
+                    <div className="mb-6 p-4 text-red-700 bg-red-100 rounded-lg border border-red-200">
                         {errorMessage}
                     </div>
                 )}
                 
                 <form className="space-y-6" onSubmit={handleSubmit}>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         <Label htmlFor="enrollment_token">Enrollment Token</Label>
                         <Input 
                             id="enrollment_token"
                             value={enrollmentToken}
                             onChange={(e) => setEnrollmentToken(e.target.value)}
+                            className="w-full"
                             required
                         />
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         <Label htmlFor="device_name">Device Name</Label>
                         <Input 
                             id="device_name"
                             value={deviceName}
                             onChange={(e) => setDeviceName(e.target.value)}
+                            className="w-full"
                             required
                         />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         <Label htmlFor="enrollment_secret">Enrollment Secret</Label>
                         <Input 
                             id="enrollment_secret"
                             type="text"
                             value={enrollmentSecret}
                             onChange={(e) => setEnrollmentSecret(e.target.value)}
+                            className="w-full"
                             placeholder="Optional"
                         />
                     </div>

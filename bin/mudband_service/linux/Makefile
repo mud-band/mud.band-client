@@ -25,6 +25,7 @@ OBJS = \
 	../../../lib/libmud/odr_pthread.o \
 	../../../lib/libmud/vct.o \
 	../../../lib/libmud/vhttps.o \
+	../../../lib/libmud/vopt.o \
 	../../../lib/libmud/vsb.o \
 	../../../lib/libmud/vsock.o \
 	../../../lib/libmud/vss.o \
@@ -38,6 +39,7 @@ OBJS = \
 	../../mudband/common/crypto/x25519.o \
 	../../mudband/common/crypto.o \
 	../../mudband/common/wireguard.o \
+	mudband_service_confmgr.o \
 	mudband_service_cmdctl.o \
 	mudband_service_enroll.o \
 	mudband_service_progconf.o \

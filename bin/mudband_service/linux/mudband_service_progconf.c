@@ -190,6 +190,19 @@ MPC_set_default_band_uuid(const char *band_uuid)
 }
 
 void
+MPC_remove_default_band_uuid(void)
+{
+	json_t *default_band_uuid;
+
+	AN(mpc_jroot);
+	default_band_uuid = json_object_get(mpc_jroot, "default_band_uuid");
+	if (default_band_uuid != NULL) {
+		json_object_del(mpc_jroot, "default_band_uuid");
+	}
+	MPC_write();
+}
+
+void
 MPC_init(void)
 {
     

@@ -1,4 +1,10 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faList } from "@fortawesome/free-solid-svg-icons"
+import { invoke } from "@tauri-apps/api/tauri"
+import { open } from '@tauri-apps/api/shell'
+
 import {
   Sheet,
   SheetContent,
@@ -6,15 +12,104 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faList } from "@fortawesome/free-solid-svg-icons"
+
 import DashboardStatusCard from "./DashboardStatusCard"
 import DashboardDevicesCard from "./DashboardDevicesCard"
 import DashboardLinksCard from "./DashboardLinksCard"
+import DashboardSettingsCard from "./DashboardSettingsCard"
+import { useToast } from "@/hooks/use-toast"
 
 export default function DashboardPage() {
+  const { toast } = useToast()
   const [selectedMenu, setSelectedMenu] = useState('status')
   const [isOpen, setIsOpen] = useState(false)
+  const [showWebCLI, setShowWebCLI] = useState(false)
+
+  useEffect(() => {
+    const checkWebCLIAccess = async () => {
+      try {
+        const resp = await invoke('mudband_ui_get_active_band')
+        const resp_json = JSON.parse(resp as string) as { 
+          status: number, 
+          msg?: string, 
+          band?: { 
+            name: string,
+            uuid: string,
+            opt_public: number,
+            description: string,
+            jwt: string
+          } 
+        }       
+        if (resp_json.status !== 200 || !resp_json.band) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: `BANDEC_XXXXX: Failed to get active band: ${resp_json.msg ? resp_json.msg : 'N/A'}`
+          })
+          return
+        }
+        setShowWebCLI(resp_json.band.opt_public === 1)
+      } catch (error) {
+        console.error('BANDEC_XXXXX: Failed to check WebCLI access:', error)
+        setShowWebCLI(false)
+      }
+    }
+    
+    checkWebCLIAccess()
+  }, [])
+
+  const handleWebCLIClick = async () => {
+    try {
+      const resp = await invoke('mudband_ui_get_active_band')
+      const resp_json = JSON.parse(resp as string) as {
+        status: number,
+        band?: {
+          jwt: string
+        }
+      }
+
+      if (resp_json.status !== 200 || !resp_json.band) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "BANDEC_XXXXX: Failed to get active band information."
+        })
+        return
+      }
+
+      const response = await fetch('https://mud.band/webcli/signin', {
+        method: 'GET',
+        headers: {
+          'Authorization': `${resp_json.band.jwt}`
+        }
+      })
+
+      const data = await response.json()
+      if (data.status !== 200) {
+        toast({
+          variant: "destructive", 
+          title: "Error",
+          description: `BANDEC_XXXXX: Failed to get WebCLI URL: ${data.msg || 'N/A'}`
+        })
+        return
+      }
+      if (data.url) {
+        await open(data.url)
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error", 
+          description: "BANDEC_XXXXX: Failed to open WebCLI URL."
+        })
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: `BANDEC_XXXXX: Failed to open WebCLI: ${error}`
+      })
+    }
+  }
 
   const renderContent = () => {
     switch (selectedMenu) {
@@ -24,6 +119,8 @@ export default function DashboardPage() {
         return <DashboardDevicesCard />
       case 'links':
         return <DashboardLinksCard />
+      case 'settings':
+        return <DashboardSettingsCard />
       default:
         return (
           <div className="bg-white p-4 rounded-lg shadow-sm">
@@ -73,15 +170,17 @@ export default function DashboardPage() {
               >
                 Links
               </button>
-              <button 
-                onClick={() => {
-                  setSelectedMenu('webcli')
-                  setIsOpen(false)
-                }}
-                className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                WebCLI
-              </button>
+              {showWebCLI && (
+                <button 
+                  onClick={() => {
+                    handleWebCLIClick()
+                    setIsOpen(false)
+                  }}
+                  className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  WebCLI
+                </button>
+              )}
               <button 
                 onClick={() => {
                   setSelectedMenu('settings')

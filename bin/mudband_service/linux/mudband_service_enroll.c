@@ -55,6 +55,7 @@ struct mbe_traversal_dir_arg {
 	int	n_enroll;
 	int	b_arg_found;
 	char	b_arg_uuidstr[64];
+	json_t *jroot;
 };
 
 static void
@@ -277,25 +278,6 @@ mbe_band_read(const char *filename)
 	return (jroot);
 }
 
-static int
-mbe_get_band_name_from_filepath(const char *filename, char *buf, size_t bufmax)
-{
-	json_t *jroot, *jname;
-
-	jroot = mbe_band_read(filename);
-	if (jroot == NULL)
-		return (-1);
-	AN(jroot);
-	assert(json_is_object(jroot));
-	jname = json_object_get(jroot, "name");
-	AN(jname);
-	assert(json_is_string(jname));
-	assert(json_string_length(jname) > 0);
-	ODR_snprintf(buf, bufmax, "%s", json_string_value(jname));
-	json_decref(jroot);
-	return (0);
-}
-
 int
 MBE_get_enrollment_count(void)
 {
@@ -311,26 +293,101 @@ MBE_get_enrollment_count(void)
 	return (arg.n_enroll);
 }
 
-int
-MBE_get_band_name(char *buf, size_t bufmax)
+json_t *
+MBE_get_active_band(void)
 {
-	int r;
+	json_t *active_band;
 	const char *default_band_uuid;
 	char filepath[ODR_BUFSIZ];
 
 	default_band_uuid = MPC_get_default_band_uuid();
 	if (default_band_uuid == NULL) {
 		vtc_log(vl, 0,
-		    "BANDEC_00585: MPC_get_default_band_uuid() failed");
-		return (-1);
+		    "BANDEC_XXXXX: MPC_get_default_band_uuid() failed");
+		return (NULL);
 	}
 	ODR_snprintf(filepath, sizeof(filepath), "band_%s.json",
 	    default_band_uuid);
-	r = mbe_get_band_name_from_filepath(filepath, buf, bufmax);
-	if (r != 0) {
+	active_band = mbe_band_read(filepath);
+	if (active_band == NULL) {
 		vtc_log(vl, 0,
-		    "BANDEC_00586: mbe_get_band_name_from_filepath() failed");
-		return (-1);
+		    "BANDEC_XXXXX: mbe_band_read() failed");
+		return (NULL);
 	}
+	return (active_band);
+}
+
+static int
+mbe_get_enrollment_list_dir_callback(struct vtclog *mbe_vl, const char *name,
+    void *orig_arg)
+{
+	struct mbe_traversal_dir_arg *arg =
+	    (struct mbe_traversal_dir_arg *)orig_arg;
+	json_t *enrollment, *jband, *jband_name;
+	int namelen;
+	char uuidstr[64];
+
+	if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0)
+		return (0);
+	namelen = strlen(name);
+	if (namelen < sizeof("band_0b0a3721-7dc0-4391-969d-b3b0d1e00925.json") - 1)
+		return (0);
+	if (strncmp(name, "band_", sizeof("band_") - 1) != 0)
+		return (0);
+	if (strcmp(name + namelen - 5, ".json") != 0)
+		return (0);
+	vtc_log(mbe_vl, 2, "Found enrollment: %s/%s", band_confdir_enroll,
+	    name);
+	ODR_snprintf(uuidstr, sizeof(uuidstr),
+	    "%.*s", namelen - 5 - (sizeof("band_") - 1),
+	    name + sizeof("band_") - 1);
+	jband = mbe_band_read(name);
+	if (jband == NULL) {
+		vtc_log(vl, 0, "BANDEC_XXXXX: mbe_band_read() failed");
+		return (0);
+	}
+	jband_name = json_object_get(jband, "name");
+	AN(jband_name);
+	assert(json_is_string(jband_name));
+	enrollment = json_object();
+	AN(enrollment);
+	json_object_set_new(enrollment, "band_uuid", json_string(uuidstr));
+	json_object_set_new(enrollment, "name", json_string(json_string_value(jband_name)));
+	json_array_append_new(arg->jroot, enrollment);
+	json_decref(jband);
+
+	return (0);
+}
+
+json_t *
+MBE_get_enrollment_list(void)
+{
+	struct mbe_traversal_dir_arg arg = { 0, };
+	int r;
+
+	arg.jroot = json_array();
+	AN(arg.jroot);
+
+	r = ODR_traversal_dir(vl,
+	    band_confdir_enroll, mbe_get_enrollment_list_dir_callback, &arg);
+	if (r != 0) {
+		vtc_log(vl, 0, "BANDEC_XXXXX: ODR_traversal_dir() failed");
+		return (NULL);
+	}
+	return (arg.jroot);
+}
+
+int
+MBE_unenroll(const char *band_uuid)
+{
+	char filepath[ODR_BUFSIZ];
+
+	ODR_snprintf(filepath, sizeof(filepath), "%s/band_%s.json",
+	    band_confdir_enroll, band_uuid);
+	mbe_file_delete(filepath);
+	ODR_snprintf(filepath, sizeof(filepath), "%s/conf_%s.json",
+	    band_confdir_enroll, band_uuid);
+	mbe_file_delete(filepath);
+	MPC_remove_default_band_uuid();
 	return (0);
 }
