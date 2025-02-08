@@ -59,19 +59,19 @@ fn mudband_ui_ipc_send(command: serde_json::Value) -> Result<serde_json::Value, 
     let socket_path = "/var/run/mudband_service.sock";
     
     let mut stream = UnixStream::connect(socket_path)
-        .map_err(|e| format!("BANDEC_XXXXX: Failed to connect to socket: {}", e))?;
+        .map_err(|e| format!("BANDEC_00587: Failed to connect to socket: {}", e))?;
     
     let cmd_str = serde_json::to_string(&command).unwrap();
     
     stream.write_all(cmd_str.as_bytes())
-        .map_err(|e| format!("BANDEC_XXXXX: Failed to write to socket: {}", e))?;
+        .map_err(|e| format!("BANDEC_00588: Failed to write to socket: {}", e))?;
     
     let mut response = String::new();
     stream.read_to_string(&mut response)
-        .map_err(|e| format!("BANDEC_XXXXX: Failed to read from socket: {}", e))?;
+        .map_err(|e| format!("BANDEC_00589: Failed to read from socket: {}", e))?;
     
     serde_json::from_str(&response)
-        .map_err(|e| format!("BANDEC_XXXXX: Failed to parse response as JSON: {}", e))
+        .map_err(|e| format!("BANDEC_00590: Failed to parse response as JSON: {}", e))
 }
 
 #[tauri::command]
@@ -83,13 +83,13 @@ fn mudband_ui_tunnel_connect(_state: tauri::State<'_, Mutex<AppState>>) -> bool 
     match mudband_ui_ipc_send(command) {
         Ok(json) => {
             if json.get("status").and_then(|s| s.as_u64()) != Some(200) {
-                println!("BANDEC_XXXXX: Invalid status code");
+                println!("BANDEC_00591: Invalid status code");
                 return false;
             }
             true
         }
         Err(e) => {
-            println!("BANDEC_XXXXX: {}", e);
+            println!("BANDEC_00592: {}", e);
             false
         }
     }
@@ -104,13 +104,13 @@ fn mudband_ui_tunnel_disconnect(_state: tauri::State<'_, Mutex<AppState>>) -> bo
     match mudband_ui_ipc_send(command) {
         Ok(json) => {
             if json.get("status").and_then(|s| s.as_u64()) != Some(200) {
-                println!("BANDEC_XXXXX: Invalid status code");
+                println!("BANDEC_00593: Invalid status code");
                 return false;
             }
             true
         }
         Err(e) => {
-            println!("BANDEC_XXXXX: {}", e);
+            println!("BANDEC_00594: {}", e);
             false
         }
     }
@@ -125,7 +125,7 @@ fn mudband_ui_tunnel_is_running(_state: tauri::State<'_, Mutex<AppState>>) -> bo
     match mudband_ui_ipc_send(command) {
         Ok(json) => {
             if json.get("status").and_then(|s| s.as_u64()) != Some(200) {
-                println!("BANDEC_XXXXX: Invalid status code");
+                println!("BANDEC_00595: Invalid status code");
                 return false;
             }
             json.get("tunnel_is_running")
@@ -133,7 +133,7 @@ fn mudband_ui_tunnel_is_running(_state: tauri::State<'_, Mutex<AppState>>) -> bo
                 .unwrap_or(false)
         }
         Err(e) => {
-            println!("BANDEC_XXXXX: {}", e);
+            println!("BANDEC_00596: {}", e);
             false
         }
     }
@@ -148,7 +148,7 @@ fn mudband_ui_get_enrollment_count(_state: tauri::State<'_, Mutex<AppState>>) ->
     match mudband_ui_ipc_send(command) {
         Ok(json) => {
             if json.get("status").and_then(|s| s.as_u64()) != Some(200) {
-                println!("BANDEC_XXXXX: Invalid status code");
+                println!("BANDEC_00597: Invalid status code");
                 return 0;
             }
             json.get("enrollment_count")
@@ -156,7 +156,7 @@ fn mudband_ui_get_enrollment_count(_state: tauri::State<'_, Mutex<AppState>>) ->
                 .unwrap_or(0)
         }
         Err(e) => {
-            println!("BANDEC_XXXXX: {}", e);
+            println!("BANDEC_00598: {}", e);
             -1
         }
     }
@@ -171,14 +171,14 @@ fn mudband_ui_get_band_name(_state: tauri::State<'_, Mutex<AppState>>) -> String
     match mudband_ui_ipc_send(command) {
         Ok(json) => {
             if json.get("status").and_then(|s| s.as_u64()) != Some(200) {
-                return "BANDEC_XXXXX: Invalid status code".to_string();
+                return "BANDEC_00599: Invalid status code".to_string();
             }
             json.get("band_name")
                 .and_then(|name| name.as_str())
                 .unwrap_or("")
                 .to_string()
         }
-        Err(e) => format!("BANDEC_XXXXX: {}", e)
+        Err(e) => format!("BANDEC_00600: {}", e)
     }
 }
 
@@ -221,5 +221,5 @@ fn main() {
             mudband_ui_tunnel_connect
         ])
         .run(tauri::generate_context!())
-        .expect("BANDEC_XXXXX: error while running tauri application");
+        .expect("BANDEC_00601: error while running tauri application");
 }

@@ -9,13 +9,13 @@ import os
 import sys
 
 def readLastUID():
-    fp = open("bandec_lastuid", "r")
+    fp = open(".bandec_lastuid", "r")
     uid = fp.read()
     fp.close()
     return int(uid)
 
 def writeLastUID(uid):
-    fp = open("bandec_lastuid", "w")
+    fp = open(".bandec_lastuid", "w")
     fp.write(str(uid))
     fp.close()
 
@@ -48,7 +48,9 @@ def main():
                  fext != ".js" and \
                  fext != ".kt" and \
                  fext != ".m" and \
-                 fext != ".php" and fext != ".swift":
+                 fext != ".php" and \
+                 fext != ".rs" and \
+                 fext != ".swift":
                     continue
 
               #
