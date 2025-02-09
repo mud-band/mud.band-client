@@ -303,7 +303,7 @@ MBE_get_active_band(void)
 	default_band_uuid = MPC_get_default_band_uuid();
 	if (default_band_uuid == NULL) {
 		vtc_log(vl, 0,
-		    "BANDEC_XXXXX: MPC_get_default_band_uuid() failed");
+		    "BANDEC_00611: MPC_get_default_band_uuid() failed");
 		return (NULL);
 	}
 	ODR_snprintf(filepath, sizeof(filepath), "band_%s.json",
@@ -311,7 +311,7 @@ MBE_get_active_band(void)
 	active_band = mbe_band_read(filepath);
 	if (active_band == NULL) {
 		vtc_log(vl, 0,
-		    "BANDEC_XXXXX: mbe_band_read() failed");
+		    "BANDEC_00612: mbe_band_read() failed");
 		return (NULL);
 	}
 	return (active_band);
@@ -343,7 +343,7 @@ mbe_get_enrollment_list_dir_callback(struct vtclog *mbe_vl, const char *name,
 	    name + sizeof("band_") - 1);
 	jband = mbe_band_read(name);
 	if (jband == NULL) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: mbe_band_read() failed");
+		vtc_log(vl, 0, "BANDEC_00613: mbe_band_read() failed");
 		return (0);
 	}
 	jband_name = json_object_get(jband, "name");
@@ -371,7 +371,7 @@ MBE_get_enrollment_list(void)
 	r = ODR_traversal_dir(vl,
 	    band_confdir_enroll, mbe_get_enrollment_list_dir_callback, &arg);
 	if (r != 0) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: ODR_traversal_dir() failed");
+		vtc_log(vl, 0, "BANDEC_00614: ODR_traversal_dir() failed");
 		return (NULL);
 	}
 	return (arg.jroot);

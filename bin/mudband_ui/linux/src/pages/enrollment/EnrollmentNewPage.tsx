@@ -1,11 +1,20 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card"
 import { invoke } from "@tauri-apps/api/tauri"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useNavigate } from "react-router-dom"
+import { open } from '@tauri-apps/api/shell'
+
+function Spinner() {
+    return (
+        <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full">
+        </div>
+    );
+}
 
 export default function EnrollmentNewPage() {
     const navigate = useNavigate()
@@ -14,10 +23,22 @@ export default function EnrollmentNewPage() {
     const [deviceName, setDeviceName] = useState("")
     const [enrollmentSecret, setEnrollmentSecret] = useState("")
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const [showSsoDialog, setShowSsoDialog] = useState(false)
+    const [ssoUrl, setSsoUrl] = useState("")
+
+    const handleOpenSsoUrl = async () => {
+        try {
+            await open(ssoUrl)
+        } catch (error) {
+            setErrorMessage(`Failed to open URL: ${error}`)
+        }
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErrorMessage(null)
+        setIsLoading(true)
         
         try {
             const response = await invoke("mudband_ui_enroll", {
@@ -25,9 +46,17 @@ export default function EnrollmentNewPage() {
                 deviceName,
                 enrollmentSecret: enrollmentSecret || undefined
             })
-            const result = JSON.parse(response as string) as { status: number; msg?: string }
-            
+            const result = JSON.parse(response as string) as {
+                status: number;
+                sso_url?: string;
+                msg?: string
+            }
             if (result.status !== 200) {
+                if (result.status === 301 && result.sso_url) {
+                    setSsoUrl(result.sso_url)
+                    setShowSsoDialog(true)
+                    return
+                }
                 setErrorMessage(result.msg || "Failed to enroll.")
                 return
             }
@@ -38,13 +67,15 @@ export default function EnrollmentNewPage() {
             navigate("/")
         } catch (error) {
             setErrorMessage(`Encountered an error while enrolling: ${error}`)
+        } finally {
+            setIsLoading(false)
         }
     }
 
     return (
       <div className="min-h-screen bg-gray-50">
         <nav className="bg-white shadow-sm p-2 flex items-center">
-          <span className="text-lg font-semibold pb-1">Mud.band</span>
+          <span className="text-lg font-semibold">Mud.band</span>
         </nav>
         <div className="container mx-auto p-4 flex">
             <Card className="max-w-2xl w-full">
@@ -94,13 +125,50 @@ export default function EnrollmentNewPage() {
                             />
                         </div>
 
-                        <Button type="submit" className="w-full">
-                            Enroll
-                        </Button>
+                        <div className="flex space-x-4 justify-end">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => navigate(-1)}
+                                disabled={isLoading}
+                            >
+                                Back
+                            </Button>
+                            <Button 
+                                type="submit"
+                                disabled={isLoading}
+                                className="min-w-[80px]"
+                            >
+                                {isLoading ? (
+                                    <div className="flex items-center gap-2">
+                                        <Spinner />
+                                        <span>Enrolling...</span>
+                                    </div>
+                                ) : (
+                                    "Enroll"
+                                )}
+                            </Button>
+                        </div>
                     </form>
                 </CardContent>
             </Card>
         </div>
+        <Dialog open={showSsoDialog} onOpenChange={setShowSsoDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Authentication Required</DialogTitle>
+              <DialogDescription>
+                Additional authentication is required to complete the enrollment process. 
+                Please click the button below to open the authentication page.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button onClick={handleOpenSsoUrl}>
+                Open Authentication Page
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     )
 }

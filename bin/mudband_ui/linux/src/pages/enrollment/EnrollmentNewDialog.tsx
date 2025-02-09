@@ -5,6 +5,8 @@ import { invoke } from "@tauri-apps/api/tauri"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useNavigate } from "react-router-dom"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import { open } from '@tauri-apps/api/shell'
 
 interface EnrollmentNewDialogProps {
     onSuccess?: () => void;
@@ -17,6 +19,16 @@ export default function EnrollmentNewDialog({ onSuccess }: EnrollmentNewDialogPr
     const [deviceName, setDeviceName] = useState("")
     const [enrollmentSecret, setEnrollmentSecret] = useState("")
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const [showSsoDialog, setShowSsoDialog] = useState(false)
+    const [ssoUrl, setSsoUrl] = useState("")
+
+    const handleOpenSsoUrl = async () => {
+        try {
+            await open(ssoUrl)
+        } catch (error) {
+            setErrorMessage(`Failed to open URL: ${error}`)
+        }
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -28,9 +40,18 @@ export default function EnrollmentNewDialog({ onSuccess }: EnrollmentNewDialogPr
                 deviceName,
                 enrollmentSecret: enrollmentSecret || undefined
             })
-            const result = JSON.parse(response as string) as { status: number; msg?: string }
+            const result = JSON.parse(response as string) as {
+                status: number;
+                sso_url?: string;
+                msg?: string
+            }
             
             if (result.status !== 200) {
+                if (result.status === 301 && result.sso_url) {
+                    setSsoUrl(result.sso_url)
+                    setShowSsoDialog(true)
+                    return
+                }
                 setErrorMessage(result.msg || "Failed to enroll.")
                 return
             }
@@ -101,6 +122,23 @@ export default function EnrollmentNewDialog({ onSuccess }: EnrollmentNewDialogPr
                     </Button>
                 </form>
             </div>
+
+            <Dialog open={showSsoDialog} onOpenChange={setShowSsoDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Authentication Required</DialogTitle>
+                        <DialogDescription>
+                            Additional authentication is required to complete the enrollment process. 
+                            Please click the button below to open the authentication page.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button onClick={handleOpenSsoUrl}>
+                            Open Authentication Page
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }
