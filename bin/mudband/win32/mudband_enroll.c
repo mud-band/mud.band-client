@@ -118,6 +118,7 @@ MBE_enroll(const char *token, const char *name, const char *secret)
 {
 	struct vhttps_req req;
 	json_t *jroot, *jstatus, *jband, *juuid, *jband_name, *jopt_public;
+	json_t *jmsg, *jsso_url;
 	json_error_t jerror;
 	size_t resp_bodylen, wg_pubkeystrlen, wg_privkeystrlen;
 	int r, req_bodylen, status;
@@ -196,9 +197,21 @@ MBE_enroll(const char *token, const char *name, const char *secret)
 	AN(jstatus);
 	assert(json_is_integer(jstatus));
 	status = json_integer_value(jstatus);
-	if (status != 200) {
-		json_t *jmsg;
-
+	switch (status) {
+	case 200:
+		break;
+	case 301:
+		jsso_url = json_object_get(jroot, "sso_url");
+		AN(jsso_url);
+		assert(json_is_string(jsso_url));
+		assert(json_string_length(jsso_url) > 0);
+		vtc_log(mbe_vl, 2,
+		    "MFA (multi-factor authentication) is enabled to enroll."
+		    " Please visit the following URL: %s",
+		    json_string_value(jsso_url));
+		json_decref(jroot);
+		return (0);
+	default:
 		jmsg = json_object_get(jroot, "msg");
 		AN(jmsg);
 		assert(json_is_string(jmsg));
