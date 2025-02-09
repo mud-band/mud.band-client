@@ -609,8 +609,6 @@ main_loop(int fd)
 		}
 		assert(buflen > 0);
 		buf[buflen] = '\0';
-		fprintf(stdout, "REQ: %s\n", buf);
-
 		root = json_loads(buf, 0, &error);
 		if (root == NULL) {
 			vtc_log(vl, 0, "BANDEC_00557: json_loads() failed: %s",
@@ -664,8 +662,6 @@ main_loop(int fd)
 		}
 		assert(outlen > 0);
 		out[outlen] = '\0';
-		fprintf(stdout, "RESP: %s\n", out);
-
 		rv = write(cfd, out, outlen);
 		if (rv < 0) {
 			vtc_log(vl, 0, "BANDEC_00562: sendto(2) failed: %d %s",
