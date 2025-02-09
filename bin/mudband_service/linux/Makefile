@@ -6,7 +6,7 @@ CFLAGS = -g -O0 -Wall -Wstrict-prototypes -Wmissing-prototypes		\
 	 -Wchar-subscripts -Winline -Wnested-externs -Wredundant-decls	\
 	 -Wformat							\
 	 -I. -I../../../lib/libjansson -I../../../lib/libmud \
-	 -I../../mudband/common -fsanitize=address
+	 -I../../mudband/common
 DEFINES = -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 OBJS = \
 	../../../lib/libjansson/dump.o \
