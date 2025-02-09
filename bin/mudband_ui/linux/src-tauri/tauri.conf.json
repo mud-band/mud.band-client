@@ -21,8 +21,8 @@
     "windows": [
       {
         "title": "Mud.band",
-        "width": 350,
-        "height": 500
+        "width": 400,
+        "height": 550
       }
     ],
     "security": {

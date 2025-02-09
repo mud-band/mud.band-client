@@ -75,43 +75,41 @@ fn mudband_ui_ipc_send(command: serde_json::Value) -> Result<serde_json::Value, 
 }
 
 #[tauri::command]
-fn mudband_ui_tunnel_connect(_state: tauri::State<'_, Mutex<AppState>>) -> bool {
+fn mudband_ui_tunnel_connect(_state: tauri::State<'_, Mutex<AppState>>) -> i64 {
     let command = serde_json::json!({
         "cmd": "tunnel_connect"
     });
 
     match mudband_ui_ipc_send(command) {
         Ok(json) => {
-            if json.get("status").and_then(|s| s.as_u64()) != Some(200) {
-                println!("BANDEC_00591: Invalid status code");
-                return false;
-            }
-            true
+            json.get("status")
+                .and_then(|s| s.as_u64())
+                .map(|s| s as i64)
+                .unwrap_or(500)
         }
         Err(e) => {
             println!("BANDEC_00592: {}", e);
-            false
+            500
         }
     }
 }
 
 #[tauri::command]
-fn mudband_ui_tunnel_disconnect(_state: tauri::State<'_, Mutex<AppState>>) -> bool {
+fn mudband_ui_tunnel_disconnect(_state: tauri::State<'_, Mutex<AppState>>) -> i64 {
     let command = serde_json::json!({
         "cmd": "tunnel_disconnect"
     });
 
     match mudband_ui_ipc_send(command) {
         Ok(json) => {
-            if json.get("status").and_then(|s| s.as_u64()) != Some(200) {
-                println!("BANDEC_00593: Invalid status code");
-                return false;
-            }
-            true
+            json.get("status")
+                .and_then(|s| s.as_u64())
+                .map(|s| s as i64)
+                .unwrap_or(500)
         }
         Err(e) => {
             println!("BANDEC_00594: {}", e);
-            false
+            500
         }
     }
 }
@@ -163,22 +161,19 @@ fn mudband_ui_get_enrollment_count(_state: tauri::State<'_, Mutex<AppState>>) ->
 }
 
 #[tauri::command]
-fn mudband_ui_get_band_name(_state: tauri::State<'_, Mutex<AppState>>) -> String {
+fn mudband_ui_get_active_band(_state: tauri::State<'_, Mutex<AppState>>) -> String {
     let command = serde_json::json!({
-        "cmd": "get_band_name",
+        "cmd": "get_active_band",
     });
 
     match mudband_ui_ipc_send(command) {
         Ok(json) => {
-            if json.get("status").and_then(|s| s.as_u64()) != Some(200) {
-                return "BANDEC_00599: Invalid status code".to_string();
-            }
-            json.get("band_name")
-                .and_then(|name| name.as_str())
-                .unwrap_or("")
-                .to_string()
+            serde_json::to_string(&json).unwrap_or_else(|_| "{}".to_string())
         }
-        Err(e) => format!("BANDEC_00600: {}", e)
+        Err(e) => serde_json::to_string(&serde_json::json!({
+            "status": 500,
+            "msg": e.to_string()
+        })).unwrap_or_else(|_| "{}".to_string())
     }
 }
 
@@ -204,6 +199,80 @@ fn mudband_ui_enroll(enrollment_token: String, device_name: String, enrollment_s
     }
 }
 
+#[tauri::command]
+fn mudband_ui_get_active_conf(_state: tauri::State<'_, Mutex<AppState>>) -> String {
+    let command = serde_json::json!({
+        "cmd": "get_active_conf"
+    });
+
+    match mudband_ui_ipc_send(command) {
+        Ok(json) => {
+            serde_json::to_string(&json).unwrap_or_else(|_| "{}".to_string())
+        }
+        Err(e) => serde_json::to_string(&serde_json::json!({
+            "status": 500,
+            "msg": format!("BANDEC_XXXXX: {}", e)
+        })).unwrap_or_else(|_| "{}".to_string())
+    }
+}
+
+#[tauri::command]
+fn mudband_ui_get_enrollment_list(_state: tauri::State<'_, Mutex<AppState>>) -> String {
+    let command = serde_json::json!({
+        "cmd": "get_enrollment_list"
+    });
+
+    match mudband_ui_ipc_send(command) {
+        Ok(json) => {
+            serde_json::to_string(&json).unwrap_or_else(|_| "[]".to_string())
+        }
+        Err(e) => serde_json::to_string(&serde_json::json!({
+            "status": 500,
+            "msg": format!("BANDEC_XXXXX: {}", e)
+        })).unwrap_or_else(|_| "[]".to_string())
+    }
+}
+
+#[tauri::command]
+fn mudband_ui_unenroll(_state: tauri::State<'_, Mutex<AppState>>, band_uuid: String) -> String {
+    let command = serde_json::json!({
+        "cmd": "unenroll",
+        "args": {
+            "band_uuid": band_uuid
+        }
+    });
+
+    match mudband_ui_ipc_send(command) {
+        Ok(json) => {
+            serde_json::to_string(&json).unwrap_or_else(|_| "{}".to_string())
+        }
+        Err(e) => serde_json::to_string(&serde_json::json!({
+            "status": 500,
+            "msg": format!("BANDEC_XXXXX: {}", e)
+        })).unwrap_or_else(|_| "{}".to_string())
+    }
+}
+
+#[tauri::command]
+fn mudband_ui_change_enrollment(_state: tauri::State<'_, Mutex<AppState>>, band_uuid: String) -> String {
+    let command = serde_json::json!({
+        "cmd": "change_enrollment",
+        "args": {
+            "band_uuid": band_uuid
+        }
+    });
+
+    match mudband_ui_ipc_send(command) {
+        Ok(json) => {
+            serde_json::to_string(&json).unwrap_or_else(|_| "{}".to_string())
+        }
+        Err(e) => serde_json::to_string(&serde_json::json!({
+            "status": 500,
+            "msg": format!("BANDEC_XXXXX: {}", e)
+        })).unwrap_or_else(|_| "{}".to_string())
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
@@ -213,12 +282,16 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             mudband_ui_is_user_tos_agreed,
             mudband_ui_set_user_tos_agreed,
-            mudband_ui_get_band_name,
+            mudband_ui_get_active_band,
             mudband_ui_get_enrollment_count,
             mudband_ui_enroll,
             mudband_ui_tunnel_is_running,
             mudband_ui_tunnel_disconnect,
-            mudband_ui_tunnel_connect
+            mudband_ui_tunnel_connect,
+            mudband_ui_get_active_conf,
+            mudband_ui_get_enrollment_list,
+            mudband_ui_change_enrollment,
+            mudband_ui_unenroll
         ])
         .run(tauri::generate_context!())
         .expect("BANDEC_00601: error while running tauri application");

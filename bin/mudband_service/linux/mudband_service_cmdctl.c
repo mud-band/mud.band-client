@@ -55,6 +55,8 @@ struct cmdctl {
 };
 static struct cmdctl	*cmdctl;
 
+static void	cmd_finish(struct cmdctl *v);
+
 static int
 CMD_nonblocking(int sock)
 {
@@ -71,8 +73,8 @@ CMD_thread(void *priv)
 {
 	struct cmdctl *v;
 	struct pollfd *fds, fd;
-	char buf[BUFSIZ];
-	int i;
+	char buf[BUFSIZ], *p, *q;
+	int i, offset = 0;
 
 	v = (struct cmdctl *)priv;
 	CMD_nonblocking(v->fds[0]);
@@ -86,15 +88,28 @@ CMD_thread(void *priv)
 			continue;
 		if (fds->revents & (POLLERR|POLLHUP))
 			break;
-		i = read(v->fds[0], buf, sizeof buf - 1);
+		i = read(v->fds[0], buf + offset, sizeof buf - 1 - offset);
 		if (i <= 0)
 			break;
-		buf[i] = '\0';
-		if (v->vl_log)
-			vtc_log(v->vl, 3, "%s%s", v->prefix, buf);
-		else
-			printf("%s%s", v->prefix, buf);
+		buf[i + offset] = '\0';
+		p = buf;
+		while (1) {
+			q = strchr(p, '\n');
+			if (q == NULL) {
+				offset = &buf[i + offset] - p;
+				memmove(buf, p, offset);
+				break;
+			}
+			*q = '\0';
+			if (v->vl_log)
+				vtc_log(v->vl, 3, "%s%s", v->prefix, p);
+			else
+				printf("%s%s\n", v->prefix, p);
+			p = q + 1;
+			offset = 0;
+		}
 	}
+	cmd_finish(v);
 	return (NULL);
 }
 
@@ -125,7 +140,7 @@ cmd_finish(struct cmdctl *v)
 }
 
 static void
-pdeathsig(void)
+cmd_pdeathsig(void)
 {
 	int error;
 
@@ -136,7 +151,7 @@ pdeathsig(void)
 }
 
 static char **
-parse_command(const char *cmd, int *argc)
+cmd_argv_parse(const char *cmd, int *argc)
 {
 	char **argv;
 	char *token, *str, *tofree;
@@ -177,7 +192,7 @@ parse_command(const char *cmd, int *argc)
 }
 
 static void
-free_argv(char **argv)
+cmd_argv_free(char **argv)
 {
 	char **p;
 
@@ -189,7 +204,7 @@ free_argv(char **argv)
 }
 
 static void
-CMD_RunChild(void)
+cmd_runchild(void)
 {
 	struct pollfd *fds, fd;
 	int error, i, offset = 0;
@@ -248,12 +263,12 @@ CMD_RunChild(void)
 				v->vl_log = 0;
 				v->wait = (p[0] == '!') ? 1 : 0;
 
-				argv = parse_command(p + 1, &argc);
+				argv = cmd_argv_parse(p + 1, &argc);
 				if (!argv || argc == 0) {
 					vtc_log(cmdctl->vl, 0,
 					    "Failed to parse command: %s",
 					    p + 1);
-					free_argv(argv);
+					cmd_argv_free(argv);
 					free(v);
 					continue;
 				}
@@ -270,7 +285,7 @@ CMD_RunChild(void)
 					AZ(close(v->fds[3]));
 					for (i = 3; i < getdtablesize(); i++)
 						(void)close(i);
-					pdeathsig();
+					cmd_pdeathsig();
 					printf("Executing %s (wait %d)\n",
 					    p + 1, v->wait);
 					i = execvp(argv[0], argv);
@@ -279,7 +294,7 @@ CMD_RunChild(void)
 					    argv[0], strerror(errno));
 					exit(1);
 				}
-				free_argv(argv);
+				cmd_argv_free(argv);
 				close(v->fds[0]);
 				close(v->fds[3]);
 				v->fds[0] = v->fds[2];
@@ -296,7 +311,7 @@ CMD_RunChild(void)
 }
 
 int
-CMD_Execute(int wait, const char *fmt, ...)
+CMD_execute(int wait, const char *fmt, ...)
 {
 	va_list ap;
 	ssize_t l;
@@ -331,14 +346,7 @@ CMD_Execute(int wait, const char *fmt, ...)
 }
 
 void
-CMD_ExecuteNoFmt(int wait, const char *cmd)
-{
-	
-	CMD_Execute(wait, "%s", cmd);
-}
-
-void
-CMD_ctl(void)
+CMD_init(void)
 {
 
 	cmdctl = (struct cmdctl *)calloc(1, sizeof(*cmdctl));
@@ -353,7 +361,7 @@ CMD_ctl(void)
 	cmdctl->pid = fork();
 	assert(cmdctl->pid >= 0);
 	if (cmdctl->pid == 0)
-		CMD_RunChild();
+		cmd_runchild();
 	AZ(close(cmdctl->fds[0]));
 	AZ(close(cmdctl->fds[3]));
 	AZ(close(cmdctl->fds[4]));

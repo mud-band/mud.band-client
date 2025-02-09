@@ -46,6 +46,7 @@
 #include "odr.h"
 #include "vassert.h"
 #include "vhttps.h"
+#include "vopt.h"
 #include "vtc_log.h"
 
 #include "crypto.h"
@@ -53,14 +54,18 @@
 
 #include "mudband_service.h"
 
+char *band_confdir_enroll;
+char *band_confdir_root;
+struct vtclog *vl;
+
 struct tunnel_status {
 	int is_running;
 };
 static struct tunnel_status band_tunnel_status;
-
-char *band_confdir_enroll;
-char *band_confdir_root;
-struct vtclog *vl;
+static int orig_argc;
+static char **orig_argv;
+#define MUDBAND_BIN_PATH "/opt/mudband/0.0.9/bin/mudband"
+static const char *B_arg = MUDBAND_BIN_PATH;
 
 static void	check_tunnel_status(void);
 
@@ -145,36 +150,6 @@ cmd_enroll(char *out, size_t outmax, json_t *root)
 }
 
 static ssize_t
-cmd_get_band_name(char *out, size_t outmax)
-{
-	json_t *root;
-	ssize_t outlen = 0;
-	int r;
-	char band_name[ODR_BUFSIZ];
-	char *p;
-
-	root = json_object();
-	assert(root != NULL);
-
-	r = MBE_get_band_name(band_name, sizeof(band_name));
-	if (r != 0) {
-		json_object_set_new(root, "status", json_integer(500));
-		json_object_set_new(root, "msg",
-		    json_string("MBE_get_band_name() failed"));
-	} else {
-		json_object_set_new(root, "status", json_integer(200));
-		json_object_set_new(root, "band_name",
-		    json_string(band_name));
-	}
-	p = json_dumps(root, 0);
-	assert(p != NULL);
-	outlen = snprintf(out, outmax, "%s", p);
-	free(p);
-	json_decref(root);
-	return (outlen);
-}
-
-static ssize_t
 cmd_get_enrollment_count(char *out, size_t outmax)
 {
 	json_t *root;
@@ -188,11 +163,39 @@ cmd_get_enrollment_count(char *out, size_t outmax)
 	if (enrollment_count == -1) {
 		json_object_set_new(root, "status", json_integer(500));
 		json_object_set_new(root, "msg",
-		    json_string("MBE_get_enrollment_count() failed"));
+		    json_string("BANDEC_XXXXX: MBE_get_enrollment_count() failed"));
 	} else {
 		json_object_set_new(root, "status", json_integer(200));
 		json_object_set_new(root, "enrollment_count",
 		    json_integer(enrollment_count));
+	}
+	p = json_dumps(root, 0);
+	assert(p != NULL);
+	outlen = snprintf(out, outmax, "%s", p);
+	free(p);
+	json_decref(root);
+	return (outlen);
+}
+
+static ssize_t
+cmd_get_active_conf(char *out, size_t outmax)
+{
+	json_t *root, *active_conf;
+	ssize_t outlen = 0;
+	char *p;
+
+	root = json_object();
+	assert(root != NULL);
+	
+	active_conf = CNF_get_active_conf();
+	if (active_conf == NULL) {
+		json_object_set_new(root, "status", json_integer(500));
+		json_object_set_new(root, "msg",
+		    json_string("No config found.  Please connect first."));
+	} else {
+		assert(json_is_object(active_conf));
+		json_object_set_new(root, "status", json_integer(200));
+		json_object_set_new(root, "conf", active_conf);
 	}
 	p = json_dumps(root, 0);
 	assert(p != NULL);
@@ -302,8 +305,8 @@ cmd_tunnel_connect(char *out, size_t outmax)
 {
 	json_t *root;
 	ssize_t outlen = 0;
-	char *p;
 	int rv;
+	char cmd[ODR_BUFSIZ], *p;
 
 	root = json_object();
 	assert(root != NULL);
@@ -313,7 +316,9 @@ cmd_tunnel_connect(char *out, size_t outmax)
 		json_object_set_new(root, "msg", 
 			json_string("Tunnel is already running"));
 	} else {
-		rv = CMD_Execute(0, "/opt/mudband/0.0.9/bin/mudband");
+		ODR_snprintf(cmd, sizeof(cmd),
+		    "%s -S -P /var/run/mudband.pid\n", B_arg);
+		rv = CMD_execute(0, cmd);
 		if (rv == 0) {
 			band_tunnel_status.is_running = 1;
 			json_object_set_new(root, "status", json_integer(200));
@@ -346,7 +351,6 @@ stop_tunnel_process(const char *pidfile)
 	if (fp == NULL) {
 		return (-1);
 	}
-
 	if (fgets(buf, sizeof(buf), fp) != NULL) {
 		pid = atoi(buf);
 		if (pid > 0) {
@@ -365,7 +369,6 @@ stop_tunnel_process(const char *pidfile)
 		}
 	}
 	fclose(fp);
-	unlink(pidfile);
 	return (rv);
 }
 
@@ -411,6 +414,140 @@ cmd_tunnel_disconnect(char *out, size_t outmax)
 	return (outlen);
 }
 
+static ssize_t
+cmd_get_active_band(char *out, size_t outmax)
+{
+	json_t *root, *active_band;
+	ssize_t outlen = 0;
+	char *p;
+
+	root = json_object();
+	assert(root != NULL);
+
+	active_band = MBE_get_active_band();
+	if (active_band == NULL) {
+		json_object_set_new(root, "status", json_integer(500));
+		json_object_set_new(root, "msg",
+		    json_string("Failed to get active band information"));
+	} else {
+		json_object_set_new(root, "status", json_integer(200));
+		json_object_set_new(root, "band", active_band);
+	}
+	p = json_dumps(root, 0);
+	assert(p != NULL);
+	outlen = snprintf(out, outmax, "%s", p);
+	free(p);
+	json_decref(root);
+	return (outlen);
+}
+
+static ssize_t
+cmd_get_enrollment_list(char *out, size_t outmax)
+{
+	json_t *root, *enrollment_list;
+	ssize_t outlen = 0;
+	char *p;
+
+	root = json_object();
+	assert(root != NULL);
+
+	enrollment_list = MBE_get_enrollment_list();
+	if (enrollment_list == NULL) {
+		json_object_set_new(root, "status", json_integer(500));
+		json_object_set_new(root, "msg",
+		    json_string("Failed to get enrollment list"));
+	} else {
+		json_object_set_new(root, "status", json_integer(200));
+		json_object_set_new(root, "enrollments", enrollment_list);
+	}
+
+	p = json_dumps(root, 0);
+	assert(p != NULL);
+	outlen = snprintf(out, outmax, "%s", p);
+	free(p);
+	json_decref(root);
+	return (outlen);
+}
+
+static ssize_t
+cmd_change_enrollment(char *out, size_t outmax, json_t *root)
+{
+	json_t *args, *band_uuid;
+	ssize_t outlen = 0;
+	json_t *response;
+	char *p;
+
+	args = json_object_get(root, "args");
+	if (!args || !json_is_object(args)) {
+		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
+			"BANDEC_XXXXX: Invalid arguments for change_enrollment");
+		return (-1);
+	}
+
+	band_uuid = json_object_get(args, "band_uuid");
+
+	if (!band_uuid || !json_is_string(band_uuid)) {
+		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
+			"BANDEC_XXXXX0571: Missing or invalid band UUID.");
+		return (-1);
+	}
+
+	response = json_object();
+	AN(response);
+
+	MPC_set_default_band_uuid(json_string_value(band_uuid));
+	json_object_set_new(response, "status", json_integer(200));
+	json_object_set_new(response, "msg", 
+		json_string("Enrollment changed successfully"));
+
+	p = json_dumps(response, 0);
+	AN(p);
+	outlen = snprintf(out, outmax, "%s", p);
+	free(p);
+	json_decref(response);
+
+	return (outlen);
+}
+
+static ssize_t
+cmd_unenroll(char *out, size_t outmax, json_t *root)
+{
+	json_t *args, *band_uuid, *response;
+	ssize_t outlen = 0;
+	char *p;
+	int rv;
+
+	args = json_object_get(root, "args");
+	if (!args || !json_is_object(args)) {
+		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
+			"BANDEC_XXXXX: Invalid arguments for unenroll");
+		return (-1);
+	}
+
+	band_uuid = json_object_get(args, "band_uuid");
+	if (!band_uuid || !json_is_string(band_uuid)) {
+		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
+			"BANDEC_XXXXX: Missing or invalid band UUID");
+		return (-1);
+	}
+
+	response = json_object();
+	AN(response);
+	rv = MBE_unenroll(json_string_value(band_uuid));
+	assert(rv == 0);
+	json_object_set_new(response, "status", json_integer(200));
+	json_object_set_new(response, "msg",
+	    json_string("Successfully unenrolled"));
+
+	p = json_dumps(response, 0);
+	AN(p);
+	outlen = snprintf(out, outmax, "%s", p);
+	free(p);
+	json_decref(response);
+
+	return (outlen);
+}
+
 static void
 main_loop(int fd)
 {
@@ -420,10 +557,14 @@ main_loop(int fd)
 	json_error_t error;
 	fd_set set;
 	socklen_t fromlen;
+	size_t outmax = 16 * 1024;
 	ssize_t buflen, outlen;
 	const char *cmdval;
-	char buf[ODR_BUFSIZ], out[ODR_BUFSIZ];
+	char buf[ODR_BUFSIZ], *out;
 	int rv, cfd;
+
+	out = (char *)malloc(outmax);
+	AN(out);
 
 	for (;;) {
 		FD_ZERO(&set);
@@ -489,19 +630,27 @@ main_loop(int fd)
 
 		cmdval = json_string_value(cmd);
 		if (strcmp(cmdval, "enroll") == 0)
-			outlen = cmd_enroll(out, sizeof(out), root);
-		else if (strcmp(cmdval, "get_band_name") == 0)
-			outlen = cmd_get_band_name(out, sizeof(out));
+			outlen = cmd_enroll(out, outmax, root);
+		else if (strcmp(cmdval, "unenroll") == 0)
+			outlen = cmd_unenroll(out, outmax, root);
+		else if (strcmp(cmdval, "get_active_band") == 0)
+			outlen = cmd_get_active_band(out, outmax);
+		else if (strcmp(cmdval, "get_active_conf") == 0)
+			outlen = cmd_get_active_conf(out, outmax);
 		else if (strcmp(cmdval, "get_enrollment_count") == 0)
-			outlen = cmd_get_enrollment_count(out, sizeof(out));
+			outlen = cmd_get_enrollment_count(out, outmax);
 		else if (strcmp(cmdval, "ping") == 0)
-			outlen = cmd_ping(out, sizeof(out));
+			outlen = cmd_ping(out, outmax);
 		else if (strcmp(cmdval, "tunnel_get_status") == 0)
-			outlen = cmd_tunnel_get_status(out, sizeof(out));
+			outlen = cmd_tunnel_get_status(out, outmax);
 		else if (strcmp(cmdval, "tunnel_connect") == 0)
-			outlen = cmd_tunnel_connect(out, sizeof(out));
+			outlen = cmd_tunnel_connect(out, outmax);
 		else if (strcmp(cmdval, "tunnel_disconnect") == 0)
-			outlen = cmd_tunnel_disconnect(out, sizeof(out));
+			outlen = cmd_tunnel_disconnect(out, outmax);
+		else if (strcmp(cmdval, "get_enrollment_list") == 0)
+			outlen = cmd_get_enrollment_list(out, outmax);
+		else if (strcmp(cmdval, "change_enrollment") == 0)
+			outlen = cmd_change_enrollment(out, outmax, root);
 		else {
 			vtc_log(vl, 0, "BANDEC_00560: Unknown command: %s",
 			    json_string_value(cmd));
@@ -523,7 +672,6 @@ main_loop(int fd)
 			    errno, strerror(errno));
 			goto next;
 		}
-
 next:
 		if (root != NULL)
 			json_decref(root);
@@ -534,17 +682,19 @@ next:
 static void
 usage(void)
 {
-#define FMT "    %-20s # %s\n"
-#define FMT_INDENT "                           "
+#define FMT "  %-25s # %s\n"
+#define FMT_INDENT "                              %s\n"
 	fprintf(stdout, "Usage: mudband_service [-h] [-P pidfile]"
 	    " [-S sockfile] [-u user]\n");
+	fprintf(stdout, FMT, "-b, --bandfile <file>", "Mudband binary path.");
+	fprintf(stdout, FMT_INDENT, "(default: " MUDBAND_BIN_PATH ")");
 	fprintf(stdout, FMT, "-h", "Show this help message");
-	fprintf(stdout, FMT, "-P pidfile", "PID file path");
-	fprintf(stdout, FMT_INDENT "(default: /var/run/mudband_service.pid)\n");
-	fprintf(stdout, FMT, "-S sockfile", "Socket file path"); 
-	fprintf(stdout, FMT_INDENT
-	    "(default: /var/run/mudband_service.sock)\n");
-	fprintf(stdout, FMT, "-u user",
+	fprintf(stdout, FMT, "-P, --pidfile <file>", "PID file path");
+	fprintf(stdout, FMT_INDENT, "(default: /var/run/mudband_service.pid)");
+	fprintf(stdout, FMT, "-S, --sockfile <file>", "Socket file path"); 
+	fprintf(stdout, FMT_INDENT,
+	    "(default: /var/run/mudband_service.sock)");
+	fprintf(stdout, FMT, "-u, --user <user>",
 	    "Make the socket file owned by the specified user");
 	exit(1);
 }
@@ -568,6 +718,22 @@ check_tunnel_status(void)
 }
 
 static void
+check_mudband_binary(void)
+{
+	struct stat st;
+	if (stat(B_arg, &st) != 0) {
+		vtc_log(vl, VTCLOG_LEVEL_ERROR,
+		    "BANDEC_XXXXX: Mudband binary not found: %s", B_arg);
+		exit(1);
+	}
+	if ((st.st_mode & S_IXUSR) == 0) {
+		vtc_log(vl, VTCLOG_LEVEL_ERROR,
+		    "BANDEC_XXXXX: Mudband binary not executable: %s", B_arg);
+		exit(1);
+	}
+}
+
+static void
 init(const char *pidpath)
 {
 	int rv;
@@ -584,7 +750,7 @@ init(const char *pidpath)
 		    "BANDEC_00564: Failed to initialize the corefile"
 		    " handler: %d %s", ODR_errno(), ODR_strerror(ODR_errno()));
 	}
-	CMD_ctl();
+	CMD_init();
 	PID_init(pidpath);
 	VHTTPS_init();
 
@@ -598,6 +764,7 @@ init(const char *pidpath)
 	AN(band_confdir_enroll);
 
 	MPC_init();
+	check_mudband_binary();
 	check_tunnel_status();
 }
 
@@ -605,26 +772,39 @@ int
 main(int argc, char *argv[])
 {
 	struct sockaddr_un addr;
+	struct vopt_option opts[] = {
+		{ "bandfile", vopt_long_required_argument, NULL, 'b' },
+		{ "help", vopt_long_no_argument, NULL, 'h' },
+		{ "pidfile", vopt_long_required_argument, NULL, 'P' },
+		{ "sockfile", vopt_long_required_argument, NULL, 'S' },
+		{ "user", vopt_long_required_argument, NULL, 'u' },
+	};
 	struct passwd *pw;
 	uid_t owner = -1;
 	int fd, o, rv;
 	const char *P_arg = "/var/run/mudband_service.pid";
 	const char *S_arg = "/var/run/mudband_service.sock";
 	const char *u_arg = NULL;
+	const char *opt = "b:hP:S:u:";
 
-	while ((o = getopt(argc, argv, "hP:S:u:")) != -1)
+	orig_argc = argc;
+	orig_argv = argv;
+	while ((o = VOPT_get_long(argc, argv, opt, opts, NULL)) != -1)
 		switch (o) {
+		case 'b':
+			B_arg = vopt_arg;
+			break;
 		case 'h':
 			usage();
-			break;
+			/* NOTREACHED */
 		case 'P':
-			P_arg = optarg;
+			P_arg = vopt_arg;
 			break;
 		case 'S':
-			S_arg = optarg;
+			S_arg = vopt_arg;
 			break;
 		case 'u':
-			u_arg = optarg;
+			u_arg = vopt_arg;
 			pw = getpwnam(u_arg);
 			assert(pw != NULL);
 			owner = pw->pw_uid;
@@ -633,8 +813,8 @@ main(int argc, char *argv[])
 			fprintf(stderr, "[ERROR] Unknown option '%c'\n", o);
 			exit(1);
 		}
-	argc -= optind;
-	argv += optind;
+	argv += vopt_ind;
+	argc -= vopt_ind;
 
 	init(P_arg);
 

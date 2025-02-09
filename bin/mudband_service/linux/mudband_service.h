@@ -27,6 +27,8 @@
 #ifndef _MUDBAND_SERVICE_H_
 #define	_MUDBAND_SERVICE_H_
 
+#include "jansson.h"
+
 /* mudband_service.c */
 extern char *band_confdir_enroll;
 extern char *band_confdir_root;
@@ -34,20 +36,25 @@ struct vtclog;
 extern struct vtclog *vl;
 
 /* mudband_service_cmdctl.c */
-int	CMD_Execute(int wait, const char *fmt, ...);
-void	CMD_ExecuteNoFmt(int wait, const char *cmd);
-void	CMD_ctl(void);
+int	CMD_execute(int wait, const char *fmt, ...);
+void	CMD_init(void);
+
+/* mudband_service_confmgr.c */
+json_t *CNF_get_active_conf(void);
 
 /* mudband_service_enroll.c */
 int	MBE_get_enrollment_count(void);
 ssize_t	MBE_enroll(char *out, size_t outmax,const char *token,
 	    const char *name, const char *secret);
-int	MBE_get_band_name(char *buf, size_t bufmax);
+json_t *MBE_get_active_band(void);
+json_t *MBE_get_enrollment_list(void);
+int	MBE_unenroll(const char *band_uuid);
 
 /* mudband_service_progconf.c */
 void	MPC_init(void);
 void	MPC_set_default_band_uuid(const char *band_uuid);
 const char *
 	MPC_get_default_band_uuid(void);
+void	MPC_remove_default_band_uuid(void);
 
 #endif /* _MUDBAND_SERVICE_H_ */

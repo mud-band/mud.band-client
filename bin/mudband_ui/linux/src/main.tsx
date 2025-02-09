@@ -11,7 +11,8 @@ import LogoPage, { loader as loaderLogoPage } from "./pages/LogoPage";
 import RootPage from "./pages/RootPage";
 import TermsOfServicePage from "./pages/tos/TermsOfServicePage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
-import EnrollmentPage from "./pages/enrollment/EnrollmentPage";
+import EnrollmentNewPage from "./pages/enrollment/EnrollmentNewPage";
+import EnrollmentIntroPage from "./pages/enrollment/EnrollmentIntroPage";
 import ErrorPage from "./pages/ErrorPage";
 
 const router = createBrowserRouter([
@@ -37,8 +38,12 @@ const router = createBrowserRouter([
         element: <TermsOfServicePage />
       },
       {
-        path: "/enrollment",
-        element: <EnrollmentPage />
+        path: "/enrollment/intro",
+        element: <EnrollmentIntroPage />
+      },
+      {
+        path: "/enrollment/new",
+        element: <EnrollmentNewPage />
       }
     ]
   },

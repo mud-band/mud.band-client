@@ -11,7 +11,7 @@ export async function loader() {
   if (enrollment_count == -1) {
     return redirect("/error");
   } else if (enrollment_count == 0) {
-    return redirect("/enrollment");
+    return redirect("/enrollment/intro");
   }
   return redirect("/dashboard");
 }
