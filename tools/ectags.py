@@ -50,7 +50,8 @@ def main():
                  fext != ".m" and \
                  fext != ".php" and \
                  fext != ".rs" and \
-                 fext != ".swift":
+                 fext != ".swift" and \
+                 fext != ".tsx":
                     continue
 
               #

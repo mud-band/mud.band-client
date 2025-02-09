@@ -14,7 +14,7 @@ export default function EnrollmentIntroPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <nav className="bg-white shadow-sm p-2 flex items-center">
-          <span className="text-lg font-semibold pb-1">Mud.band</span>
+          <span className="text-lg font-semibold">Mud.band</span>
         </nav>
         <div className="container max-w-2xl p-2 space-y-6">
           <Alert variant="destructive">
@@ -25,7 +25,7 @@ export default function EnrollmentIntroPage() {
               </AlertDescription>
           </Alert>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 justify-center">
             <Button 
                 onClick={() => navigate('/enrollment/new')}
                 variant="default"

@@ -211,7 +211,7 @@ fn mudband_ui_get_active_conf(_state: tauri::State<'_, Mutex<AppState>>) -> Stri
         }
         Err(e) => serde_json::to_string(&serde_json::json!({
             "status": 500,
-            "msg": format!("BANDEC_XXXXX: {}", e)
+            "msg": format!("BANDEC_00615: {}", e)
         })).unwrap_or_else(|_| "{}".to_string())
     }
 }
@@ -228,7 +228,7 @@ fn mudband_ui_get_enrollment_list(_state: tauri::State<'_, Mutex<AppState>>) -> 
         }
         Err(e) => serde_json::to_string(&serde_json::json!({
             "status": 500,
-            "msg": format!("BANDEC_XXXXX: {}", e)
+            "msg": format!("BANDEC_00616: {}", e)
         })).unwrap_or_else(|_| "[]".to_string())
     }
 }
@@ -248,7 +248,7 @@ fn mudband_ui_unenroll(_state: tauri::State<'_, Mutex<AppState>>, band_uuid: Str
         }
         Err(e) => serde_json::to_string(&serde_json::json!({
             "status": 500,
-            "msg": format!("BANDEC_XXXXX: {}", e)
+            "msg": format!("BANDEC_00617: {}", e)
         })).unwrap_or_else(|_| "{}".to_string())
     }
 }
@@ -268,7 +268,7 @@ fn mudband_ui_change_enrollment(_state: tauri::State<'_, Mutex<AppState>>, band_
         }
         Err(e) => serde_json::to_string(&serde_json::json!({
             "status": 500,
-            "msg": format!("BANDEC_XXXXX: {}", e)
+            "msg": format!("BANDEC_00618: {}", e)
         })).unwrap_or_else(|_| "{}".to_string())
     }
 }

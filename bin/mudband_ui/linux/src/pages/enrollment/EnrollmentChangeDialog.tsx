@@ -21,25 +21,49 @@ interface EnrollmentChangeDialogProps {
 export default function EnrollmentChangeDialog({ onSuccess }: EnrollmentChangeDialogProps) {
     const { toast } = useToast()
     const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+    const [activeBandName, setActiveBandName] = useState<string>("");
 
     useEffect(() => {
-        const fetchEnrollments = async () => {
+        const fetchData = async () => {
             try {
-                const response = await invoke('mudband_ui_get_enrollment_list');
-                const parsedResponse = JSON.parse(response as string) as EnrollmentListResponse;
-                if (parsedResponse.status === 200) {
-                    setEnrollments(parsedResponse.enrollments || []);
+                const activeBandResponse = await invoke('mudband_ui_get_active_band');
+                const parsedActiveBand = JSON.parse(activeBandResponse as string) as { 
+                    status: number, 
+                    msg?: string, 
+                    band?: { 
+                        name: string,
+                        uuid: string,
+                        opt_public: number,
+                        description: string,
+                        jwt: string,
+                        wireguard_privkey: string
+                    } 
+                };
+                if (parsedActiveBand.status === 200 && parsedActiveBand.band) {
+                    setActiveBandName(parsedActiveBand.band.name);
+                } else {
+                    toast({
+                        variant: "destructive",
+                        title: "Error",
+                        description: `BANDEC_00636: Failed to get band name: ${parsedActiveBand.msg ? parsedActiveBand.msg : 'N/A'}`
+                    });
+                }
+
+                const enrollmentsResponse = await invoke('mudband_ui_get_enrollment_list');
+                const parsedEnrollments = JSON.parse(enrollmentsResponse as string) as EnrollmentListResponse;
+                if (parsedEnrollments.status === 200) {
+                    setEnrollments(parsedEnrollments.enrollments || []);
                 }
             } catch (error) {
                 toast({
                     variant: "destructive",
                     title: "Error",
-                    description: `BANDEC_XXXXX: Failed to fetch enrollments: ${error}`
+                    description: `BANDEC_00637: Failed to fetch data: ${error}`
                 });
             }
         };
 
-        fetchEnrollments();
+        fetchData();
     }, []);
 
     const handleChangeClick = async (band_uuid: string) => {
@@ -65,7 +89,7 @@ export default function EnrollmentChangeDialog({ onSuccess }: EnrollmentChangeDi
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: `BANDEC_XXXXX: Failed to change enrollment: ${error}`
+                description: `BANDEC_00638: Failed to change enrollment: ${error}`
             });
         }
     };
@@ -75,6 +99,9 @@ export default function EnrollmentChangeDialog({ onSuccess }: EnrollmentChangeDi
             <div className="mb-6">
                 <h2 className="text-2xl font-bold">Change Enrollment</h2>
                 <p className="text-muted-foreground">
+                    Currently using: <span className="font-medium">{activeBandName}</span>
+                </p>
+                <p className="text-muted-foreground mt-2">
                     Select a enrollment to change
                 </p>
             </div>

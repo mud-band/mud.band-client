@@ -30,14 +30,14 @@ export default function DashboardStatusCard() {
           toast({
             variant: "destructive",
             title: "Error",
-            description: `BANDEC_XXXXX: Failed to get band name: ${resp_json.msg ? resp_json.msg : 'N/A'}`
+            description: `BANDEC_00619: Failed to get band name: ${resp_json.msg ? resp_json.msg : 'N/A'}`
           })
         }
       })
       .catch(err => toast({
         variant: "destructive",
         title: "Error",
-        description: `BANDEC_XXXXX: Failed to get band name: ${err}`
+        description: `BANDEC_00620: Failed to get band name: ${err}`
       }))
 
     invoke<boolean>("mudband_ui_tunnel_is_running")
@@ -45,7 +45,7 @@ export default function DashboardStatusCard() {
       .catch(err => toast({
         variant: "destructive",
         title: "Error",
-        description: `BANDEC_XXXXX: Failed to get tunnel status: ${err}`
+        description: `BANDEC_00621: Failed to get tunnel status: ${err}`
       }))
   }, [])
 
@@ -72,14 +72,14 @@ export default function DashboardStatusCard() {
                     toast({
                       variant: "destructive",
                       title: "Error",
-                      description: `BANDEC_XXXXX: Failed to disconnect tunnel: ${status}`
+                      description: `BANDEC_00622: Failed to disconnect tunnel: ${status}`
                     })
                   }
                 })
                 .catch(err => toast({
                   variant: "destructive",
                   title: "Error",
-                  description: `BANDEC_XXXXX: Failed to disconnect tunnel: ${err}`
+                  description: `BANDEC_00623: Failed to disconnect tunnel: ${err}`
                 }))
             } else {
               invoke<number>("mudband_ui_tunnel_connect")
@@ -94,14 +94,14 @@ export default function DashboardStatusCard() {
                     toast({
                       variant: "destructive",
                       title: "Error",
-                      description: `BANDEC_XXXXX: Failed to start the tunnel: ${status}`
+                      description: `BANDEC_00624: Failed to start the tunnel: ${status}`
                     })
                   }
                 })
                 .catch(err => toast({
                   variant: "destructive",
                   title: "Error",
-                  description: `BANDEC_XXXXX: Failed to connect tunnel: ${err}`
+                  description: `BANDEC_00625: Failed to connect tunnel: ${err}`
                 }))
             }
           }}

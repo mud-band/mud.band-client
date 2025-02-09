@@ -163,7 +163,7 @@ cmd_get_enrollment_count(char *out, size_t outmax)
 	if (enrollment_count == -1) {
 		json_object_set_new(root, "status", json_integer(500));
 		json_object_set_new(root, "msg",
-		    json_string("BANDEC_XXXXX: MBE_get_enrollment_count() failed"));
+		    json_string("BANDEC_00602: MBE_get_enrollment_count() failed"));
 	} else {
 		json_object_set_new(root, "status", json_integer(200));
 		json_object_set_new(root, "enrollment_count",
@@ -480,7 +480,7 @@ cmd_change_enrollment(char *out, size_t outmax, json_t *root)
 	args = json_object_get(root, "args");
 	if (!args || !json_is_object(args)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_XXXXX: Invalid arguments for change_enrollment");
+			"BANDEC_00603: Invalid arguments for change_enrollment");
 		return (-1);
 	}
 
@@ -488,7 +488,7 @@ cmd_change_enrollment(char *out, size_t outmax, json_t *root)
 
 	if (!band_uuid || !json_is_string(band_uuid)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_XXXXX0571: Missing or invalid band UUID.");
+			"BANDEC_006040571: Missing or invalid band UUID.");
 		return (-1);
 	}
 
@@ -520,14 +520,14 @@ cmd_unenroll(char *out, size_t outmax, json_t *root)
 	args = json_object_get(root, "args");
 	if (!args || !json_is_object(args)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_XXXXX: Invalid arguments for unenroll");
+			"BANDEC_00605: Invalid arguments for unenroll");
 		return (-1);
 	}
 
 	band_uuid = json_object_get(args, "band_uuid");
 	if (!band_uuid || !json_is_string(band_uuid)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_XXXXX: Missing or invalid band UUID");
+			"BANDEC_00606: Missing or invalid band UUID");
 		return (-1);
 	}
 
@@ -723,12 +723,12 @@ check_mudband_binary(void)
 	struct stat st;
 	if (stat(B_arg, &st) != 0) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR,
-		    "BANDEC_XXXXX: Mudband binary not found: %s", B_arg);
+		    "BANDEC_00607: Mudband binary not found: %s", B_arg);
 		exit(1);
 	}
 	if ((st.st_mode & S_IXUSR) == 0) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR,
-		    "BANDEC_XXXXX: Mudband binary not executable: %s", B_arg);
+		    "BANDEC_00608: Mudband binary not executable: %s", B_arg);
 		exit(1);
 	}
 }

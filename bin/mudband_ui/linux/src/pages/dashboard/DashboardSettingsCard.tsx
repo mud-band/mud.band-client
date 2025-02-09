@@ -19,6 +19,13 @@ import React from "react"
 import { invoke } from "@tauri-apps/api/tauri"
 import { useToast } from "@/hooks/use-toast"
 
+function Spinner() {
+  return (
+      <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full">
+      </div>
+  );
+}
+
 export default function DashboardSettingsCard() {
   const { toast } = useToast()
   const navigate = useNavigate()
@@ -26,6 +33,8 @@ export default function DashboardSettingsCard() {
   const [changeDialogOpen, setChangeDialogOpen] = React.useState(false)
   const [unenrollDialogOpen, setUnenrollDialogOpen] = React.useState(false)
   const [isTunnelRunning, setIsTunnelRunning] = React.useState(false)
+  const [isUnenrolling, setIsUnenrolling] = React.useState(false)
+  const [activeBandName, setActiveBandName] = React.useState<string>("")
 
   React.useEffect(() => {
     const checkTunnelStatus = async () => {
@@ -42,6 +51,34 @@ export default function DashboardSettingsCard() {
     }
 
     checkTunnelStatus()
+  }, [])
+
+  React.useEffect(() => {
+    const fetchActiveBand = async () => {
+      try {
+        const resp = await invoke('mudband_ui_get_active_band')
+        const resp_json = JSON.parse(resp as string) as {
+          status: number,
+          band?: {
+            uuid: string,
+            jwt: string,
+            name: string
+          }
+        }
+
+        if (resp_json.status === 200 && resp_json.band) {
+          setActiveBandName(resp_json.band.name)
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: `Failed to get active band information: ${error}`
+        })
+      }
+    }
+
+    fetchActiveBand()
   }, [])
 
   const getActiveBand = async () => {
@@ -92,6 +129,7 @@ export default function DashboardSettingsCard() {
   }
 
   const handleUnenroll = async () => {
+    setIsUnenrolling(true)
     try {
       const activeBand = await getActiveBand()
       await unenrollFromServer(activeBand.jwt)
@@ -109,6 +147,8 @@ export default function DashboardSettingsCard() {
         title: "Error",
         description: `Failed to unenroll: ${error}`
       })
+    } finally {
+      setIsUnenrolling(false)
     }
   }
 
@@ -176,7 +216,7 @@ export default function DashboardSettingsCard() {
               <DialogContent className="sm:max-w-[425px]">
                 <div className="space-y-4">
                   <h2 className="text-lg font-semibold">Confirm Unenrollment</h2>
-                  <p>Are you sure you want to unenroll? This action cannot be undone.</p>
+                  <p>Are you sure you want to unenroll from <span className="font-semibold">{activeBandName}</span>? This action cannot be undone.</p>
                   <div className="flex justify-end space-x-2">
                     <Button
                       variant="outline"
@@ -187,8 +227,16 @@ export default function DashboardSettingsCard() {
                     <Button
                       variant="destructive"
                       onClick={handleUnenroll}
+                      disabled={isUnenrolling}
                     >
-                      Yes, Unenroll
+                      {isUnenrolling ? (
+                        <div className="flex items-center gap-2">
+                          <Spinner />
+                          <span>Unenrolling...</span>
+                        </div>
+                      ) : (
+                        "Yes, Unenroll"
+                      )}
                     </Button>
                   </div>
                 </div>
