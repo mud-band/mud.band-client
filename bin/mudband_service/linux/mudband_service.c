@@ -66,7 +66,7 @@ static struct tunnel_status band_tunnel_status;
 static int orig_argc;
 static char **orig_argv;
 #define MUDBAND_BIN_PATH "/usr/bin/mudband"
-static const char *B_arg = MUDBAND_BIN_PATH;
+static const char *b_arg = MUDBAND_BIN_PATH;
 
 static void	check_tunnel_status(void);
 static int	check_process_running(const char *pidfile);
@@ -164,7 +164,7 @@ watchdog_tunnel_status(void)
 		vtc_log(vl, VTCLOG_LEVEL_WARNING,
 		    "watchdog: Detected tunnel isn't running.  Restarting.");
 		ODR_snprintf(cmd, sizeof(cmd),
-		    "%s -S -P /var/run/mudband.pid\n", B_arg);
+		    "%s -S -P /var/run/mudband.pid\n", b_arg);
 		rv = CMD_execute(0, cmd);
 		if (rv == 0) {
 			vtc_log(vl, VTCLOG_LEVEL_INFO,
@@ -388,7 +388,7 @@ cmd_tunnel_connect(char *out, size_t outmax)
 			json_string("Tunnel is already running"));
 	} else {
 		ODR_snprintf(cmd, sizeof(cmd),
-		    "%s -S -P /var/run/mudband.pid\n", B_arg);
+		    "%s -S -P /var/run/mudband.pid\n", b_arg);
 		rv = CMD_execute(0, cmd);
 		if (rv == 0) {
 			band_tunnel_status.is_running = 1;
@@ -591,14 +591,14 @@ cmd_unenroll(char *out, size_t outmax, json_t *root)
 	args = json_object_get(root, "args");
 	if (!args || !json_is_object(args)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_00605: Invalid arguments for unenroll");
+		    "BANDEC_00605: Invalid arguments for unenroll");
 		return (-1);
 	}
 
 	band_uuid = json_object_get(args, "band_uuid");
 	if (!band_uuid || !json_is_string(band_uuid)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_00606: Missing or invalid band UUID");
+		    "BANDEC_00606: Missing or invalid band UUID");
 		return (-1);
 	}
 
@@ -796,14 +796,15 @@ static void
 check_mudband_binary(void)
 {
 	struct stat st;
-	if (stat(B_arg, &st) != 0) {
+
+	if (stat(b_arg, &st) != 0) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR,
-		    "BANDEC_00607: Mudband binary not found: %s", B_arg);
+		    "BANDEC_00607: Mudband binary not found: %s", b_arg);
 		exit(1);
 	}
 	if ((st.st_mode & S_IXUSR) == 0) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR,
-		    "BANDEC_00608: Mudband binary not executable: %s", B_arg);
+		    "BANDEC_00608: Mudband binary not executable: %s", b_arg);
 		exit(1);
 	}
 }
@@ -867,7 +868,7 @@ main(int argc, char *argv[])
 	while ((o = VOPT_get_long(argc, argv, opt, opts, NULL)) != -1)
 		switch (o) {
 		case 'b':
-			B_arg = vopt_arg;
+			b_arg = vopt_arg;
 			break;
 		case 'h':
 			usage();
