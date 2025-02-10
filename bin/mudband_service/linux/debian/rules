@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --buildsystem=makefile
+
+override_dh_auto_build:
+	$(MAKE)
+	$(MAKE) -C ../../mudband/linux
+
+override_dh_auto_install:
+	mkdir -p debian/$(shell dh_listpackages)/usr/bin
+	mkdir -p debian/$(shell dh_listpackages)/usr/sbin
+	mkdir -p debian/$(shell dh_listpackages)/lib/systemd/system
+	mkdir -p debian/$(shell dh_listpackages)/usr/share/debconf/templates
+	# Install mudband binary
+	install -m 0755 ../../mudband/linux/mudband \
+	    debian/$(shell dh_listpackages)/usr/bin/mudband
+	install -m 0755 mudband_service \
+	    debian/$(shell dh_listpackages)/usr/sbin/mudband_service
+	install -m 0644 debian/mudband.service \
+	    debian/$(shell dh_listpackages)/lib/systemd/system/mudband.service
+	install -m 0644 debian/templates \
+	    debian/$(shell dh_listpackages)/usr/share/debconf/templates/mudband

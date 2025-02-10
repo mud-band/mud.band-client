@@ -1,0 +1,13 @@
+Source: mudband-service
+Maintainer: Weongyo Jeong <weongyo@gmail.com>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9)
+
+Package: mudband-service
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Mud.band service
+ Your Band, Your World! Unite devices with a band!
+

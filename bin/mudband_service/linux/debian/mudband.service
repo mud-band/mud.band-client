@@ -1,0 +1,11 @@
+[Unit]
+Description=Mud.band Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/mudband_service -u ${MUDBAND_USER}
+EnvironmentFile=/etc/default/mudband
+
+[Install]
+WantedBy=multi-user.target 

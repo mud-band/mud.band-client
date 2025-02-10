@@ -34,6 +34,7 @@ changeit ../bin/mudband/linux/mudband.c
 changeit ../bin/mudband/win32/mudband.c
 changeit ../bin/mudband/win32/NMakefile
 changeit ../bin/mudband/win32/NMakefile.x64
+changeit ../bin/mudband_service/linux/debian/changelog
 changeit ../bin/mudband_ui/linux/src-tauri/Cargo.toml
 changeit ../bin/mudband_ui/linux/src-tauri/tauri.conf.json
 
