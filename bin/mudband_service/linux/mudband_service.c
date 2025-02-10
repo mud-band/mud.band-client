@@ -69,6 +69,8 @@ static char **orig_argv;
 static const char *B_arg = MUDBAND_BIN_PATH;
 
 static void	check_tunnel_status(void);
+static int	check_process_running(const char *pidfile);
+static int	stop_process(const char *pidfile);
 
 static int
 mudband_log_printf(const char *id, int lvl, double t_elapsed, const char *msg)
@@ -146,10 +148,53 @@ VAS_Fail(const char *func, const char *file, int line, const char *cond,
 }
 
 static void
+watchdog_tunnel_status(void)
+{
+	int is_running, rv;
+	
+	is_running = check_process_running("/var/run/mudband.pid");
+	if (is_running < 0) {
+		vtc_log(vl, VTCLOG_LEVEL_ERROR,
+			"BANDEC_00563: Failed to check running process");
+		return;
+	}
+	if (band_tunnel_status.is_running && is_running == 0) {
+		char cmd[ODR_BUFSIZ];
+
+		vtc_log(vl, VTCLOG_LEVEL_WARNING,
+		    "watchdog: Detected tunnel isn't running.  Restarting.");
+		ODR_snprintf(cmd, sizeof(cmd),
+		    "%s -S -P /var/run/mudband.pid\n", B_arg);
+		rv = CMD_execute(0, cmd);
+		if (rv == 0) {
+			vtc_log(vl, VTCLOG_LEVEL_INFO,
+			    "watchdog: Restarted tunnel.");
+		} else {
+			vtc_log(vl, VTCLOG_LEVEL_ERROR,
+			    "BANDEC_00639: watchdog: Failed to restart"
+			    " tunnel.");
+		}
+	}
+	if (!band_tunnel_status.is_running && is_running > 0) {
+		vtc_log(vl, VTCLOG_LEVEL_WARNING,
+		    "watchdog: Detected tunnel is still running.  Stopping.");
+		rv = stop_process("/var/run/mudband.pid");
+		if (rv == 0) {
+			vtc_log(vl, VTCLOG_LEVEL_INFO,
+			    "watchdog: Stopped tunnel.");
+		} else {
+			vtc_log(vl, VTCLOG_LEVEL_ERROR,
+			    "BANDEC_00640: watchdog: Failed to stop"
+			    " tunnel.");
+		}
+	}
+}
+
+static void
 watchdog(void)
 {
 
-	check_tunnel_status();
+	watchdog_tunnel_status();
 }
 
 static ssize_t
@@ -365,7 +410,7 @@ cmd_tunnel_connect(char *out, size_t outmax)
 }
 
 static int
-stop_tunnel_process(const char *pidfile)
+stop_process(const char *pidfile)
 {
 	FILE *fp;
 	char buf[32];
@@ -414,7 +459,7 @@ cmd_tunnel_disconnect(char *out, size_t outmax)
 		json_object_set_new(root, "msg", 
 			json_string("Tunnel is not running"));
 	} else {
-		rv = stop_tunnel_process("/var/run/mudband.pid");
+		rv = stop_process("/var/run/mudband.pid");
 		if (rv == -1 && errno == ENOENT) {
 			band_tunnel_status.is_running = 0;
 			json_object_set_new(root, "status", json_integer(200));
