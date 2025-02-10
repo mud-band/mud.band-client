@@ -39,6 +39,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 #include <unistd.h>
 
 #include "linux/vpf.h"
@@ -68,6 +69,31 @@ static char **orig_argv;
 static const char *B_arg = MUDBAND_BIN_PATH;
 
 static void	check_tunnel_status(void);
+
+static int
+mudband_log_printf(const char *id, int lvl, double t_elapsed, const char *msg)
+{
+	char line[1024];
+
+	snprintf(line, sizeof(line), "[%f] %-4s %s %s", t_elapsed,
+	    id, vtc_lead(lvl), msg);
+	switch (lvl) {
+        case 0:
+		syslog(LOG_ERR, "%s", line);
+		break;
+        case 1:
+		syslog(LOG_WARNING, "%s", line);
+		break;
+        case 2:
+		syslog(LOG_INFO, "%s", line);
+		break;
+        case 3:
+        default:
+		syslog(LOG_DEBUG, "%s", line);
+		break;
+	}
+	return (1);
+}
 
 uint32_t
 wireguard_sys_now(void)
@@ -707,8 +733,16 @@ check_tunnel_status(void)
 		return;
 	}
 	if (is_running > 0) {
+		if (band_tunnel_status.is_running == 0) {
+			vtc_log(vl, VTCLOG_LEVEL_INFO,
+			    "Changed tunnel status: stopped -> running");
+		}
 		band_tunnel_status.is_running = 1;
 	} else {
+		if (band_tunnel_status.is_running == 1) {
+			vtc_log(vl, VTCLOG_LEVEL_INFO,
+			    "Changed tunnel status: running -> stopped");
+		}
 		band_tunnel_status.is_running = 0;
 	}
 }
@@ -738,7 +772,7 @@ init(const char *pidpath)
 
 	ODR_libinit();
 	vtc_loginit();
-	vl = vtc_logopen("srv", NULL);
+	vl = vtc_logopen("srv", mudband_log_printf);
 	assert(vl != NULL);
 	rv = ODR_corefile_init();
 	if (rv != 0) {
