@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+. /usr/share/debconf/confmodule
+
+while true; do
+    db_input high mudband/user || true
+    db_go
+
+    db_get mudband/user
+    USERNAME="$RET"
+
+    if getent passwd "$USERNAME" >/dev/null 2>&1; then
+        break
+    else
+        db_input high mudband/user_error || true
+        db_go
+    fi
+done

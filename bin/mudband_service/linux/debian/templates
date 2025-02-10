@@ -1,0 +1,10 @@
+Template: mudband/user
+Type: string
+Description: MudBand service user account
+ Please enter the username under which the username can access the MudBand service via the unix socket.
+
+Template: mudband/user_error
+Type: error
+Description: Invalid user
+ The specified user does not exist on the system.
+ Please enter an existing username.

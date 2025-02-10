@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+. /usr/share/debconf/confmodule
+
+db_get mudband/user
+MUDBAND_USER="$RET"
+
+echo "MUDBAND_USER=$MUDBAND_USER" > /etc/default/mudband
+
+case "$1" in
+    configure)
+        systemctl daemon-reload
+        systemctl enable mudband.service
+        systemctl start mudband.service
+    ;;
+esac
+
+#DEBHELPER#

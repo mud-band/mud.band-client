@@ -64,7 +64,7 @@ struct tunnel_status {
 static struct tunnel_status band_tunnel_status;
 static int orig_argc;
 static char **orig_argv;
-#define MUDBAND_BIN_PATH "/opt/mudband/0.0.9/bin/mudband"
+#define MUDBAND_BIN_PATH "/usr/bin/mudband"
 static const char *B_arg = MUDBAND_BIN_PATH;
 
 static void	check_tunnel_status(void);
@@ -284,7 +284,7 @@ PID_init(const char *P_arg)
 	if (pfh == NULL) {
 		if (errno == EAGAIN) {
 			vtc_log(vl, VTCLOG_LEVEL_WARNING,
-			    "BANDEC_00550: muddog_srv is already running."
+			    "BANDEC_00550: mudband_service is already running."
 			    "  Exit.");
 			exit(1);
 		}
