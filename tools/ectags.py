@@ -52,8 +52,14 @@ def main():
                  fext != ".rs" and \
                  fext != ".swift" and \
                  fext != ".tsx":
-                    continue
-
+                      continue
+              if path.find('./build/') != -1 or \
+                 path.find('./contrib/') != -1 or \
+                 path.find('./bin/mudband_ui/linux/src-tauri/target') != -1 or \
+                 path.find('./vendor') != -1 or \
+                 path.find('node_modules') != -1:
+                      continue
+              print(path)
               #
               # Read input file.
               #

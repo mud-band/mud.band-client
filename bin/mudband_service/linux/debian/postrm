@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    remove|purge)
+        if systemctl is-active mudband.service >/dev/null 2>&1; then
+            systemctl stop mudband.service || true
+        fi
+        systemctl disable mudband.service || true
+        systemctl daemon-reload || true
+    ;;
+esac
+
+#DEBHELPER# 
