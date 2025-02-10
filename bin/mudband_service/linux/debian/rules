@@ -4,8 +4,10 @@
 	dh $@ --buildsystem=makefile
 
 override_dh_auto_build:
-	$(MAKE)
-	$(MAKE) -C ../../mudband/linux
+	$(MAKE) -f Makefile.musl clean
+	$(MAKE) -f Makefile.musl
+	$(MAKE) -f Makefile.musl -C ../../mudband/linux clean
+	$(MAKE) -f Makefile.musl -C ../../mudband/linux
 
 override_dh_auto_install:
 	mkdir -p debian/$(shell dh_listpackages)/usr/bin
