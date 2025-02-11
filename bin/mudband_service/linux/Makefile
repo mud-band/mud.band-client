@@ -54,7 +54,7 @@ mudband_service: $(OBJS)
 .c.o:
 	gcc $(CFLAGS) $(DEFINES) -c -o $@ $<
 
-pkg_debian:
+pkg_deb:
 	debuild -uc -us -b
 
 clean:
