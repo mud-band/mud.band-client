@@ -77,6 +77,7 @@ CMD_thread(void *priv)
 	int i, offset = 0;
 
 	v = (struct cmdctl *)priv;
+	AN(v);
 	CMD_nonblocking(v->fds[0]);
 	while (1) {
 		fds = &fd;
@@ -88,16 +89,23 @@ CMD_thread(void *priv)
 			continue;
 		if (fds->revents & (POLLERR|POLLHUP))
 			break;
-		i = read(v->fds[0], buf + offset, sizeof buf - 1 - offset);
+		assert((int)sizeof(buf) - 1 - offset > 0);
+		i = read(v->fds[0], buf + offset, sizeof(buf) - 1 - offset);
 		if (i <= 0)
 			break;
+		assert(i + offset >= 0);
+		assert(i + offset < sizeof(buf));
 		buf[i + offset] = '\0';
 		p = buf;
-		while (1) {
+		while (p < &buf[i + offset]) {
 			q = strchr(p, '\n');
 			if (q == NULL) {
+				assert(&buf[i + offset] >= p);
 				offset = &buf[i + offset] - p;
-				memmove(buf, p, offset);
+				assert(offset < sizeof(buf));
+				if (p != buf && offset > 0) {
+					memmove(buf, p, offset);
+				}
 				break;
 			}
 			*q = '\0';
