@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "defines": [
+		"WIN32"
+	    ],
+	    "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe",
+            "intelliSenseMode": "msvc-x64",
+            "includePath": [
+                "../../../lib/libjansson",
+                "../../../lib/libmud",
+		"../../mudband/common",
+                "./"
+            ]
+        }
+    ],
+    "version": 4
+}
