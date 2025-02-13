@@ -143,14 +143,14 @@ svc_install(void)
 
 	if (!GetModuleFileName(NULL, unquoted_path, MAX_PATH)) {
 		fprintf(stderr,
-		    "[ERROR] BANDEC_XXXXX: Cannot install service (%d)\n",
+		    "[ERROR] BANDEC_00639: Cannot install service (%d)\n",
 		    GetLastError());
 		return (-1);
 	}
 	manager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 	if (NULL == manager) {
 		fprintf(stderr,
-		    "[ERROR] BANDEC_XXXXX: OpenSCManager failed (%d)\n",
+		    "[ERROR] BANDEC_00640: OpenSCManager failed (%d)\n",
 		    GetLastError());
 		return (-1);
 	}
@@ -167,7 +167,7 @@ svc_install(void)
 		if (last_error == ERROR_SERVICE_EXISTS)
 			return (0);
 		fprintf(stderr,
-		    "[ERROR] BANDEC_XXXXX: CreateService failed (%d)\n",
+		    "[ERROR] BANDEC_00641: CreateService failed (%d)\n",
 		    last_error);
 		CloseServiceHandle(manager);
 		return (-1);
@@ -188,14 +188,14 @@ svc_uninstall(void)
 
 	if (!GetModuleFileName(NULL, unquoted_path, MAX_PATH)) {
 		fprintf(stderr,
-		    "[ERROR] BANDEC_XXXXX: Cannot install service (%d)\n",
+		    "[ERROR] BANDEC_00642: Cannot install service (%d)\n",
 		    GetLastError());
 		return (-1);
 	}
 	manager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 	if (NULL == manager) {
 		fprintf(stderr,
-		    "[ERROR] BANDEC_XXXXX: OpenSCManager() failed (%d)\n",
+		    "[ERROR] BANDEC_00643: OpenSCManager() failed (%d)\n",
 		    GetLastError());
 		return (-1);
 	}
@@ -204,14 +204,14 @@ svc_uninstall(void)
 	service = OpenService(manager, MUDBAND_SERVICE_NAME, DELETE);
 	if (service == NULL) {
 		fprintf(stderr,
-		    "[ERROR] BANDEC_XXXXX: OpenService() failed (%d)\n",
+		    "[ERROR] BANDEC_00644: OpenService() failed (%d)\n",
 		    GetLastError());
 		CloseServiceHandle(manager);
 		return (-1);
 	}
 	if (!DeleteService(service)) {
 		fprintf(stderr,
-		    "[ERROR] BANDEC_XXXXX: DeleteService() failed (%d)\n",
+		    "[ERROR] BANDEC_00645: DeleteService() failed (%d)\n",
 		    GetLastError());
 		CloseServiceHandle(service);
 		CloseServiceHandle(manager);
@@ -295,7 +295,7 @@ mudband_log_printf(const char *id, int lvl, double t_elapsed, const char *msg)
 	h = RegisterEventSource(NULL, MUDBAND_SERVICE_NAME);
 	if (h == NULL) {
 		fprintf(stderr,
-		    "[ERROR] BANDEC_XXXXX: RegisterEventSource() failed");
+		    "[ERROR] BANDEC_00646: RegisterEventSource() failed");
 		return (1);
 	}
 	strs[0] = MUDBAND_SERVICE_DESC;
@@ -303,7 +303,7 @@ mudband_log_printf(const char *id, int lvl, double t_elapsed, const char *msg)
 	BOOL r = ReportEvent(h, msgtype, 0, SVC_ERROR, NULL, 2, 0, strs, NULL);
 	if (!r) {
 		fprintf(stderr,
-		    "[WARN] BANDEC_XXXXX: ReportEvent() failed: %d\n",
+		    "[WARN] BANDEC_00647: ReportEvent() failed: %d\n",
 		    GetLastError());
 	}
 	(void)DeregisterEventSource(h);
@@ -333,7 +333,7 @@ svc_named_pipe_server_create(void)
 
 	p = (struct mudband_service_named_pipe *)calloc(1, sizeof(*p));
 	if (p == NULL) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: OOM");
+		vtc_log(vl, 0, "BANDEC_00648: OOM");
 		return (NULL);
 	}
 	p->step = STEP_FIRST;
@@ -343,18 +343,18 @@ svc_named_pipe_server_create(void)
 	    PIPE_UNLIMITED_INSTANCES, sizeof(p->buf_out),
 	    sizeof(p->buf_in), 5000, NULL);
 	if (p->pipe == INVALID_HANDLE_VALUE) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: CreateNamedPipe() failed.");
+		vtc_log(vl, 0, "BANDEC_00649: CreateNamedPipe() failed.");
 		free(p);
 		return (NULL);
 	}
 	if (!ConvertStringSidToSid(SDDL_EVERYONE, &sid_everyone)) {
 		vtc_log(vl, 0,
-		    "BANDEC_XXXXX: ConvertStringSidToSid for everyone");
+		    "BANDEC_00650: ConvertStringSidToSid for everyone");
 		goto fail;
 	}
 	if (!ConvertStringSidToSid(SDDL_ANONYMOUS, &sid_anonymous)) {
 		vtc_log(vl, 0,
-		    "BANDEC_XXXXX: ConvertStringSidToSid for anonymous");
+		    "BANDEC_00651: ConvertStringSidToSid for anonymous");
 		goto fail;
 	}
 	ec[0].grfAccessPermissions = FILE_GENERIC_WRITE;
@@ -376,18 +376,18 @@ svc_named_pipe_server_create(void)
 	rv = GetSecurityInfo(p->pipe, SE_KERNEL_OBJECT,
 	    DACL_SECURITY_INFORMATION, NULL, NULL, &acl_odl, NULL, &sd);
 	if (rv != ERROR_SUCCESS) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: GetSecurityInfo");
+		vtc_log(vl, 0, "BANDEC_00652: GetSecurityInfo");
 		goto fail;
 	}
 	rv = SetEntriesInAcl(2, ec, acl_odl, &acl_new);
 	if (rv != ERROR_SUCCESS) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: SetEntriesInAcl");
+		vtc_log(vl, 0, "BANDEC_00653: SetEntriesInAcl");
 		goto fail;
 	}
 	rv = SetSecurityInfo(p->pipe, SE_KERNEL_OBJECT,
 	    DACL_SECURITY_INFORMATION, NULL, NULL, acl_new, NULL);
 	if (rv != ERROR_SUCCESS) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: SetSecurityInfo");
+		vtc_log(vl, 0, "BANDEC_00654: SetSecurityInfo");
 		goto fail;
 	}
 	p->overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE,
@@ -426,7 +426,7 @@ svc_named_pipe_server_connect(struct mudband_service_named_pipe *p)
 			(void)SetEvent(p->overlapped.hEvent);
 			break;
 		default:
-			vtc_log(vl, 0, "BANDEC_XXXXX: ConnectNamedPipe");
+			vtc_log(vl, 0, "BANDEC_00655: ConnectNamedPipe");
 			break;
 		}
 	}
@@ -463,13 +463,13 @@ svc_check_process(const char *progname)
 	snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (snapshot == INVALID_HANDLE_VALUE) {
 		vtc_log(vl, 0,
-		    "BANDEC_XXXXX: CreateToolhelp32Snapshot() error: %s",
+		    "BANDEC_00656: CreateToolhelp32Snapshot() error: %s",
 		    GetLastError());
 		return (-1);
 	}
 	if (Process32First(snapshot, &entry) != TRUE) {
 		CloseHandle(snapshot);
-		vtc_log(vl, 0, "BANDEC_XXXXX: Process32First() error: %s",
+		vtc_log(vl, 0, "BANDEC_00657: Process32First() error: %s",
 		    GetLastError());
 		return (-1);
 	}
@@ -491,13 +491,13 @@ svc_kill_process(const char *pname)
 	snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (snapshot == INVALID_HANDLE_VALUE) {
 		vtc_log(vl, 0,
-		    "BANDEC_XXXXX: CreateToolhelp32Snapshot() error: %s",
+		    "BANDEC_00658: CreateToolhelp32Snapshot() error: %s",
 		    GetLastError());
 		return (-1);
 	}
 	if (Process32First(snapshot, &entry) != TRUE) {
 		CloseHandle(snapshot);
-		vtc_log(vl, 0, "BANDEC_XXXXX: Process32First() error: %s",
+		vtc_log(vl, 0, "BANDEC_00659: Process32First() error: %s",
 		    GetLastError());
 		return (-1);
 	}
@@ -559,14 +559,14 @@ cmd_unenroll(char *out, size_t outmax, json_t *root)
 	args = json_object_get(root, "args");
 	if (!args || !json_is_object(args)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-		    "BANDEC_XXXXX: Invalid arguments for unenroll");
+		    "BANDEC_00660: Invalid arguments for unenroll");
 		return (-1);
 	}
 
 	band_uuid = json_object_get(args, "band_uuid");
 	if (!band_uuid || !json_is_string(band_uuid)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-		    "BANDEC_XXXXX: Missing or invalid band UUID");
+		    "BANDEC_00661: Missing or invalid band UUID");
 		return (-1);
 	}
 
@@ -653,7 +653,7 @@ cmd_change_enrollment(char *out, size_t outmax, json_t *root)
 	args = json_object_get(root, "args");
 	if (!args || !json_is_object(args)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_XXXXX: Invalid arguments for change_enrollment");
+			"BANDEC_00662: Invalid arguments for change_enrollment");
 		return (-1);
 	}
 
@@ -661,7 +661,7 @@ cmd_change_enrollment(char *out, size_t outmax, json_t *root)
 
 	if (!band_uuid || !json_is_string(band_uuid)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_XXXXX: Missing or invalid band UUID.");
+			"BANDEC_00663: Missing or invalid band UUID.");
 		return (-1);
 	}
 
@@ -763,7 +763,7 @@ cmd_get_enrollment_count(char *out, size_t outmax)
 	if (enrollment_count == -1) {
 		json_object_set_new(root, "status", json_integer(500));
 		json_object_set_new(root, "msg",
-		    json_string("BANDEC_XXXXX: MBE_get_enrollment_count() failed"));
+		    json_string("BANDEC_00664: MBE_get_enrollment_count() failed"));
 	} else {
 		json_object_set_new(root, "status", json_integer(200));
 		json_object_set_new(root, "enrollment_count",
@@ -916,7 +916,7 @@ svc_named_pipe_server_read(struct mudband_service_named_pipe *p)
 		p->buf_out_len = cmd_change_enrollment(p->buf_out,
 		    sizeof(p->buf_out), root);
 	} else {
-		vtc_log(vl, 0, "BANDEC_XXXXX: Unknown command: %s",
+		vtc_log(vl, 0, "BANDEC_00665: Unknown command: %s",
 		    json_string_value(cmd));
 		return (svc_set_resp(p, 404, "unknown command."));	
 	}
@@ -933,7 +933,7 @@ svc_named_pipe_server_event(struct mudband_service_named_pipe *named_pipe)
 	success = GetOverlappedResult(named_pipe->pipe, &named_pipe->overlapped,
 	    &rv, FALSE);
 	if (!success) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: GetOverlappedResult");
+		vtc_log(vl, 0, "BANDEC_00666: GetOverlappedResult");
 		return;
 	}
 	while (!done) {
@@ -950,7 +950,7 @@ svc_named_pipe_server_event(struct mudband_service_named_pipe *named_pipe)
 					return;
 				default:
 					vtc_log(vl, 0,
-					    "BANDEC_XXXXX: ReadFile");
+					    "BANDEC_00667: ReadFile");
 					named_pipe->step = STEP_ERROR;
 					continue;
 				}
@@ -979,13 +979,13 @@ svc_named_pipe_server_event(struct mudband_service_named_pipe *named_pipe)
 					return;
 				default:
 					vtc_log(vl, 0,
-					    "BANDEC_XXXXX: WriteFile");
+					    "BANDEC_00668: WriteFile");
 					named_pipe->step = STEP_ERROR;
 					continue;
 				}
 			}
 			if (rv != named_pipe->buf_out_len) {
-				vtc_log(vl, 0, "BANDEC_XXXXX: short write");
+				vtc_log(vl, 0, "BANDEC_00669: short write");
 				named_pipe->step = STEP_ERROR;
 				continue;
 			}
@@ -993,7 +993,7 @@ svc_named_pipe_server_event(struct mudband_service_named_pipe *named_pipe)
 			break;
 		case STEP_WRITE_WAIT:
 			if (rv != named_pipe->buf_out_len) {
-				vtc_log(vl, 0, "BANDEC_XXXXX: short write");
+				vtc_log(vl, 0, "BANDEC_00670: short write");
 				named_pipe->step = STEP_ERROR;
 				continue;
 			}
@@ -1005,7 +1005,7 @@ svc_named_pipe_server_event(struct mudband_service_named_pipe *named_pipe)
 		case STEP_DONE:
 			if (!DisconnectNamedPipe(named_pipe->pipe)) {
 				vtc_log(vl, 0,
-				    "BANDEC_XXXXX: DisconnectNamedPipe");
+				    "BANDEC_00671: DisconnectNamedPipe");
 			}
 			svc_named_pipe_server_connect(named_pipe);
 			done = TRUE;
@@ -1025,7 +1025,7 @@ svc_execute_mudrun(char *cmd)
 	ZeroMemory(&pi, sizeof(pi));
 	if (!CreateProcessA(NULL, cmd, NULL, NULL, FALSE, CREATE_NO_WINDOW,
             NULL, NULL, &si, &pi)) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: CreateProcess() failed: %d",
+		vtc_log(vl, 0, "BANDEC_00672: CreateProcess() failed: %d",
 		    GetLastError());
 		return (-1);
 	}
@@ -1072,7 +1072,7 @@ check_tunnel_status(void)
 	is_running = svc_check_process("mudband.exe");
 	if (is_running < 0) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR,
-			"BANDEC_XXXXX: Failed to check running process");
+			"BANDEC_00673: Failed to check running process");
 		return;
 	}
 	if (is_running > 0) {
@@ -1126,7 +1126,7 @@ svc_main(DWORD argc, LPTSTR *argv)
 	mudband_status_handle = RegisterServiceCtrlHandlerEx(MUDBAND_SERVICE_NAME,
 	    svc_handler, NULL);
 	if (!mudband_status_handle) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: RegisterServiceCtrlHandler");
+		vtc_log(vl, 0, "BANDEC_00674: RegisterServiceCtrlHandler");
 		return;
 	}
 	svc_set_status(SERVICE_START_PENDING, NO_ERROR, 3000);
@@ -1158,7 +1158,7 @@ svc_main(DWORD argc, LPTSTR *argv)
 				continue;
 			}
 			vtc_log(vl, 0,
-			    "BANDEC_XXXXX: WaitForMultipleObjects() failed: %d",
+			    "BANDEC_00675: WaitForMultipleObjects() failed: %d",
 			    rv);
 			break;
 		}
@@ -1177,7 +1177,7 @@ svc_main(DWORD argc, LPTSTR *argv)
 			mudband_thread_handle = INVALID_HANDLE_VALUE;
 			continue;
 		}
-		vtc_log(vl, 0, "BANDEC_XXXXX: Unexpected rv from"
+		vtc_log(vl, 0, "BANDEC_00676: Unexpected rv from"
 		    " WaitForMultipleObjects()");
 	}
 	svc_set_status(SERVICE_STOPPED, NO_ERROR, 0);
@@ -1213,7 +1213,7 @@ main(int argc, char *argv[])
 		{ NULL, NULL }
 	};
 	if (!StartServiceCtrlDispatcher(dispatch_table)) {
-		fprintf(stderr, "BANDEC_XXXXX: StartServiceCtrlDispatcher");
+		fprintf(stderr, "BANDEC_00677: StartServiceCtrlDispatcher");
 		return (1);
 	}
 	return (0);

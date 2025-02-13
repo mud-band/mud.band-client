@@ -1698,8 +1698,8 @@ VAS_Fail(const char *func, const char *file, int line, const char *cond,
 	    int xxx)
 {
 
-	fprintf(stdout, "Critical! assert fail: %s %s:%d %s %d\n", func, file,
-	    line, cond, xxx);
+	vtc_log(band_vl, 0, "Critical! assert fail: %s %s:%d %s %d",
+	    func, file, line, cond, xxx);
 	abort();
 }
 

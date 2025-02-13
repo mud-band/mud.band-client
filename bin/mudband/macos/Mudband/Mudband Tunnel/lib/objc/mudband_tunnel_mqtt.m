@@ -124,6 +124,7 @@ static struct mqtt_client mqtt_client;
 static uint8_t mqtt_sendbuf[2048];
 static uint8_t mqtt_recvbuf[1024];
 static int mqtt_fd = -1;
+static int mqtt_connected = 0;
 
 static void mudband_tunnel_mqtt_connect(void);
 
@@ -1671,6 +1672,8 @@ mudband_tunnel_mqtt_disconnect(void)
 	memset(&mqtt_client, 0, sizeof(mqtt_client));
 
 	vtc_log(mqtt_vl, 2, "Disconnected from MQTT broker.");
+
+	mqtt_connected = 0;
 }
 
 static void
@@ -1689,6 +1692,9 @@ mudband_tunnel_mqtt_sync(void)
 {
     enum mqtt_error error;
 
+    if (mqtt_connected == 0) {
+        mudband_tunnel_mqtt_reconnect();
+    }
     error = mqtt_sync(&mqtt_client);
     switch (error) {
     case MQTT_OK:
@@ -1745,7 +1751,11 @@ mudband_tunnel_mqtt_connect(void)
     uint8_t connect_flags = MQTT_CONNECT_CLEAN_SESSION;
 
     mqtt_fd = mqtt_open_sock("mqtt.mud.band", "1883");
-    assert(mqtt_fd >= 0);
+    if (mqtt_fd == -1) {
+        vtc_log(mqtt_vl, 0,
+		"BANDEC_00682: Failed to connect to MQTT broker.");
+	return;
+    }
     error = mqtt_init(&mqtt_client, mqtt_fd,
 		      mqtt_sendbuf, sizeof(mqtt_sendbuf),
 		      mqtt_recvbuf, sizeof(mqtt_recvbuf),
@@ -1757,6 +1767,8 @@ mudband_tunnel_mqtt_connect(void)
     assert(mqtt_client.error == MQTT_OK);
 
     vtc_log(mqtt_vl, 2, "Connected to MQTT broker.");
+
+    mqtt_connected = 1;
 }
 
 int

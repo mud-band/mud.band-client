@@ -63,14 +63,14 @@ mbe_file_write(const char *filepath, json_t *obj)
 	int r;
 
 	if (fopen_s(&fp, filepath, "w+") != 0) {
-		vtc_log(vl, 0, "BANDEC_00574: Failed to open file %s: %s",
+		vtc_log(vl, 0, "BANDEC_00691: Failed to open file %s: %s",
 		    filepath, strerror(errno));
 		return (-1);
 	}
 	r = json_dumpf(obj, fp, 0);
 	if (r == -1) {
 		vtc_log(vl, 0,
-		    "BANDEC_00575: Failed to write JSON to file %s: %s",
+		    "BANDEC_00692: Failed to write JSON to file %s: %s",
 		    filepath, strerror(errno));
 		fclose(fp);
 		return (-1);
@@ -106,7 +106,7 @@ MBE_enroll(char *out, size_t outmax, const char *token, const char *name, const 
 	    wg_pubkeystr, &wg_pubkeystrlen);
 	if (!success) {
 		vtc_log(vl, 0,
-		    "BANDEC_00576: wireguard_base64_encode() failed.");
+		    "BANDEC_00693: wireguard_base64_encode() failed.");
 		return (-1);
 	}
 	wg_privkeystrlen = sizeof(wg_privkeystr);
@@ -114,7 +114,7 @@ MBE_enroll(char *out, size_t outmax, const char *token, const char *name, const 
 	    wg_privkeystr, &wg_privkeystrlen);
 	if (!success) {
 		vtc_log(vl, 0,
-		    "BANDEC_00577: wireguard_base64_encode() failed.");
+		    "BANDEC_00694: wireguard_base64_encode() failed.");
 		return (-1);
 	}
 	wg_pubkeystr[wg_pubkeystrlen] = '\0';
@@ -138,7 +138,7 @@ MBE_enroll(char *out, size_t outmax, const char *token, const char *name, const 
 	outlen = (ssize_t)outmax;
 	r = VHTTPS_post(&req, out, (size_t *)&outlen);
 	if (r == -1) {
-		vtc_log(vl, 0, "BANDEC_00578: VHTTPS_post() failed.");
+		vtc_log(vl, 0, "BANDEC_00695: VHTTPS_post() failed.");
 		return (-1);
 	}
 	assert(outlen >= 0);
@@ -147,10 +147,10 @@ MBE_enroll(char *out, size_t outmax, const char *token, const char *name, const 
 	jroot = json_loads(out, 0, &jerror);
 	if (jroot == NULL) {
 		vtc_log(vl, 1,
-		    "BANDEC_00579: error while parsing JSON format:"
+		    "BANDEC_00696: error while parsing JSON format:"
 		    " on line %d: %s", jerror.line, jerror.text);
 		vtc_log(vl, 1,
-		    "BANDEC_00580: response body: %s", out);
+		    "BANDEC_00697: response body: %s", out);
 		return (-1);
 	}
 	jstatus = json_object_get(jroot, "status");
@@ -176,7 +176,7 @@ MBE_enroll(char *out, size_t outmax, const char *token, const char *name, const 
 		AN(jmsg);
 		assert(json_is_string(jmsg));
 		vtc_log(vl, 1,
-		    "BANDEC_00581: Failed to enroll. (reason %s)",
+		    "BANDEC_00698: Failed to enroll. (reason %s)",
 		    json_string_value(jmsg));
 		json_decref(jroot);
 		return (outlen);
@@ -243,14 +243,14 @@ mbe_band_read(const char *filename)
 	_snprintf_s(filepath, sizeof(filepath), _TRUNCATE, "%s\\%s",
 	    band_confdir_enroll, filename);
 	if (_access(filepath, 0) == -1) {
-		vtc_log(vl, 0, "BANDEC_00582: File not found: %s",
+		vtc_log(vl, 0, "BANDEC_00699: File not found: %s",
 		    filepath);
 		return (NULL);
 	}
 	jroot = json_load_file(filepath, 0, &jerror);
 	if (jroot == NULL) {
 		vtc_log(vl, 1,
-		    "BANDEC_00583: error while reading JSON format:"
+		    "BANDEC_00700: error while reading JSON format:"
 		    " on line %d: %s", jerror.line, jerror.text);
 		return (NULL);
 	}
@@ -275,7 +275,7 @@ MBE_get_enrollment_count(void)
 	r = ODR_traversal_dir(vl,
 	    band_confdir_enroll, mbe_traversal_dir_callback, &arg);
 	if (r != 0) {
-		vtc_log(vl, 0, "BANDEC_00584: ODR_traversal_dir() failed");
+		vtc_log(vl, 0, "BANDEC_00701: ODR_traversal_dir() failed");
 		return (-1);
 	}
 	return (arg.n_enroll);
@@ -291,7 +291,7 @@ MBE_get_active_band(void)
 	default_band_uuid = MPC_get_default_band_uuid();
 	if (default_band_uuid == NULL) {
 		vtc_log(vl, 0,
-		    "BANDEC_00611: MPC_get_default_band_uuid() failed");
+		    "BANDEC_00702: MPC_get_default_band_uuid() failed");
 		return (NULL);
 	}
 	ODR_snprintf(filepath, sizeof(filepath), "band_%s.json",
@@ -299,7 +299,7 @@ MBE_get_active_band(void)
 	active_band = mbe_band_read(filepath);
 	if (active_band == NULL) {
 		vtc_log(vl, 0,
-		    "BANDEC_00612: mbe_band_read() failed");
+		    "BANDEC_00703: mbe_band_read() failed");
 		return (NULL);
 	}
 	return (active_band);
@@ -331,7 +331,7 @@ mbe_get_enrollment_list_dir_callback(struct vtclog *mbe_vl, const char *name,
 	    name + sizeof("band_") - 1);
 	jband = mbe_band_read(name);
 	if (jband == NULL) {
-		vtc_log(vl, 0, "BANDEC_00613: mbe_band_read() failed");
+		vtc_log(vl, 0, "BANDEC_00704: mbe_band_read() failed");
 		return (0);
 	}
 	jband_name = json_object_get(jband, "name");
@@ -359,7 +359,7 @@ MBE_get_enrollment_list(void)
 	r = ODR_traversal_dir(vl,
 	    band_confdir_enroll, mbe_get_enrollment_list_dir_callback, &arg);
 	if (r != 0) {
-		vtc_log(vl, 0, "BANDEC_00614: ODR_traversal_dir() failed");
+		vtc_log(vl, 0, "BANDEC_00705: ODR_traversal_dir() failed");
 		return (NULL);
 	}
 	return (arg.jroot);
