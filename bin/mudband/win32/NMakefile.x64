@@ -5,7 +5,8 @@ INCLUDE_DIRS = -I. -I..\common -I..\..\..\lib\libmud \
 	-I..\..\..\lib\libjansson \
 	-I..\..\..\contrib\prebuilt\openssl\x64\include \
 	-I..\..\..\contrib\prebuilt\wintun\include
-LIBS= advapi32.lib crypt32.lib iphlpapi.lib shell32.lib user32.lib ws2_32.lib
+LIBS= advapi32.lib crypt32.lib iphlpapi.lib ole32.lib shell32.lib \
+    user32.lib ws2_32.lib
 LIB_DIRS= /LIBPATH:..\..\..\contrib\prebuilt\openssl\x64\lib
 EXE=mudband.exe
 CPP=cl.exe

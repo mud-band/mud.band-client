@@ -1,4 +1,3 @@
-
 /*-
  * Copyright (c) 2011-2014 Weongyo Jeong <weongyo@gmail.com>
  * All rights reserved.
@@ -50,6 +49,8 @@
 #include <dbghelp.h>
 #include <shlobj.h>
 #include <io.h>
+#include <KnownFolders.h>
+#include <ShlObj_core.h>
 
 #include "odr.h"
 #include "odr_pthread.h"
@@ -87,9 +88,9 @@ ODR_strerror(int dw)
 void
 ODR_libinit(void)
 {
-	HRESULT r;
 	WSADATA wsaData;
 	int ret;
+	PWSTR programDataPath = NULL;
 	char appdata_path[MAX_PATH];
 
 	ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -98,9 +99,17 @@ ODR_libinit(void)
 
 	srand((unsigned int)time(NULL));
 
-	r = SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, appdata_path);
-	assert(r == S_OK);
-	ODR_snprintf(odr_homedir, sizeof(odr_homedir), "%s", appdata_path);
+	if (SUCCEEDED(SHGetKnownFolderPath(&FOLDERID_ProgramData, 0, NULL, &programDataPath))) {
+		WideCharToMultiByte(CP_UTF8, 0, programDataPath, -1, 
+			appdata_path, MAX_PATH, NULL, NULL);
+		CoTaskMemFree(programDataPath);
+		ODR_snprintf(odr_homedir, sizeof(odr_homedir),
+		    "%s", appdata_path);
+	} else {
+		ODR_snprintf(odr_homedir, sizeof(odr_homedir),
+		    "C:\\ProgramData");
+	}
+	ODR_mkdir_recursive(odr_homedir);
 }
 
 int

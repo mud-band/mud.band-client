@@ -2,7 +2,7 @@ INCLUDE_DIRS = -I. -I..\..\..\lib\libmud \
         -I..\..\..\lib\libjansson \
         -I..\..\mudband\common \
 	-I..\..\..\contrib\prebuilt\openssl\x64\include
-LIBS=   advapi32.lib crypt32.lib shell32.lib shlwapi.lib user32.lib \
+LIBS=   advapi32.lib crypt32.lib ole32.lib shell32.lib shlwapi.lib user32.lib \
 	winhttp.lib ws2_32.lib
 LIB_DIRS= /LIBPATH:..\..\..\contrib\prebuilt\openssl\x64\lib
 EXE=mudband_service.exe
@@ -71,6 +71,18 @@ mudband_service.exe: mudband_service_msg.res $(OBJS)
 mudband_service_msg.res: mudband_service_msg.mc
         mc mudband_service_msg.mc
         rc mudband_service_msg.rc
+
+mudband_service_test.exe: mudband_service_test.c
+	$(CPP) -I..\..\..\lib\libmud mudband_service_test.c \
+	    ..\..\..\lib\libmud\odr.c \
+	    ..\..\..\lib\libmud\odr_pthread.c \
+	    ..\..\..\lib\libmud\vopt.c \
+	    ..\..\..\lib\libmud\vsb.c \
+	    ..\..\..\lib\libmud\vtc_log.c \
+	    ..\..\..\lib\libmud\vtim.c \
+	    shell32.lib ws2_32.lib
+
+test: mudband_service_test.exe
 
 .c.obj:
     $(CPP) $(CPP_PROJ) $(DEFINES) /Fo$*.obj $<
