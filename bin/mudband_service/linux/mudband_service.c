@@ -151,7 +151,7 @@ static void
 watchdog_tunnel_status(void)
 {
 	int is_running, rv;
-	
+
 	is_running = check_process_running("/var/run/mudband.pid");
 	if (is_running < 0) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR,
@@ -770,7 +770,7 @@ static void
 check_tunnel_status(void)
 {
 	int is_running;
-	
+
 	is_running = check_process_running("/var/run/mudband.pid");
 	if (is_running < 0) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR,
