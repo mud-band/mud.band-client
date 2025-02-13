@@ -37,6 +37,8 @@ changeit ../bin/mudband/win32/NMakefile.x64
 changeit ../bin/mudband_service/linux/debian/changelog
 changeit ../bin/mudband_ui/linux/src-tauri/Cargo.toml
 changeit ../bin/mudband_ui/linux/src-tauri/tauri.conf.json
+changeit ../bin/mudband_ui/windows/src-tauri/Cargo.toml
+changeit ../bin/mudband_ui/windows/src-tauri/tauri.conf.json
 
 changeit android/package.sh
 changeit linux/package_x86_64-musl.sh
