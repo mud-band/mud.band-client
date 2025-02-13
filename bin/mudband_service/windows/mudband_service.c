@@ -90,6 +90,7 @@ static HANDLE mudband_service_stop_event;
 static HANDLE mudband_process_handle = INVALID_HANDLE_VALUE;
 static HANDLE mudband_thread_handle = INVALID_HANDLE_VALUE;
 static const char *mudband_service_name = "\\\\.\\pipe\\mudband_service";
+static int is_console_mode;
 
 static int	svc_command_mudband_start();
 static int	svc_command_mudband_stop(void);
@@ -273,6 +274,9 @@ mudband_log_printf(const char *id, int lvl, double t_elapsed, const char *msg)
 	LPCSTR strs[2];
 	int msgtype;
 	char line[1024];
+
+	if (is_console_mode)
+		return (-1);
 
 	snprintf(line, sizeof(line), "[%f] %-4s %s %s", t_elapsed,
 	    id, vtc_lead(lvl), msg);
@@ -1170,6 +1174,7 @@ svc_main(DWORD argc, LPTSTR *argv)
 		}
 		if (n_events == 3 && rv == WAIT_OBJECT_0 + 2) {
 			DWORD exit_code = 0;
+
 			GetExitCodeProcess(mudband_process_handle, &exit_code);
 			CloseHandle(mudband_process_handle);
 			CloseHandle(mudband_thread_handle);
@@ -1184,18 +1189,83 @@ svc_main(DWORD argc, LPTSTR *argv)
 }
 
 static void
+console_main(void)
+{
+	struct mudband_service_named_pipe *p;
+	HANDLE events[2];
+	int n_events;
+	BOOL running = TRUE;
+
+	is_console_mode = 1;
+
+	svc_init();
+	p = svc_named_pipe_server_create();
+	if (p == NULL) {
+		vtc_log(vl, 0, "BANDEC_00678: Failed to create named pipe server");
+		return;
+	}
+
+	vtc_log(vl, VTCLOG_LEVEL_INFO, "mudband service started.");
+
+	svc_named_pipe_server_connect(p);
+	
+	while (running) {
+		n_events = 1;
+		events[0] = p->overlapped.hEvent;
+		if (mudband_process_handle != INVALID_HANDLE_VALUE) {
+			n_events = 2;
+			events[1] = mudband_process_handle;
+		}
+
+		DWORD rv = WaitForMultipleObjects(n_events, events, FALSE, 1000);
+		if (rv < WAIT_OBJECT_0 || rv > WAIT_OBJECT_0 + n_events) {
+			if (rv == WAIT_TIMEOUT) {
+				continue;
+			}
+			vtc_log(vl, 0, 
+				"BANDEC_XXXXX: WaitForMultipleObjects() failed: %d",
+				rv);
+			break;
+		}
+
+		if (rv == WAIT_OBJECT_0) {
+			svc_named_pipe_server_event(p);
+			continue;
+		}
+
+		if (n_events == 2 && rv == WAIT_OBJECT_0 + 1) {
+			DWORD exit_code = 0;
+
+			GetExitCodeProcess(mudband_process_handle, &exit_code);
+			CloseHandle(mudband_process_handle);
+			CloseHandle(mudband_thread_handle);
+			mudband_process_handle = INVALID_HANDLE_VALUE;
+			mudband_thread_handle = INVALID_HANDLE_VALUE;
+			continue;
+		}
+
+		vtc_log(vl, 0, "BANDEC_XXXXX: Unexpected rv from WaitForMultipleObjects()");
+	}
+}
+
+static void
 usage(void)
 {
-    printf("Usage: mudband_service <cmds>\n");
-    printf("Commands:\n");
-    printf("  install         Install mudband_service service.\n");
-    printf("  uninstall       Uninstall mudband_service service.\n");
-    exit(0);
+	printf("Usage: mudband_service <cmds>\n");
+	printf("Commands:\n");
+	printf("  install         Install mudband_service service.\n");
+	printf("  uninstall       Uninstall mudband_service service.\n");
+	exit(0);
 }
 
 int
 main(int argc, char *argv[])
 {
+	char svcname[] = MUDBAND_SERVICE_NAME;
+	SERVICE_TABLE_ENTRY dispatch_table[] = {
+		{ svcname, (LPSERVICE_MAIN_FUNCTION)svc_main },
+		{ NULL, NULL }
+	};
 
 	if (argc > 1) {
 		if (strcmp(argv[1], "-h") == 0 ||
@@ -1207,14 +1277,17 @@ main(int argc, char *argv[])
 		if (strcmp(argv[1], "uninstall") == 0)
 			return (svc_uninstall());
 	}
-	char svcname[] = MUDBAND_SERVICE_NAME;
-	SERVICE_TABLE_ENTRY dispatch_table[] = {
-		{ svcname, (LPSERVICE_MAIN_FUNCTION)svc_main },
-		{ NULL, NULL }
-	};
+
 	if (!StartServiceCtrlDispatcher(dispatch_table)) {
-		fprintf(stderr, "BANDEC_00677: StartServiceCtrlDispatcher");
+		if (GetLastError() == ERROR_FAILED_SERVICE_CONTROLLER_CONNECT) {
+			console_main();
+			return 0;
+		}
+		fprintf(stderr,
+		    "BANDEC_00677: StartServiceCtrlDispatcher() failed: %d",
+		    GetLastError());
 		return (1);
 	}
+
 	return (0);
 }
