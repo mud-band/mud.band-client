@@ -102,7 +102,7 @@ fn mudband_ui_tunnel_connect(_state: tauri::State<'_, Mutex<AppState>>) -> i64 {
                 .unwrap_or(500)
         }
         Err(e) => {
-            println!("BANDEC_XXXXX: {}", e);
+            println!("BANDEC_00708: {}", e);
             500
         }
     }
@@ -122,7 +122,7 @@ fn mudband_ui_tunnel_disconnect(_state: tauri::State<'_, Mutex<AppState>>) -> i6
                 .unwrap_or(500)
         }
         Err(e) => {
-            println!("BANDEC_XXXXX: {}", e);
+            println!("BANDEC_00709: {}", e);
             500
         }
     }
@@ -137,7 +137,7 @@ fn mudband_ui_tunnel_is_running(_state: tauri::State<'_, Mutex<AppState>>) -> bo
     match mudband_ui_ipc_send(command) {
         Ok(json) => {
             if json.get("status").and_then(|s| s.as_u64()) != Some(200) {
-                println!("BANDEC_XXXXX: Invalid status code");
+                println!("BANDEC_00710: Invalid status code");
                 return false;
             }
             json.get("tunnel_is_running")
@@ -145,7 +145,7 @@ fn mudband_ui_tunnel_is_running(_state: tauri::State<'_, Mutex<AppState>>) -> bo
                 .unwrap_or(false)
         }
         Err(e) => {
-            println!("BANDEC_XXXXX: {}", e);
+            println!("BANDEC_00711: {}", e);
             false
         }
     }
@@ -160,7 +160,7 @@ fn mudband_ui_get_enrollment_count(_state: tauri::State<'_, Mutex<AppState>>) ->
     match mudband_ui_ipc_send(command) {
         Ok(json) => {
             if json.get("status").and_then(|s| s.as_u64()) != Some(200) {
-                println!("BANDEC_XXXXX: Invalid status code");
+                println!("BANDEC_00712: Invalid status code");
                 return 0;
             }
             json.get("enrollment_count")
@@ -168,7 +168,7 @@ fn mudband_ui_get_enrollment_count(_state: tauri::State<'_, Mutex<AppState>>) ->
                 .unwrap_or(0)
         }
         Err(e) => {
-            println!("BANDEC_XXXXX: {}", e);
+            println!("BANDEC_00713: {}", e);
             -1
         }
     }
@@ -225,7 +225,7 @@ fn mudband_ui_get_active_conf(_state: tauri::State<'_, Mutex<AppState>>) -> Stri
         }
         Err(e) => serde_json::to_string(&serde_json::json!({
             "status": 500,
-            "msg": format!("BANDEC_XXXXX: {}", e)
+            "msg": format!("BANDEC_00714: {}", e)
         })).unwrap_or_else(|_| "{}".to_string())
     }
 }
@@ -242,7 +242,7 @@ fn mudband_ui_get_enrollment_list(_state: tauri::State<'_, Mutex<AppState>>) -> 
         }
         Err(e) => serde_json::to_string(&serde_json::json!({
             "status": 500,
-            "msg": format!("BANDEC_XXXXX: {}", e)
+            "msg": format!("BANDEC_00715: {}", e)
         })).unwrap_or_else(|_| "[]".to_string())
     }
 }
@@ -262,7 +262,7 @@ fn mudband_ui_unenroll(_state: tauri::State<'_, Mutex<AppState>>, band_uuid: Str
         }
         Err(e) => serde_json::to_string(&serde_json::json!({
             "status": 500,
-            "msg": format!("BANDEC_XXXXX: {}", e)
+            "msg": format!("BANDEC_00716: {}", e)
         })).unwrap_or_else(|_| "{}".to_string())
     }
 }
@@ -282,7 +282,7 @@ fn mudband_ui_change_enrollment(_state: tauri::State<'_, Mutex<AppState>>, band_
         }
         Err(e) => serde_json::to_string(&serde_json::json!({
             "status": 500,
-            "msg": format!("BANDEC_XXXXX: {}", e)
+            "msg": format!("BANDEC_00717: {}", e)
         })).unwrap_or_else(|_| "{}".to_string())
     }
 }
@@ -308,5 +308,5 @@ fn main() {
             mudband_ui_unenroll
         ])
         .run(tauri::generate_context!())
-        .expect("BANDEC_XXXXX: error while running tauri application");
+        .expect("BANDEC_00718: error while running tauri application");
 }

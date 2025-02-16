@@ -1723,7 +1723,10 @@ MQTT_subscribe(void)
     char topic[128];
 
     default_band_uuid = MPC_get_default_band_uuid();
-    AN(default_band_uuid);
+    if (default_band_uuid == NULL) {
+        vtc_log(mqtt_vl, 0, "BANDEC_00741: Failed to get default band UUID.");
+	return;
+    }
     snprintf(topic, sizeof(topic), "/band/%s", default_band_uuid);
 
     error = mqtt_subscribe(&mqtt_client, topic, 0);

@@ -35,14 +35,14 @@ export default function DashboardLinksCard() {
           toast({
             variant: "destructive",
             title: "Error",
-            description: `BANDEC_XXXXX: Failed to fetch devices: ${conf_resp.msg ? conf_resp.msg : 'N/A'}`
+            description: `BANDEC_00734: Failed to fetch devices: ${conf_resp.msg ? conf_resp.msg : 'N/A'}`
           })
         }
       } catch (error) {
         toast({
           variant: "destructive",
           title: "Error",
-          description: `BANDEC_XXXXX: Failed to fetch devices: ${error}`
+          description: `BANDEC_00735: Failed to fetch devices: ${error}`
         })
       }
     }

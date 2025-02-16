@@ -45,7 +45,7 @@ export default function EnrollmentChangeDialog({ onSuccess }: EnrollmentChangeDi
                     toast({
                         variant: "destructive",
                         title: "Error",
-                        description: `BANDEC_XXXXX: Failed to get band name: ${parsedActiveBand.msg ? parsedActiveBand.msg : 'N/A'}`
+                        description: `BANDEC_00736: Failed to get band name: ${parsedActiveBand.msg ? parsedActiveBand.msg : 'N/A'}`
                     });
                 }
 
@@ -58,7 +58,7 @@ export default function EnrollmentChangeDialog({ onSuccess }: EnrollmentChangeDi
                 toast({
                     variant: "destructive",
                     title: "Error",
-                    description: `BANDEC_XXXXX: Failed to fetch data: ${error}`
+                    description: `BANDEC_00737: Failed to fetch data: ${error}`
                 });
             }
         };
@@ -89,7 +89,7 @@ export default function EnrollmentChangeDialog({ onSuccess }: EnrollmentChangeDi
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: `BANDEC_XXXXX: Failed to change enrollment: ${error}`
+                description: `BANDEC_00738: Failed to change enrollment: ${error}`
             });
         }
     };
