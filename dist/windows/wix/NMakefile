@@ -1,0 +1,5 @@
+debug:
+	dotnet build
+
+release:
+	dotnet build --configuration Release

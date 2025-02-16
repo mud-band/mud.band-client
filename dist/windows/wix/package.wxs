@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Package Name="Mud.band" 
+             Language="1033" 
+             Version="0.1.0.0" 
+             Manufacturer="Mud.band" 
+             UpgradeCode="6b0cbd69-d04b-47ed-8707-b96c35e7d1e0">
+
+        <MajorUpgrade 
+            DowngradeErrorMessage="A newer version of Mud.band is already installed."
+            Schedule="afterInstallInitialize"
+            AllowSameVersionUpgrades="no"
+            RemoveFeatures="ALL" />
+        <MediaTemplate EmbedCab="yes"/>
+
+        <StandardDirectory Id="ProgramFilesFolder">
+            <Directory Id="INSTALLFOLDER" Name="Mud.band">
+                <Component Id="MainExecutable" Guid="*">
+                    <File Id="MudbandEXE" 
+                          Name="mudband.exe" 
+                          Source="..\..\releases\0.1.0\windows\x64\mudband.exe" 
+                          KeyPath="yes"/>
+                </Component>
+
+                <Component Id="WintunDLL" Guid="*">
+                    <File Id="WintunDLL" 
+                          Name="wintun.dll" 
+                          Source="..\..\releases\0.1.0\windows\x64\wintun.dll" 
+                          KeyPath="yes"/>
+                </Component>
+
+                <Component Id="ServiceExecutable" Guid="*">
+                    <File Id="MudbandServiceEXE" 
+                          Name="mudband_service.exe" 
+                          Source="..\..\releases\0.1.0\windows\x64\mudband_service.exe" 
+                          KeyPath="yes"/>
+                    
+                    <ServiceInstall Id="ServiceInstaller"
+                                  Type="ownProcess"
+                                  Name="mudband_service"
+                                  DisplayName="Mud.band Service"
+                                  Description="Mud.band network service"
+                                  Start="auto"
+                                  Account="LocalSystem"
+                                  ErrorControl="normal"/>
+                    
+                    <ServiceControl Id="StartService"
+                                  Start="install"
+                                  Stop="both"
+                                  Remove="uninstall"
+                                  Name="mudband_service"
+                                  Wait="yes"/>
+                </Component>
+
+                <!-- UI executable -->
+                <Component Id="UIExecutable" Guid="*">
+                    <File Id="MudbandUIEXE" 
+                          Name="mudband_ui.exe" 
+                          Source="..\..\releases\0.1.0\windows\x64\mudband_ui.exe" 
+                          KeyPath="yes">
+                        <Shortcut Id="StartMenuShortcut"
+                                 Directory="ProgramMenuFolder"
+                                 Name="Mud.band"
+                                 WorkingDirectory="INSTALLFOLDER"
+                                 Icon="mudband.ico"
+                                 Advertise="yes"/>
+                        <Shortcut Id="DesktopShortcut"
+                                 Directory="DesktopFolder"
+                                 Name="Mud.band"
+                                 WorkingDirectory="INSTALLFOLDER"
+                                 Icon="mudband.ico"
+                                 Advertise="yes"/>
+                    </File>
+                </Component>
+            </Directory>
+        </StandardDirectory>
+        <StandardDirectory Id="ProgramMenuFolder"/>
+        <StandardDirectory Id="DesktopFolder"/>
+
+        <Icon Id="mudband.ico" SourceFile="..\assets\mudband.ico"/>
+        <Property Id="ARPPRODUCTICON" Value="mudband.ico"/>
+        <Property Id="ARPURLINFOABOUT" Value="https://mud.band"/>
+        <Property Id="ARPHELPLINK" Value="https://forums.mud.band"/>
+        <Property Id="ARPNOREPAIR" Value="yes" />
+        <Property Id="ARPNOMODIFY" Value="yes" />
+
+        <Feature Id="ProductFeature" Title="Mud.band" Level="1">
+            <ComponentRef Id="MainExecutable"/>
+            <ComponentRef Id="WintunDLL"/>
+            <ComponentRef Id="ServiceExecutable"/>
+            <ComponentRef Id="UIExecutable"/>
+        </Feature>
+    </Package>
+</Wix>
