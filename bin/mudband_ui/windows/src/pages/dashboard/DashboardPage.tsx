@@ -44,13 +44,13 @@ export default function DashboardPage() {
           toast({
             variant: "destructive",
             title: "Error",
-            description: `BANDEC_XXXXX: Failed to get active band: ${resp_json.msg ? resp_json.msg : 'N/A'}`
+            description: `BANDEC_00726: Failed to get active band: ${resp_json.msg ? resp_json.msg : 'N/A'}`
           })
           return
         }
         setShowWebCLI(resp_json.band.opt_public === 1)
       } catch (error) {
-        console.error('BANDEC_XXXXX: Failed to check WebCLI access:', error)
+        console.error('BANDEC_00727: Failed to check WebCLI access:', error)
         setShowWebCLI(false)
       }
     }
@@ -72,7 +72,7 @@ export default function DashboardPage() {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "BANDEC_XXXXX: Failed to get active band information."
+          description: "BANDEC_00728: Failed to get active band information."
         })
         return
       }
@@ -89,7 +89,7 @@ export default function DashboardPage() {
         toast({
           variant: "destructive", 
           title: "Error",
-          description: `BANDEC_XXXXX: Failed to get WebCLI URL: ${data.msg || 'N/A'}`
+          description: `BANDEC_00729: Failed to get WebCLI URL: ${data.msg || 'N/A'}`
         })
         return
       }
@@ -99,14 +99,14 @@ export default function DashboardPage() {
         toast({
           variant: "destructive",
           title: "Error", 
-          description: "BANDEC_XXXXX: Failed to open WebCLI URL."
+          description: "BANDEC_00730: Failed to open WebCLI URL."
         })
       }
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: `BANDEC_XXXXX: Failed to open WebCLI: ${error}`
+        description: `BANDEC_00731: Failed to open WebCLI: ${error}`
       })
     }
   }

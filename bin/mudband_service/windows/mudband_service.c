@@ -1223,7 +1223,7 @@ console_main(void)
 				continue;
 			}
 			vtc_log(vl, 0, 
-				"BANDEC_XXXXX: WaitForMultipleObjects() failed: %d",
+				"BANDEC_00706: WaitForMultipleObjects() failed: %d",
 				rv);
 			break;
 		}
@@ -1244,7 +1244,7 @@ console_main(void)
 			continue;
 		}
 
-		vtc_log(vl, 0, "BANDEC_XXXXX: Unexpected rv from WaitForMultipleObjects()");
+		vtc_log(vl, 0, "BANDEC_00707: Unexpected rv from WaitForMultipleObjects()");
 	}
 }
 

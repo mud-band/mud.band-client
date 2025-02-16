@@ -1722,7 +1722,10 @@ MQTT_subscribe(void)
 	char topic[128];
 
 	band_uuid = MBE_get_uuidstr();
-	AN(band_uuid);
+	if (band_uuid == NULL) {
+		vtc_log(mqtt_vl, 0, "BANDEC_00740: Failed to get band UUID.");
+		return;
+	}
 	snprintf(topic, sizeof(topic), "/band/%s", band_uuid);
 
 	error = mqtt_subscribe(&mqtt_client, topic, 0);

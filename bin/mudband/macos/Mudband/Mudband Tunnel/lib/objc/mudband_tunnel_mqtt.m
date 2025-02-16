@@ -1717,7 +1717,10 @@ mudband_tunnel_mqtt_subscribe(void)
     char topic[128];
 
     band_uuid = mudband_tunnel_progconf_get_default_band_uuidstr();
-    AN(band_uuid);
+    if (band_uuid == NULL) {
+        vtc_log(mqtt_vl, 0, "BANDEC_00743: Failed to get default band UUID.");
+	return;
+    }
     snprintf(topic, sizeof(topic), "/band/%s", band_uuid);
 
     error = mqtt_subscribe(&mqtt_client, topic, 0);
