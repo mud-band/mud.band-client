@@ -22,8 +22,14 @@ Severity=Error
 Facility=Runtime
 SymbolicName=SVC_ERROR
 Language=English
-An error has occurred (%2).
+%1 An error has occurred (%2).
 .
 
-; // A message file must end with a period on its own line
-; // followed by a blank line.
+; // Message Categories
+MessageId=0x100
+Severity=Success
+Facility=System
+SymbolicName=MUDBAND_SERVICE_CATEGORY
+Language=English
+Mudband Service
+.

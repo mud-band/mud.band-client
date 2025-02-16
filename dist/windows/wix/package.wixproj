@@ -1,0 +1,7 @@
+<Project Sdk="WixToolset.Sdk/5.0.1">
+  <PropertyGroup>
+    <OutputName>mudband</OutputName>
+    <Platform>x64</Platform>
+    <InstallerPlatform>x64</InstallerPlatform>
+  </PropertyGroup>
+</Project>

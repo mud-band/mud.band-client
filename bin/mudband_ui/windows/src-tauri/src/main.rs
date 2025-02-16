@@ -2,7 +2,7 @@
 
 use std::sync::Mutex;
 use std::fs;
-use std::io::{Write, Read};
+use std::io::{Write, Read, BufRead};
 use serde::{Deserialize, Serialize};
 use tauri::Manager;
 use std::io::BufReader;
@@ -70,21 +70,18 @@ fn mudband_ui_ipc_send(command: serde_json::Value) -> Result<serde_json::Value, 
     let command_str = serde_json::to_string(&command)
         .map_err(|e| format!("Failed to serialize command: {}", e))? + "\n";
 
-    let mut buffer = Vec::new();
-    
     client.write_all(command_str.as_bytes())
         .map_err(|e| format!("Failed to write to pipe: {}", e))?;
     client.flush()
         .map_err(|e| format!("Failed to flush pipe: {}", e))?;
 
-        let mut reader = BufReader::new(client);
-    reader.read_to_end(&mut buffer)
+    let mut response = String::new();
+    let mut reader = BufReader::new(client);
+    
+    reader.read_line(&mut response)
         .map_err(|e| format!("Failed to read from pipe: {}", e))?;
 
-    let response = String::from_utf8(buffer)
-        .map_err(|e| format!("Failed to convert response to string: {}", e))?;
-
-    serde_json::from_str(&response)
+    serde_json::from_str(&response.trim())
         .map_err(|e| format!("Failed to parse response: {}", e))
 }
 

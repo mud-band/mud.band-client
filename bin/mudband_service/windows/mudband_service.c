@@ -793,7 +793,7 @@ cmd_tunnel_connect(char *out, size_t outmax)
 	assert(root != NULL);
 
 	if (band_tunnel_status.is_running) {
-		json_object_set_new(root, "status", json_integer(400));
+		json_object_set_new(root, "status", json_integer(200));
 		json_object_set_new(root, "msg", 
 			json_string("Tunnel is already running"));
 	} else {
@@ -806,7 +806,7 @@ cmd_tunnel_connect(char *out, size_t outmax)
 		}
 		rv = svc_command_mudband_start();
 		if (rv == -1) {
-			json_object_set_new(root, "status", json_integer(500));
+			json_object_set_new(root, "status", json_integer(501));
 			json_object_set_new(root, "msg", 
 				json_string("Failed to start tunnel"));
 			goto out;
@@ -837,7 +837,7 @@ cmd_tunnel_disconnect(char *out, size_t outmax)
 	assert(root != NULL);
 
 	if (!band_tunnel_status.is_running) {
-		json_object_set_new(root, "status", json_integer(400));
+		json_object_set_new(root, "status", json_integer(200));
 		json_object_set_new(root, "msg", 
 			json_string("Tunnel is not running"));
 	} else {
@@ -1019,10 +1019,16 @@ svc_named_pipe_server_event(struct mudband_service_named_pipe *named_pipe)
 }
 
 static int
-svc_execute_mudrun(char *cmd)
+svc_execute_mudband(char *path)
 {
 	STARTUPINFOA si;
 	PROCESS_INFORMATION pi;
+	char cmd[ODR_BUFSIZ];
+
+	// Add quotes around the path to handle spaces
+	snprintf(cmd, sizeof(cmd), "\"%s\"", path);
+	
+	vtc_log(vl, 2, "Running the command: %s", cmd);
 
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
@@ -1051,7 +1057,7 @@ svc_command_mudband_start(void)
 	assert(success);
 	success = PathAppendA(path, "mudband.exe");
 	assert(success);
-	return (svc_execute_mudrun(path));
+	return (svc_execute_mudband(path));
 }
 
 static void
@@ -1111,7 +1117,7 @@ svc_init(void)
 	ODR_mkdir_recursive(cdir);
 	band_confdir_root = ODR_strdup(cdir);
 	AN(band_confdir_root);
-	ODR_snprintf(edir, sizeof(edir), "%s/enroll", band_confdir_root);
+	ODR_snprintf(edir, sizeof(edir), "%s\\enroll", band_confdir_root);
 	ODR_mkdir_recursive(edir);
 	band_confdir_enroll = ODR_strdup(edir);
 	AN(band_confdir_enroll);
