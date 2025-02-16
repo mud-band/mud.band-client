@@ -1,7 +1,16 @@
-<Project Sdk="WixToolset.Sdk/5.0.1">
+<Project Sdk="WixToolset.Sdk/4.0.0">
   <PropertyGroup>
     <OutputName>mudband</OutputName>
     <Platform>x64</Platform>
     <InstallerPlatform>x64</InstallerPlatform>
   </PropertyGroup>
+
+  <Target Name="BuildCustomActions" BeforeTargets="PrepareForBuild">
+    <Exec Command="nmake /f &quot;$(MSBuildThisFileDirectory)custom_actions\NMakefile&quot;"
+          WorkingDirectory="$(MSBuildThisFileDirectory)custom_actions" />
+  </Target>
+
+  <ItemGroup>
+    <Binary Include="custom_actions\MudBandCustomActions.dll" />
+  </ItemGroup>
 </Project>
