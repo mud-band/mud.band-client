@@ -64,7 +64,7 @@
 #include "callout.h"
 #include "wireguard-pbuf.h"
 
-#define	MUDBAND_VERSION		"v0.0.9"
+#define	MUDBAND_VERSION		"v0.1.0"
 
 #define WIREGUARD_IFACE_DEFAULT_PORT		(51820)
 #define WIREGUARD_IFACE_KEEPALIVE_DEFAULT	(0xFFFF)

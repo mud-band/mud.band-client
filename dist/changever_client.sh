@@ -3,10 +3,10 @@
 #
 # All strings are the regular expressions.
 #
-PREV=0\\.0\\.8
-NEXT=0\\.0\\.9
-PREVC=100000800
-NEXTC=100000900
+PREV=0\\.0\\.9
+NEXT=0\\.1\\.0
+PREVC=100000900
+NEXTC=100010000
 
 changeit() {
 	DST=$1
@@ -40,7 +40,8 @@ changeit ../bin/mudband_ui/linux/src-tauri/tauri.conf.json
 changeit ../bin/mudband_ui/windows/src-tauri/Cargo.toml
 changeit ../bin/mudband_ui/windows/src-tauri/tauri.conf.json
 
-changeit android/package.sh
+changeit android/package_apk.sh
+changeit android/package_bundle.sh
 changeit linux/package_x86_64-musl.sh
 changeit windows/package_x64.bat
 changeit windows/package_x86.bat

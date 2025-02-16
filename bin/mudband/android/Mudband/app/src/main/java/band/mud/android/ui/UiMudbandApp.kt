@@ -404,7 +404,7 @@ fun UiMudbandDrawer(viewModel: MudbandAppViewModel, navController: NavHostContro
                     }
                 }
             )
-            Text("v0.0.9", modifier = Modifier.padding(16.dp))
+            Text("v0.1.0", modifier = Modifier.padding(16.dp))
         }
     }
 }
