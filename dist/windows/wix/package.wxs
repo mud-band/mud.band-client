@@ -13,7 +13,9 @@
             RemoveFeatures="ALL" />
         <MediaTemplate EmbedCab="yes"/>
 
-        <StandardDirectory Id="ProgramFilesFolder">
+        <Binary Id="CustomActionsDLL" SourceFile="custom_actions\MudBandCustomActions.dll" />
+
+        <StandardDirectory Id="ProgramFiles64Folder">
             <Directory Id="INSTALLFOLDER" Name="Mud.band">
                 <Component Id="MainExecutable" Guid="*">
                     <File Id="MudbandEXE" 
@@ -90,5 +92,18 @@
             <ComponentRef Id="ServiceExecutable"/>
             <ComponentRef Id="UIExecutable"/>
         </Feature>
+        
+        <CustomAction Id="KillMudBandProcessesProperties" Property="KillMudBandProcesses"
+                      Value="[INSTALLROOT]"/>
+        <CustomAction Id="KillMudBandProcesses" 
+                     BinaryRef="CustomActionsDLL" 
+                     DllEntry="KillMudBandProcesses" 
+                     Execute="deferred"
+                     Impersonate="no" />
+
+        <InstallExecuteSequence>
+            <Custom Action="KillMudBandProcessesProperties" Before="KillMudBandProcesses" />
+            <Custom Action="KillMudBandProcesses" After="InstallInitialize" />
+        </InstallExecuteSequence>
     </Package>
 </Wix>

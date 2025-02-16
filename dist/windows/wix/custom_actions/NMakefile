@@ -1,0 +1,27 @@
+# Compiler and linker settings
+CC=cl
+LINK=link
+MT=mt
+
+# Compiler flags
+CFLAGS=/nologo /W3 /WX /D_WINDOWS /D_USRDLL /DWIN32 /D_WINDLL /O2
+
+# Linker flags
+LDFLAGS=/DLL /NOLOGO /MACHINE:X64 /SUBSYSTEM:WINDOWS
+
+# Source files
+SOURCES=MudBandCustomActions.c
+
+# Output files
+DLLNAME=MudBandCustomActions.dll
+LIBNAME=MudBandCustomActions.lib
+EXPNAME=MudBandCustomActions.exp
+
+all: clean $(DLLNAME)
+
+$(DLLNAME): $(SOURCES)
+	$(CC) $(CFLAGS) /c $(SOURCES)
+	$(LINK) $(LDFLAGS) /DEF:CustomActions.def /OUT:$(DLLNAME) MudBandCustomActions.obj
+	
+clean:
+	del *.obj *.dll *.lib *.exp 
