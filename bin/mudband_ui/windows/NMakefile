@@ -1,8 +1,19 @@
+VERPATCH= \
+    ..\..\..\contrib\verpatch\verpatch.exe
+
+
 all:
 	npm run tauri dev
 
-build:
-	npm run tauri build
+build: build64
+
+build64:
+	npm run tauri build -- --target x86_64-pc-windows-msvc
+	$(VERPATCH) .\src-tauri\target\x86_64-pc-windows-msvc\release\mudband_ui.exe \
+	    /va "0.1.0" /pv "0.1.0" \
+	    /s desc "Mudband UI" \
+	    /s copyright "Copyright (c) 2024-2025 by Mudfish Networks" \
+	    /s product "Mudband"
 
 init:
 	npm install
