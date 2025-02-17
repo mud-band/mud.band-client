@@ -62,11 +62,18 @@ OBJS=\
     mudband_service_progconf.obj \
     mudband_service.obj
 
+VERPATCH= \
+    ..\..\..\contrib\verpatch\verpatch.exe
+
 all: mudband_service.exe
 
 mudband_service.exe: mudband_service_msg.res $(OBJS)
 	$(LINK32) $(LINK32_FLAGS) $(LIB_DIRS) $(LIBS) $(OBJS) \
 	    mudband_service_msg.res
+	$(VERPATCH) mudband_service.exe /va "0.1.0" /pv "0.1.0" \
+	    /s desc "Mudband Service" \
+	    /s copyright "Copyright (c) 2024-2025 by Mudfish Networks" \
+	    /s product "Mudband"
 
 mudband_service_msg.res: mudband_service_msg.mc
         mc mudband_service_msg.mc

@@ -20,21 +20,21 @@
                 <Component Id="MainExecutable" Guid="*">
                     <File Id="MudbandEXE" 
                           Name="mudband.exe" 
-                          Source="..\..\releases\0.1.0\windows\x64\mudband.exe" 
+                          Source="..\..\releases\0.1.0\windows\x64\wix\mudband.exe" 
                           KeyPath="yes"/>
                 </Component>
 
                 <Component Id="WintunDLL" Guid="*">
                     <File Id="WintunDLL" 
                           Name="wintun.dll" 
-                          Source="..\..\releases\0.1.0\windows\x64\wintun.dll" 
+                          Source="..\..\releases\0.1.0\windows\x64\wix\wintun.dll" 
                           KeyPath="yes"/>
                 </Component>
 
                 <Component Id="ServiceExecutable" Guid="*">
                     <File Id="MudbandServiceEXE" 
                           Name="mudband_service.exe" 
-                          Source="..\..\releases\0.1.0\windows\x64\mudband_service.exe" 
+                          Source="..\..\releases\0.1.0\windows\x64\wix\mudband_service.exe" 
                           KeyPath="yes"/>
                     
                     <ServiceInstall Id="ServiceInstaller"
@@ -58,7 +58,7 @@
                 <Component Id="UIExecutable" Guid="*">
                     <File Id="MudbandUIEXE" 
                           Name="mudband_ui.exe" 
-                          Source="..\..\releases\0.1.0\windows\x64\mudband_ui.exe" 
+                          Source="..\..\releases\0.1.0\windows\x64\wix\mudband_ui.exe" 
                           KeyPath="yes">
                         <Shortcut Id="StartMenuShortcut"
                                  Directory="ProgramMenuFolder"
