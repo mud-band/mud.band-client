@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=0.0.9
+VERSION=0.1.0
 TOPDIR=../../bin/mudband_service/linux
 
 (cd ${TOPDIR} && make pkg_deb)
