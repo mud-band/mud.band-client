@@ -42,6 +42,8 @@ changeit ../bin/mudband_ui/windows/src-tauri/tauri.conf.json
 
 changeit android/package_apk.sh
 changeit android/package_bundle.sh
+changeit linux/package_service_x86_64-deb.sh
+changeit linux/package_ui_x86_64.sh
 changeit linux/package_x86_64-musl.sh
 changeit windows/package_x64.bat
 changeit windows/package_x86.bat
