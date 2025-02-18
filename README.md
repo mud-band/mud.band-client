@@ -30,7 +30,10 @@ with XCode and build.
 
 ### Linux
 
-If you want to use glibc:
+#### Mudband
+
+`mudband` binary is a core binary to communicate with peers. If you want to
+use glibc:
 
 ```
 cd ${TOPDIR}/bin/mudband/linux
@@ -46,6 +49,29 @@ cd ${TOPDIR}/bin/mudband/linux
 make -f Makefile.musl
 ```
 
+#### Mudband Service
+
+`mudband_service` process is a control binary to start / stop `mudband`
+process.  To this this binary,
+
+```
+cd ${TOPDIR}/bin/mudband_service/linux
+make clean && make
+```
+
+#### Mudband UI
+
+`mudband_ui` is a UI process based on Tauri.  To build the binary,
+
+```
+# for dev environment
+cd ${TOPDIR}/bin/mudband_ui/linux
+make init && make
+# for binary build
+cd ${TOPDIR}/bin/mudband_ui/linux
+make init && make build
+```
+
 ### macOS
 
 Open `bin/mudband/macos/Mudband/Mud.band.xcodeproj/` with XCode
@@ -53,18 +79,59 @@ and build.
 
 ### Windows
 
-Open the command prompt with Visual Studio environment.
+In windows, there're three parts; `mudband.exe`, `mudband_service.exe`
+and `mudband_ui.exe`
 
-#### x86
+#### mudband.exe
+
+Open the command prompt with Visual Studio dev environment.
+
+##### x86
 
 ```
 cd bin\mudband\win32
 nmake -f NMakefile
 ```
 
-#### x64
+##### x64
 
 ```
 cd bin\mudband\win32
 nmake -f NMakefile.x64
 ```
+
+### mudband_service.exe
+
+##### x64
+
+```
+cd bin\mudband_service\windows
+nmake -f NMakefile.x64
+```
+
+### mudband_ui.exe
+
+Mudband UI is based on Tauri.  So at least it requires Tauri dev environment
+to build it properly.
+
+##### x64
+
+```
+cd bin\mudband_ui\windows
+nmake -f NMakefile init
+nmake -f NMakefile build
+```
+
+## Packaging
+
+### Android, Linux and Windows
+
+For details, please check the following directory and the scripts at
+
+* `${TOPDIR}/dist/android`
+* `${TOPDIR}/dist/linux`
+* `${TOPDIR}/dist/windows`
+
+### iOS and macOS
+
+Please use XCode to archive the package build.
