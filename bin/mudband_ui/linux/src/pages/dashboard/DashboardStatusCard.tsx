@@ -8,6 +8,12 @@ export default function DashboardStatusCard() {
   const { toast } = useToast()
   const [bandName, setBandName] = useState<string>("")
   const [isTunnelRunning, setIsTunnelRunning] = useState<boolean>(false)
+  const [activeConf, setActiveConf] = useState<{
+    interface: {
+      name: string,
+      private_ip: string
+    }
+  }>({ interface: { name: 'Unknown', private_ip: 'Unknown' } })
 
   useEffect(() => {
     invoke<string>("mudband_ui_get_active_band")
@@ -22,7 +28,7 @@ export default function DashboardStatusCard() {
             description: string,
             jwt: string,
             wireguard_privkey: string
-          } 
+          }
         }
         if (resp_json.status === 200 && resp_json.band) {
           setBandName(resp_json.band.name)
@@ -47,6 +53,28 @@ export default function DashboardStatusCard() {
         title: "Error",
         description: `BANDEC_00621: Failed to get tunnel status: ${err}`
       }))
+
+    invoke<string>("mudband_ui_get_active_conf")
+      .then(resp => {
+        const resp_json = JSON.parse(resp) as {
+          status: number,
+          msg?: string,
+          conf?: {
+            interface: {
+              name: string,
+              private_ip: string
+            }
+          }
+        }
+        if (resp_json.status === 200 && resp_json.conf) {
+          setActiveConf(resp_json.conf)
+        }
+      })
+      .catch(err => toast({
+        variant: "destructive",
+        title: "Error",
+        description: `BANDEC_00744: Failed to get active configuration: ${err}`
+      }))
   }, [])
 
   return (
@@ -56,6 +84,8 @@ export default function DashboardStatusCard() {
       </CardHeader>
       <CardContent>
         <p className="text-sm text-gray-600">Band name: {bandName}</p>
+        <p className="text-sm text-gray-600">Device name: {activeConf.interface.name}</p>
+        <p className="text-sm text-gray-600">Private IP: {activeConf.interface.private_ip}</p>
         <Button 
           className="mt-4 w-full" 
           onClick={() => {

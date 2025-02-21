@@ -76,7 +76,9 @@ int     CNF_load(void);
 struct wireguard_acl *
         CNF_acl_build(json_t *jroot);
 const char *
-	CNF_get_interface_device_uuid(json_t *jroot);
+	    CNF_get_interface_device_uuid(json_t *jroot);
+const char *
+        CNF_get_interface_name(json_t *jroot);
 
 /* mudband_connmgr.c */
 int     MCM_init(void);

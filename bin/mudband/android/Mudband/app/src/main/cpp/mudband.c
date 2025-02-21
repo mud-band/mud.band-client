@@ -158,6 +158,46 @@ Java_band_mud_android_JniWrapper_getActiveBandName(JNIEnv *env, jobject thiz)
 }
 
 jstring
+Java_band_mud_android_JniWrapper_getActiveDeviceName(JNIEnv *env, jobject thiz)
+{
+    struct cnf *cnf;
+    jstring s;
+    int r;
+    const char *name;
+
+    (void)thiz;
+
+    r = CNF_get(&cnf);
+    if (r == -1)
+        return (NULL);
+    name = CNF_get_interface_name(cnf->jroot);
+    AN(name);
+    s = (*env)->NewStringUTF(env, name);
+    CNF_rel(&cnf);
+    return (s);
+}
+
+jstring
+Java_band_mud_android_JniWrapper_getActivePrivateIP(JNIEnv *env, jobject thiz)
+{
+    struct cnf *cnf;
+    jstring s;
+    int r;
+    const char *private_ip;
+
+    (void)thiz;
+
+    r = CNF_get(&cnf);
+    if (r == -1)
+        return (NULL);
+    private_ip = CNF_get_interface_private_ip(cnf->jroot);
+    AN(private_ip);
+    s = (*env)->NewStringUTF(env, private_ip);
+    CNF_rel(&cnf);
+    return (s);
+}
+
+jstring
 Java_band_mud_android_JniWrapper_getBandJWT(JNIEnv *env, jobject thiz)
 {
     const char *jwt;

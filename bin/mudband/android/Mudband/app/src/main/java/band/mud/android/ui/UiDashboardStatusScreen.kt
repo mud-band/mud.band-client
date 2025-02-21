@@ -254,6 +254,7 @@ fun UiDashboardStatusScreen(
             )
         }
         Text(text = "Band name: ${uiState.activeBandName}")
+        Text(text = "Private IP: ${uiState.activePrivateIP}")
         Spacer(Modifier.height(12.dp))
         if (uiState.isConnected) {
             Button(

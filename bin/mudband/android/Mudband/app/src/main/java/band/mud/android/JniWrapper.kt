@@ -50,6 +50,8 @@ class JniWrapper private constructor() {
     external fun isBandPublic(): Boolean
     external fun getBandJWT(): String
     external fun getActiveBandName(): String
+    external fun getActiveDeviceName(): String
+    external fun getActivePrivateIP(): String?
     external fun getBandConfigEtag(): String?
     external fun getBandConfigString(): String?
     external fun changeEnrollment(uuid: String)
