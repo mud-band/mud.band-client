@@ -474,6 +474,21 @@ cnf_file_write(const char *filepath, json_t *obj)
 }
 
 const char *
+CNF_get_interface_name(json_t *jroot)
+{
+    json_t *interface, *name;
+
+    AN(jroot);
+    interface = json_object_get(jroot, "interface");
+    AN(interface);
+    assert(json_is_object(interface));
+    name = json_object_get(interface, "name");
+    AN(name);
+    assert(json_is_string(name));
+    return (json_string_value(name));
+}
+
+const char *
 CNF_get_interface_private_ip(json_t *jroot)
 {
     json_t *interface, *private_ip;

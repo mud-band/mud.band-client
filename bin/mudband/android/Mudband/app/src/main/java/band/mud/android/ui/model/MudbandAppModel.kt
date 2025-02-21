@@ -31,7 +31,6 @@ import android.app.ActivityManager;
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import band.mud.android.MainApplication
-import band.mud.android.util.MudbandLog
 import band.mud.android.vpn.MudbandVpnService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -92,6 +91,8 @@ data class MudbandAppUiState(
     var isConfigurationReady: Boolean = false,
     var isUserTosAgreed: Boolean = false,
     var activeBandName: String = "",
+    var activeDeviceName: String = "Unknown",
+    var activePrivateIP: String = "Unknown",
     var dashboardScreenName: String = "status",
     var topAppBarTitle: String = "Mud.band",
     var bands: List<MudbandAppUiStateBand> = listOf(),
@@ -127,6 +128,8 @@ class MudbandAppViewModel(application: Application) : AndroidViewModel(applicati
         }
         if (enrolled) {
             setActiveBandName(app.jni.getActiveBandName())
+            setActivePrivateIP(app.jni.getActivePrivateIP())
+            setActiveDeviceName(app.jni.getActiveDeviceName())
             setDashboardScreenName("status")
             updateBandList()
             updateDeviceList()
@@ -243,6 +246,10 @@ class MudbandAppViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun setConnectStatus(connected: Boolean) {
+        if (connected) {
+            setActivePrivateIP(app.jni.getActivePrivateIP())
+            setActiveDeviceName(app.jni.getActiveDeviceName())
+        }
         _uiState.update { currentState ->
             currentState.copy(
                 isConnected = connected
@@ -281,6 +288,28 @@ class MudbandAppViewModel(application: Application) : AndroidViewModel(applicati
         _uiState.update { currentState ->
             currentState.copy(
                 activeBandName = bandName
+            )
+        }
+    }
+
+    private fun setActivePrivateIP(ip: String?) {
+        if (ip == null) {
+            return
+        }
+        _uiState.update { currentState ->
+            currentState.copy(
+                activePrivateIP = ip
+            )
+        }
+    }
+
+    private fun setActiveDeviceName(deviceName: String?) {
+        if (deviceName == null) {
+            return
+        }
+        _uiState.update { currentState ->
+            currentState.copy(
+                activeDeviceName = deviceName
             )
         }
     }

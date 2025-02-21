@@ -111,7 +111,9 @@ export default function DashboardSettingsCard() {
       msg: string
     }
 
-    if (unenrollData.status !== 200) {
+    if (unenrollData.status !== 200 &&
+        unenrollData.status !== 505 &&
+        unenrollData.status !== 506) {
       throw new Error(unenrollData.msg)
     }
   }

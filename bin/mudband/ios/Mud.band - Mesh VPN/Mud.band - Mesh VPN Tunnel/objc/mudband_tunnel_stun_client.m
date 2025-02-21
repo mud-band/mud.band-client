@@ -491,7 +491,7 @@ stun_sendmsg(int fd, char* buf, int l, uint32_t addr, uint16_t port)
         case EHOSTUNREACH:
             break;
         default:
-            vtc_log(stun_client_vl, 0, "sendto(2) failed: %d %s",
+            vtc_log(stun_client_vl, 0, "BANDEC_00776: sendto(2) failed: %d %s",
                 errno, strerror(errno));
             break;
         }
@@ -570,7 +570,7 @@ stun_recvmsg(int fd, char *buf, int *len, uint32_t *src_ip, uint16_t *src_port)
        
     *len = (int)recvfrom(fd, buf, orig_size, 0, (struct sockaddr *)&from, &fromLen);
     if (*len == -1) {
-        vtc_log(stun_client_vl, 0, "recvfrom(2) failed: %d %s", errno,
+        vtc_log(stun_client_vl, 0, "BANDEC_00777: recvfrom(2) failed: %d %s", errno,
             strerror(errno));
         return (-1);
     }
@@ -876,7 +876,7 @@ stun_sm_test_i_recv(struct stun_client *sc)
     memset(&resp, 0, sizeof(struct stun_msg));
     r = stun_parsemsg(msg, msgLen, &resp);
     if (r == -1)
-        vtc_log(stun_client_vl, 0, "stun_parsemsg() failed.");
+        vtc_log(stun_client_vl, 0, "BANDEC_00778: stun_parsemsg() failed.");
 
     assert(resp.msg_hdr.id.octet[0] == 1);
 
@@ -938,7 +938,7 @@ stun_sm_test_i2_recv(struct stun_client *sc)
     memset(&resp, 0, sizeof(struct stun_msg));
     r = stun_parsemsg(msg, msgLen, &resp);
     if (r == -1)
-        vtc_log(stun_client_vl, 0, "stun_parsemsg() failed.");
+        vtc_log(stun_client_vl, 0, "BANDEC_00779: stun_parsemsg() failed.");
 
     assert(resp.msg_hdr.id.octet[0] == 10);
 
@@ -990,7 +990,7 @@ stun_sm_test_i3_recv(struct stun_client *sc)
     memset(&resp, 0, sizeof(struct stun_msg));
     r = stun_parsemsg(msg, msgLen, &resp);
     if (r == -1)
-        vtc_log(stun_client_vl, 0, "stun_parsemsg() failed.");
+        vtc_log(stun_client_vl, 0, "BANDEC_00780: stun_parsemsg() failed.");
 
     assert(resp.msg_hdr.id.octet[0] == 11);
 
@@ -1043,7 +1043,7 @@ stun_sm_test_ii_recv(struct stun_client *sc)
     memset(&resp, 0, sizeof(struct stun_msg));
     r = stun_parsemsg(msg, msgLen, &resp);
     if (r == -1)
-        vtc_log(stun_client_vl, 0, "stun_parsemsg() failed.");
+        vtc_log(stun_client_vl, 0, "BANDEC_00781: stun_parsemsg() failed.");
 
     assert(resp.msg_hdr.id.octet[0] == 2);
 
@@ -1088,7 +1088,7 @@ stun_sm_test_iii_recv(struct stun_client *sc)
     memset(&resp, 0, sizeof(struct stun_msg));
     r = stun_parsemsg(msg, msglen, &resp);
     if (r == -1)
-        vtc_log(stun_client_vl, 0, "stun_parsemsg() failed.");
+        vtc_log(stun_client_vl, 0, "BANDEC_00782: stun_parsemsg() failed.");
 
     assert(resp.msg_hdr.id.octet[0] == 3);
 
@@ -1106,7 +1106,7 @@ static enum stun_sm_return
 stun_sm_error(struct stun_client *sc)
 {
 
-    vtc_log(stun_client_vl, 0, "error");
+    vtc_log(stun_client_vl, 0, "BANDEC_00783: error");
     sc->step = STUN_STEP_DONE;
     return (STUN_SM_RETURN_CONTINUE);
 }
@@ -1402,8 +1402,30 @@ mudband_tunnel_stun_client_test(void)
         mudband_tunnel_stun_client_nattypestr(nattype),
         inet_ntoa(in));
 
+    if (in.s_addr == INADDR_ANY) {
+        vtc_log(stun_client_vl, 1,
+		"BANDEC_00784: STUN client test failed."
+		" No mapped address found.");
+	vtc_log(stun_client_vl, 1, 
+		"BANDEC_00785: test results:"
+		" i=%d i2=%d i3=%d ii=%d ii_no_ip=%d iii=%d"
+		" iii_no_port=%d is_nat=%d preserve_port=%d hairpin=%d"
+		" mapped_same_ip=%d",
+		sc.result.test_i_success,
+		sc.result.test_i2_success, 
+		sc.result.test_i3_success,
+		sc.result.test_ii_success,
+		sc.result.test_ii_fail_no_ip_change,
+		sc.result.test_iii_success,
+		sc.result.test_iii_fail_no_port_change,
+		sc.result.is_nat,
+		sc.result.preserve_port,
+		sc.result.hairpin,
+		sc.result.mapped_same_ip);
+	return (-1);
+    }
     if (stun_client_result_inited) {
-        uint32_t naddr = htonl(mapped_addr.addr);
+      uint32_t naddr = htonl(mapped_addr.addr);
 
         if (stun_client_result.nattype != nattype) {
             vtc_log(stun_client_vl, 2, "NAT type changed from %d to %d",
