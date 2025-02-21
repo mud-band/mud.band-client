@@ -13,7 +13,7 @@ export default function DashboardStatusCard() {
       name: string,
       private_ip: string
     }
-  }>({ interface: { name: 'Unknown', private_ip: 'Unknown' } })
+  }>({ interface: { name: '', private_ip: '' } })
 
   useEffect(() => {
     invoke<string>("mudband_ui_get_active_band")
@@ -84,8 +84,12 @@ export default function DashboardStatusCard() {
       </CardHeader>
       <CardContent>
         <p className="text-sm text-gray-600">Band name: {bandName}</p>
-        <p className="text-sm text-gray-600">Device name: {activeConf.interface.name}</p>
-        <p className="text-sm text-gray-600">Private IP: {activeConf.interface.private_ip}</p>
+        {activeConf.interface.name && (
+          <p className="text-sm text-gray-600">Device name: {activeConf.interface.name}</p>
+        )}
+        {activeConf.interface.private_ip && (
+          <p className="text-sm text-gray-600">Private IP: {activeConf.interface.private_ip}</p>
+        )}
         <Button 
           className="mt-4 w-full" 
           onClick={() => {
