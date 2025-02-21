@@ -32,6 +32,8 @@ class AppModel: ObservableObject {
     @Published var mEnrollmentCount: Int32 = mudband_ui_enroll_get_count()
     @Published var mBandIsPublic: Bool = mudband_ui_enroll_is_public()
     @Published var mBandName: String = ""
+    @Published var mDeviceName: String = ""
+    @Published var mPrivateIP: String = ""
     @Published var mUserTosAgreed: Bool
     
     init() {
@@ -58,10 +60,17 @@ class AppModel: ObservableObject {
         }
         mBandIsPublic = mudband_ui_enroll_is_public()
         mBandName = mudband_ui_enroll_get_band_name()
+        mDeviceName = mudband_ui_confmgr_get_device_name()
+        mPrivateIP = mudband_ui_confmgr_get_private_ip()
     }
     
     func update_vpn_status() {
+        let prevStatusString = mVPNStatusString
         mVPNStatusString = mVpnManager.getVPNStatusString()
+        if prevStatusString != mVPNStatusString && mVPNStatusString == "Connected" {
+            mDeviceName = mudband_ui_confmgr_get_device_name()
+            mPrivateIP = mudband_ui_confmgr_get_private_ip()
+        }
     }
 }
 

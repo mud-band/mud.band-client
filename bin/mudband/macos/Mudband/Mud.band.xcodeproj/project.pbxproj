@@ -30,6 +30,7 @@
 		FB88BBC52D0E129A0054822E /* mudband_tunnel_stun_client.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBC42D0E129A0054822E /* mudband_tunnel_stun_client.m */; };
 		FB88BBC82D0E69BB0054822E /* mudband_tunnel_tasks.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBC72D0E69BB0054822E /* mudband_tunnel_tasks.m */; };
 		FB88BBCB2D0E6BC60054822E /* mudband_tunnel_mqtt.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BBCA2D0E6BC60054822E /* mudband_tunnel_mqtt.m */; };
+		FB91D0422D692DAC0035DF2B /* mudband_ui_confmgr.m in Sources */ = {isa = PBXBuildFile; fileRef = FB91D0412D692DAC0035DF2B /* mudband_ui_confmgr.m */; };
 		FBA4CEC22D0D26FF00252A0F /* mudband_tunnel_enroll.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CEC12D0D26FF00252A0F /* mudband_tunnel_enroll.m */; };
 		FBA4CEC42D0D2EC400252A0F /* mudband_ui_progconf.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CEC32D0D2EC400252A0F /* mudband_ui_progconf.m */; };
 		FBA4CEC62D0D36A100252A0F /* mudband_tunnel_progconf.m in Sources */ = {isa = PBXBuildFile; fileRef = FBA4CEC52D0D36A100252A0F /* mudband_tunnel_progconf.m */; };
@@ -153,6 +154,7 @@
 		FB88BBC72D0E69BB0054822E /* mudband_tunnel_tasks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_tasks.m; sourceTree = "<group>"; };
 		FB88BBC92D0E6B770054822E /* mudband_tunnel_mqtt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_tunnel_mqtt.h; sourceTree = "<group>"; };
 		FB88BBCA2D0E6BC60054822E /* mudband_tunnel_mqtt.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_mqtt.m; sourceTree = "<group>"; };
+		FB91D0412D692DAC0035DF2B /* mudband_ui_confmgr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mudband_ui_confmgr.m; sourceTree = "<group>"; };
 		FBA4CEC12D0D26FF00252A0F /* mudband_tunnel_enroll.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_enroll.m; sourceTree = "<group>"; };
 		FBA4CEC32D0D2EC400252A0F /* mudband_ui_progconf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui_progconf.m; sourceTree = "<group>"; };
 		FBA4CEC52D0D36A100252A0F /* mudband_tunnel_progconf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_progconf.m; sourceTree = "<group>"; };
@@ -337,6 +339,7 @@
 			children = (
 				FBB31E622D0AAAAC005D1D51 /* mudband_ui.h */,
 				FB21383B2D0656B3008C4BB7 /* mudband_ui.m */,
+				FB91D0412D692DAC0035DF2B /* mudband_ui_confmgr.m */,
 				FBB31E602D0AAA32005D1D51 /* mudband_ui_enroll.m */,
 				FBA4CEC32D0D2EC400252A0F /* mudband_ui_progconf.m */,
 			);
@@ -607,6 +610,7 @@
 				FBF410592D4AD1D500F8A45A /* error.c in Sources */,
 				FB2138422D067C01008C4BB7 /* UiEnrollmentNewView.swift in Sources */,
 				FBF410602D4AD1EA00F8A45A /* strconv.c in Sources */,
+				FB91D0422D692DAC0035DF2B /* mudband_ui_confmgr.m in Sources */,
 				FBF4105F2D4AD1E700F8A45A /* strbuffer.c in Sources */,
 				FBF410662D4AD20B00F8A45A /* chacha20poly1305.c in Sources */,
 				FB7CEF812D4D80250010D660 /* UiDashboardLinksListView.swift in Sources */,
@@ -839,7 +843,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = net.mudfish.mudband.Mudband;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Mud.band Tunnel Provisioning Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Mud.band Provisioning Profile";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Mudband/Mudband-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -884,7 +888,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = net.mudfish.mudband.Mudband;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Mud.band Tunnel Provisioning Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Mud.band Provisioning Profile";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Mudband/Mudband-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
