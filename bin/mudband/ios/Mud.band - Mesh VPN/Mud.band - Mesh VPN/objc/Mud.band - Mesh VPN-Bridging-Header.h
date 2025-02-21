@@ -35,6 +35,12 @@ void    mudband_ui_init(NSString *top_dir,
 NSMutableArray *
         mudband_ui_create_wireguard_keys(void);
 
+/* mudband_ui_confmgr.m */
+NSString *
+        mudband_ui_confmgr_get_device_name(void);
+NSString *
+        mudband_ui_confmgr_get_private_ip(void);
+
 /* mudband_ui_enroll.m */
 int     mudband_ui_enroll_get_count(void);
 int     mudband_ui_enroll_post(NSString *priv_key, NSString *raw_str);

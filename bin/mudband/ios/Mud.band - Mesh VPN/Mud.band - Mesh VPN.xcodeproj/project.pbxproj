@@ -50,6 +50,7 @@
 		FB71A7BF2D16780700E739B0 /* x25519.c in Sources */ = {isa = PBXBuildFile; fileRef = FB418B352D16596600E3897F /* x25519.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		FB71A7C32D16784400E739B0 /* mudband_tunnel_tasks.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7C22D16784400E739B0 /* mudband_tunnel_tasks.m */; };
 		FB71A7C52D16786B00E739B0 /* mudband_tunnel_progconf.m in Sources */ = {isa = PBXBuildFile; fileRef = FB71A7C42D16786B00E739B0 /* mudband_tunnel_progconf.m */; };
+		FB987CFE2D69343700FC2BF9 /* mudband_ui_confmgr.m in Sources */ = {isa = PBXBuildFile; fileRef = FB987CFD2D69343700FC2BF9 /* mudband_ui_confmgr.m */; };
 		FBE9F1DC2D4DD9A600E87EE3 /* wireguard.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1DA2D4DD9A600E87EE3 /* wireguard.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		FBE9F1DD2D4DD9A600E87EE3 /* callout.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1DB2D4DD9A600E87EE3 /* callout.c */; };
 		FBE9F1EE2D4DD9E200E87EE3 /* load.c in Sources */ = {isa = PBXBuildFile; fileRef = FBE9F1E02D4DD9E200E87EE3 /* load.c */; };
@@ -165,6 +166,7 @@
 		FB71A7B62D1677B800E739B0 /* mudband_tunnel_stun_client.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_stun_client.m; sourceTree = "<group>"; };
 		FB71A7C22D16784400E739B0 /* mudband_tunnel_tasks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_tasks.m; sourceTree = "<group>"; };
 		FB71A7C42D16786B00E739B0 /* mudband_tunnel_progconf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_tunnel_progconf.m; sourceTree = "<group>"; };
+		FB987CFD2D69343700FC2BF9 /* mudband_ui_confmgr.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui_confmgr.m; sourceTree = "<group>"; };
 		FBE9F1DA2D4DD9A600E87EE3 /* wireguard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wireguard.c; path = ../../../../common/wireguard.c; sourceTree = "<group>"; };
 		FBE9F1DB2D4DD9A600E87EE3 /* callout.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = callout.c; path = ../../../../common/callout.c; sourceTree = "<group>"; };
 		FBE9F1DF2D4DD9E200E87EE3 /* lookup3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lookup3.h; path = ../../../../../../../lib/libjansson/lookup3.h; sourceTree = "<group>"; };
@@ -272,6 +274,7 @@
 				FB418B2C2D1658C700E3897F /* mudband_ui.h */,
 				FB418B072D16570500E3897F /* mudband_ui.m */,
 				FB418B3F2D165A3000E3897F /* mudband_ui_enroll.m */,
+				FB987CFD2D69343700FC2BF9 /* mudband_ui_confmgr.m */,
 				FB418B432D166CAB00E3897F /* mudband_ui_progconf.m */,
 				FB418B062D16570500E3897F /* Mud.band - Mesh VPN-Bridging-Header.h */,
 			);
@@ -573,6 +576,7 @@
 				FB418B392D16596600E3897F /* poly1305-donna.c in Sources */,
 				FB418B512D166E3600E3897F /* FileManagerExtension.swift in Sources */,
 				FB418B082D16570500E3897F /* mudband_ui.m in Sources */,
+				FB987CFE2D69343700FC2BF9 /* mudband_ui_confmgr.m in Sources */,
 				FBE9F1F22D4DD9E200E87EE3 /* strbuffer.c in Sources */,
 				FBE9F1F02D4DD9E200E87EE3 /* hashtable.c in Sources */,
 				FBE9F22A2D4DDFD800E87EE3 /* UiDashboardLinksListView.swift in Sources */,

@@ -43,6 +43,18 @@ struct UiDashboardStatusListView: View {
                 Text("Band name:")
                 Text(mAppModel.mBandName)
             }
+            if !mAppModel.mDeviceName.isEmpty {
+                HStack {
+                    Text("Device name:")
+                    Text(mAppModel.mDeviceName)
+                }
+            }
+            if !mAppModel.mPrivateIP.isEmpty {
+                HStack {
+                    Text("Private IP:")
+                    Text(mAppModel.mPrivateIP)
+                }
+            }
             Spacer().frame(height: 25)
             if mAppModel.mVPNStatusString == "Connected" {
                 Button("Disconnect") {

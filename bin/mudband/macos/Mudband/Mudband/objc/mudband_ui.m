@@ -117,4 +117,5 @@ mudband_ui_init(NSString *top_dir, NSString *enroll_dir, NSString *ui_logfile,
     AN(band_vl);
     mudband_ui_enroll_init();
     mudband_ui_progconf_init();
+    mudband_ui_confmgr_init();
 }
