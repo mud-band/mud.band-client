@@ -263,7 +263,9 @@ CNF_check_and_read(void)
 	ma2 = cnf_get_interface_remote_addr_by_obj(jroot);
 	if (strcmp(ma1, ma2) != 0) {
 		vtc_log(cnf_vl, 2,
-		    "Mapped address changed. Need to refresh the config.");
+		    "Mapped address changed (%s -> %s)."
+		    " Need to refresh the config.",
+		    ma1, ma2);
 		json_decref(jroot);
 		return (-4);
 	}
