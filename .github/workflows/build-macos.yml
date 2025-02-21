@@ -9,20 +9,23 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Install the Apple certificate and provisioning profile
+    - name: Install the Apple certificate and provisioning profiles.
       env:
         BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
         P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
-        BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+        BUILD_PROVISION_PROFILE_UI_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_UI_BASE64 }}
+        BUILD_PROVISION_PROFILE_TUNNEL_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_TUNNEL_BASE64 }}
         KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
       run: |
         # create variables
         CERT_PATH=$RUNNER_TEMP/build_certificate.p12
-        PP_PATH=$RUNNER_TEMP/build_pp.provisionprofile
+        PP_UI_PATH=$RUNNER_TEMP/build_pp_ui.provisionprofile
+        PP_TUNNEL_PATH=$RUNNER_TEMP/build_pp_tunnel.provisionprofile
         KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
         # import certificate and provisioning profile from secrets
         echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERT_PATH
-        echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+        echo -n "$BUILD_PROVISION_PROFILE_UI_BASE64" | base64 --decode -o $PP_UI_PATH
+        echo -n "$BUILD_PROVISION_PROFILE_TUNNEL_BASE64" | base64 --decode -o $PP_TUNNEL_PATH
         # create temporary keychain
         security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
         security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
@@ -33,7 +36,8 @@ jobs:
         security list-keychain -d user -s $KEYCHAIN_PATH
         # apply provisioning profile
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-        cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+        cp $PP_UI_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+        cp $PP_TUNNEL_PATH ~/Library/MobileDevice/Provisioning\ Profiles
     - name: Build on macos-latest
       run: |
         cd bin/mudband/macos/Mudband
