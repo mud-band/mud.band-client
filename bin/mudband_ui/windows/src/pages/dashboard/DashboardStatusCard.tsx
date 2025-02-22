@@ -54,27 +54,45 @@ export default function DashboardStatusCard() {
         description: `BANDEC_00721: Failed to get tunnel status: ${err}`
       }))
 
-    invoke<string>("mudband_ui_get_active_conf")
-      .then(resp => {
-        const resp_json = JSON.parse(resp) as {
-          status: number,
-          msg?: string,
-          conf?: {
-            interface: {
-              name: string,
-              private_ip: string
+    const checkActiveConf = (): Promise<boolean> => {
+      return invoke<string>("mudband_ui_get_active_conf")
+        .then(resp => {
+          const resp_json = JSON.parse(resp) as {
+            status: number,
+            msg?: string,
+            conf?: {
+              interface: {
+                name: string,
+                private_ip: string
+              }
             }
           }
-        }
-        if (resp_json.status === 200 && resp_json.conf) {
-          setActiveConf(resp_json.conf)
-        }
-      })
-      .catch(err => toast({
-        variant: "destructive",
-        title: "Error",
-        description: `BANDEC_00745: Failed to get active configuration: ${err}`
-      }))
+          if (resp_json.status === 200 && resp_json.conf) {
+            setActiveConf(resp_json.conf)
+            return true
+          }
+          return false
+        })
+        .catch(err => {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: `BANDEC_00745: Failed to get active configuration: ${err}`
+          })
+          return false
+        })
+    }
+    
+    checkActiveConf()
+
+    const intervalId = setInterval(async () => {
+      const success = await checkActiveConf()
+      if (success) {
+        clearInterval(intervalId)
+      }
+    }, 5000)
+
+    return () => clearInterval(intervalId)
   }, [])
 
   return (
