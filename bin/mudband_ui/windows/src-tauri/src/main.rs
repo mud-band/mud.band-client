@@ -29,7 +29,7 @@ fn get_config_path() -> std::path::PathBuf {
 
     let mut config_dir = std::path::PathBuf::from(program_data);
     config_dir.push("Mudfish Networks");
-    config_dir.push("Mudband");
+    config_dir.push("Mud.band");
     config_dir.push("ui");
     fs::create_dir_all(&config_dir).unwrap_or_default();
     config_dir.push("mudband_state.json");

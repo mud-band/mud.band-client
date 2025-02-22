@@ -403,7 +403,7 @@ ODR_confdir(void)
 	static char cdir[ODR_BUFSIZ];
 
 	hdir = ODR_homedir();
-	ODR_snprintf(cdir, sizeof(cdir), "%s\\Mudfish Networks\\Mudband", hdir);
+	ODR_snprintf(cdir, sizeof(cdir), "%s\\Mudfish Networks\\Mud.band", hdir);
 	return (cdir);
 }
 
