@@ -396,7 +396,8 @@ CNF_get_etag(json_t *jroot)
 
     AN(jroot);
     jetag = json_object_get(jroot, "etag");
-    AN(jetag);
+    if (jetag == NULL)
+        return (NULL);
     assert(json_is_string(jetag));
     if (json_string_length(jetag) == 0)
         return (NULL);

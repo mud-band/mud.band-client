@@ -234,7 +234,10 @@ Java_band_mud_android_JniWrapper_getBandConfigEtag(JNIEnv *env, jobject thiz)
     if (r == -1)
         return (NULL);
     etag = CNF_get_etag(cnf->jroot);
-    AN(etag);
+    if (etag == NULL) {
+        CNF_rel(&cnf);
+	return (NULL);
+    }
     s = (*env)->NewStringUTF(env, etag);
     CNF_rel(&cnf);
     return (s);
