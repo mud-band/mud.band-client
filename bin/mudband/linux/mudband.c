@@ -2007,6 +2007,7 @@ usage(void)
 	fprintf(stderr, FMT_LONG, "   --pid <pid_path>");
 	fprintf(stderr, FMT, "-S, --syslog", "Log to the syslog.");
 	fprintf(stderr, FMT, "-v", "Print the version.");
+	fprintf(stderr, FMT, "-V", "Be verbose");
 	fprintf(stderr, FMT, "-W, --webcli", "Get a URL to access WebCLI.");
 	exit(1);
 #undef FMT
@@ -2031,6 +2032,7 @@ main(int argc, char *argv[])
 		{ "help", vopt_long_no_argument, NULL, 'h' },
 		{ "pid", vopt_long_required_argument, NULL, 'P' },
 		{ "syslog", vopt_long_no_argument, NULL, 'S' },
+		{ "verbose", vopt_long_no_argument, NULL, 'V' },
 		{ "webcli", vopt_long_no_argument, NULL, 'W' },
 		{ NULL, 0, NULL, 0 }
 	};
@@ -2047,7 +2049,7 @@ main(int argc, char *argv[])
 	const char *n_arg = NULL;
 	const char *P_arg = NULL;
 	unsigned D_flag = 0;
-	const char *opt = "b:De:hn:P:SvW";
+	const char *opt = "b:De:hn:P:SvVW";
 
 	orig_argc = argc;
 	orig_argv = argv;
@@ -2096,6 +2098,9 @@ main(int argc, char *argv[])
 		case 'v':
 			print_version();
 			/* NOTREACHED */
+		case 'V':
+			vtc_verbose++;
+			break;
 		case 'W':
 			W_flag = 1 - W_flag;
 			break;

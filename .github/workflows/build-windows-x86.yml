@@ -1,4 +1,4 @@
-name: Build on Windows
+name: Build on Windows (x86)
 on:
   push:
     branches: [ "main" ]
@@ -14,7 +14,7 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x86
-    - name: Build with nmake
+    - name: Build mudband
       run: |
         cd bin/mudband/win32
         nmake -f NMakefile clean

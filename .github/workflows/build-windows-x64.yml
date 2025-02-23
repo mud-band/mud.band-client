@@ -1,0 +1,26 @@
+name: Build on Windows (x64)
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+    - name: Set up MSVC environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+    - name: Build mudband
+      run: |
+        cd bin/mudband/win32
+        nmake -f NMakefile.x64 clean
+        nmake -f NMakefile.x64
+    - name: Build mudband_service
+      run: |
+        cd bin/mudband_service/windows
+        nmake -f NMakefile.x64 clean
+        nmake -f NMakefile.x64

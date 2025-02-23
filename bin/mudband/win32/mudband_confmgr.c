@@ -626,12 +626,13 @@ CNF_fetch(const char *fetch_type)
 	assert(json_is_string(jband_jwt));
 	ODR_bzero(&req, sizeof(req));
 	req.f_need_resp_status = 1;
-	req.f_need_resp_etag = 1;
+	req.f_need_resp_mudband_etag = 1;
 	req.vl = cnf_vl;
 	req.server = "www.mud.band:443";
 	req.domain = "www.mud.band";
 	req.url = "/api/band/conf";
 	hdrslen = ODR_snprintf(hdrs, sizeof(hdrs),
+	    "Accept-Encoding: gzip\r\n"
 	    "Authorization: %s\r\n"
 	    "Content-Type: application/json\r\n"
 	    "Host: www.mud.band\r\n", json_string_value(jband_jwt));
@@ -719,8 +720,9 @@ CNF_fetch(const char *fetch_type)
 	jconf = json_object_get(jroot, "conf");
 	AN(jconf);
 	assert(json_is_object(jconf));
-	if (req.resp_etag[0] != '\0')
-		json_object_set_new(jconf, "etag", json_string(req.resp_etag));
+	if (req.resp_mudband_etag[0] != '\0')
+		json_object_set_new(jconf, "etag",
+		    json_string(req.resp_mudband_etag));
 	ODR_snprintf(filepath, sizeof(filepath), "%s/conf_%s.json",
 	    band_confdir_enroll, MBE_get_uuidstr());
 	r = cnf_file_write(filepath, jconf);

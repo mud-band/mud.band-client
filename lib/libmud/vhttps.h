@@ -56,6 +56,8 @@ struct vhttps_internal {
 	unsigned		bodylen;
 	char			bodylenstr[20];
 	char			chunklen[20];
+	char			*gzipbody;
+	unsigned		gzipbodylen;
 	int			timeout;
 
 #define VHTTPS_MAX_HDR		50
@@ -65,7 +67,7 @@ struct vhttps_internal {
 
 struct vhttps_req {
 	struct vtclog		*vl;
-	unsigned		f_need_resp_etag : 1,
+	unsigned		f_need_resp_mudband_etag : 1,
 				f_need_resp_status : 1,
 				f_unused : 30;
 	const char		*server;
@@ -75,7 +77,7 @@ struct vhttps_req {
 	const char		*body;
 	int			bodylen;
 	int			resp_status;
-	char			resp_etag[64];
+	char			resp_mudband_etag[64];
 };
 
 void	VHTTPS_init(void);
