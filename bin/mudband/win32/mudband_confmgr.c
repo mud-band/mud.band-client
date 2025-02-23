@@ -611,7 +611,7 @@ CNF_fetch(const char *fetch_type)
 	struct vhttps_req req;
 	json_t *jroot, *jband_jwt, *jstatus, *jconf;
 	json_error_t jerror;
-	size_t resp_bodylen = 100 * 1024;
+	size_t resp_bodylen = 1024 * 1024;
 	int hdrslen, req_bodylen, r;
 	char hdrs[ODR_BUFSIZ], *resp_body;
 	char req_body[ODR_BUFSIZ], filepath[ODR_BUFSIZ];
