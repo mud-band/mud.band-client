@@ -1,6 +1,6 @@
 [package]
 name = "mudband_ui"
-version = "0.1.0"
+version = "0.1.1"
 description = "Your Band, Your World! Unite devices with a band!"
 authors = ["Mudfish Networks <contact@mud.band>"]
 edition = "2021"

@@ -2,7 +2,7 @@
 
 TOPDIR=../../bin/mudband_ui/linux
 BUNDLEDIR=${TOPDIR}/src-tauri/target/release/bundle
-VERSION=0.1.0
+VERSION=0.1.1
 
 (cd ${TOPDIR} && make build)
 

@@ -1,4 +1,4 @@
-set VERSION=0.1.0
+set VERSION=0.1.1
 
 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
 cd ..
@@ -26,6 +26,6 @@ signtool sign /fd sha256 /n Mudfish /t http://timestamp.comodoca.com/authenticod
 cd ..\..\..\..\..\windows\wix
 dotnet build
 signtool sign /fd sha256 /n Mudfish /t http://timestamp.comodoca.com/authenticode bin\x64\Debug\mudband.msi
-copy bin\x64\Debug\mudband.msi ..\..\..\dist\releases\%VERSION%\windows\x64\mudband-ui-0.1.0-windows-x64.msi
-copy bin\x64\Debug\mudband.wixpdb ..\..\..\dist\releases\%VERSION%\windows\x64\mudband-ui-0.1.0-windows-x64.wixpdb
+copy bin\x64\Debug\mudband.msi ..\..\..\dist\releases\%VERSION%\windows\x64\mudband-ui-%VERSION%-windows-x64.msi
+copy bin\x64\Debug\mudband.wixpdb ..\..\..\dist\releases\%VERSION%\windows\x64\mudband-ui-%VERSION%-windows-x64.wixpdb
 
