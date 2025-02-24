@@ -39,6 +39,7 @@
 #include "odr_pthread.h"
 #include "vct.h"
 #include "vhttps.h"
+#include "vgz.h"
 #include "vsb.h"
 #include "vsock.h"
 #include "vtc_log.h"
@@ -350,7 +351,7 @@ vhttps_allocCommon(struct vtclog *vl)
 	ALLOC_OBJ(hp, VHTTPS_MAGIC);
 	hp->fd = -1;
 	hp->timeout = 3;
-	hp->nrxbuf = 512 * 1024;
+	hp->nrxbuf = 1024 * 1024;
 	hp->vsb = vsb_newauto();
 	hp->rxbuf = malloc(hp->nrxbuf);		/* XXX */
 	AN(hp->rxbuf);
@@ -397,13 +398,80 @@ vhttps_free(struct vhttps_internal *hp)
 	if (hp == NULL)
 		return;
 	free(hp->rxbuf);
+	free(hp->gzipbody);
 	vsb_delete(hp->vsb);
 	free(hp);
+}
+
+static int
+vhttps_rxbody_gzip(struct vhttps_internal *hp)
+{
+	z_stream strm;
+	Bytef *out = NULL;
+	uLong outlen, new_outlen;
+	int ret;
+
+	if (hp->bodylen == 0)
+		return (0);
+	outlen = hp->bodylen * 10;
+	while (outlen < (1UL << 30)) {
+		memset(&strm, 0, sizeof(strm));
+		ret = inflateInit2(&strm, 31); // 31 = 15 (max window bits) + 16 (gzip format)
+		if (ret != Z_OK) {
+			vtc_log(hp->vl, 1,
+			    "BANDEC_00796: inflateInit2 failed: %d", ret);
+			return (-1);
+		}
+		if (out != NULL) {
+			free(out);
+			new_outlen = outlen * 10;
+			if (new_outlen < outlen) {
+				vtc_log(hp->vl, 1,
+				    "BANDEC_00797: Buffer size overflow");
+				inflateEnd(&strm);
+				return (-1);
+			}
+			outlen = new_outlen;
+		}
+		out = (Bytef *)malloc(outlen);
+		if (out == NULL) {
+			inflateEnd(&strm);
+			vtc_log(hp->vl, 1,
+			    "BANDEC_00798: Failed to allocate decompression"
+			    " buffer");
+			return (-1);
+		}
+		strm.next_in = (Bytef *)hp->body;
+		strm.avail_in = hp->bodylen;
+		strm.next_out = out;
+		strm.avail_out = outlen;
+		ret = inflate(&strm, Z_FINISH);
+		if (ret == Z_BUF_ERROR) {
+			inflateEnd(&strm);
+			continue;
+		}
+		break;
+	}
+	if (ret != Z_STREAM_END) {
+		free(out);
+		inflateEnd(&strm);
+		vtc_log(hp->vl, 1, "BANDEC_00799: inflate failed: %d", ret);
+		return (-1);
+	}
+	outlen = strm.total_out;
+	hp->gzipbody = (char *)out;
+	hp->gzipbodylen = (unsigned)outlen;
+	hp->body = hp->gzipbody;
+	hp->bodylen = hp->gzipbodylen;
+	sprintf(hp->bodylenstr, "%d", hp->bodylen);
+	inflateEnd(&strm);
+	return (0);
 }
 
 int
 vhttps_rxbody(struct vhttps_internal *hp)
 {
+	char *p;
 
 	if (vhttps_rxhdr(hp) != 0) {
 		vtc_log(hp->vl, 1, "BANDEC_00017: vhttps_rxhdr error.");
@@ -415,6 +483,9 @@ vhttps_rxbody(struct vhttps_internal *hp)
 		vhttps_swallow_body(hp, hp->resp, 1);
 	else
 		vhttps_swallow_body(hp, hp->resp, 0);
+	p = vhttps_find_header(hp->resp, "content-encoding");
+	if (p != NULL && strstr(p, "gzip") != NULL)
+		return (vhttps_rxbody_gzip(hp));
 	return (0);
 }
 
@@ -561,13 +632,13 @@ VHTTPS_post(struct vhttps_req *req, char *respbuf, size_t *resplen)
 		memcpy(respbuf, hp->body, hp->bodylen);
 		if (req->f_need_resp_status)
 			req->resp_status = atoi(hp->resp[1]);
-		if (req->f_need_resp_etag) {
+		if (req->f_need_resp_mudband_etag) {
 			char *p;
 
-			p = vhttps_find_header(hp->resp, "etag");
+			p = vhttps_find_header(hp->resp, "mudband-etag");
 			if (p != NULL) {
-				ODR_snprintf(req->resp_etag,
-				    sizeof(req->resp_etag), "%s", p);
+				ODR_snprintf(req->resp_mudband_etag,
+				    sizeof(req->resp_mudband_etag), "%s", p);
 			}
 		}
 		vhttps_free(hp);

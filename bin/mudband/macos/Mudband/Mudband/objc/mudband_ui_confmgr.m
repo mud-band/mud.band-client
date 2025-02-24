@@ -45,14 +45,14 @@ mudband_ui_confmgr_read(const char *filename)
 
     snprintf(filepath, sizeof(filepath), "%s/%s", band_enroll_dir, filename);
     if (access(filepath, F_OK) == -1) {
-        vtc_log(confmgr_vl, 0, "BANDEC_XXXXX: File not found: %s",
+        vtc_log(confmgr_vl, 0, "BANDEC_00802: File not found: %s",
             filepath);
         return (NULL);
     }
     jroot = json_load_file(filepath, 0, &jerror);
     if (jroot == NULL) {
         vtc_log(confmgr_vl, 1,
-            "BANDEC_XXXXX: error while reading JSON format:"
+            "BANDEC_00803: error while reading JSON format:"
             " on line %d: %s", jerror.line, jerror.text);
         return (NULL);
     }

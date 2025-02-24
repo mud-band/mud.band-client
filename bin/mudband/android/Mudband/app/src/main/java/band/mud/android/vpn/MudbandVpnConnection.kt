@@ -131,7 +131,7 @@ class MudbandVpnConnection(
                 }
                 return fetchResult(-4, "BANDEC_00178: Unexpected status ${response.code}")
             }
-            val etag = response.headers["Etag"]
+            val etag = response.headers["Mudband-ETag"]
             val responseData = response.body?.string()
                 ?: return fetchResult(-2, "BANDEC_00179: Failed to get the response body.")
             val jsonWithUnknownKeys = Json { ignoreUnknownKeys = true }

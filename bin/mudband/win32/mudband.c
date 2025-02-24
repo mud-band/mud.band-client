@@ -2153,6 +2153,7 @@ usage(void)
 	    "Specify the device name.");
 	fprintf(stderr, FMT_LONG, "--name <device_name>");
 	fprintf(stderr, FMT, "-v", "Print the version.");
+	fprintf(stderr, FMT, "-V", "Be verbose.");
 	fprintf(stderr, FMT, "-W, --webcli", "Get a URL to access WebCLI.");
 	exit(1);
 #undef FMT
@@ -2174,6 +2175,7 @@ main(int argc, char *argv[])
 		{ "enroll-secret", vopt_long_required_argument, NULL, '^' },
 		{ "enroll-token", vopt_long_required_argument, NULL, 'e' },
 		{ "help", vopt_long_no_argument, NULL, 'h' },
+		{ "verbose", vopt_long_no_argument, NULL, 'V' },
 		{ "webcli", vopt_long_no_argument, NULL, 'W' },
 		{ NULL, 0, NULL, 0 }
 	};
@@ -2189,7 +2191,7 @@ main(int argc, char *argv[])
 	const char *enroll_secret_arg = "";
 	const char *n_arg = NULL;
 	unsigned D_flag = 0;
-	const char *opt = "b:e:hn:vW";
+	const char *opt = "b:e:hn:vVW";
 
 	orig_argc = argc;
 	orig_argv = argv;
@@ -2229,6 +2231,9 @@ main(int argc, char *argv[])
 		case 'v':
 			print_version();
 			/* NOTREACHED */
+		case 'V':
+			vtc_verbose++;
+			break;
 		case 'W':
 			W_flag = 1 - W_flag;
 			break;

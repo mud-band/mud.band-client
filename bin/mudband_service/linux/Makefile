@@ -6,7 +6,7 @@ CFLAGS = -g -O0 -Wall -Wstrict-prototypes -Wmissing-prototypes		\
 	 -Wchar-subscripts -Winline -Wnested-externs -Wredundant-decls	\
 	 -Wformat							\
 	 -I. -I../../../lib/libjansson -I../../../lib/libmud \
-	 -I../../mudband/common
+	 -I../../../lib/libgz -I../../mudband/common
 DEFINES = -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 OBJS = \
 	../../../lib/libjansson/dump.o \
@@ -20,6 +20,17 @@ OBJS = \
 	../../../lib/libjansson/strconv.o \
 	../../../lib/libjansson/utf.o \
 	../../../lib/libjansson/value.o \
+	../../../lib/libgz/adler32.o \
+	../../../lib/libgz/compress.o \
+	../../../lib/libgz/crc32.o \
+	../../../lib/libgz/deflate.o \
+	../../../lib/libgz/infback.o \
+	../../../lib/libgz/inffast.o \
+	../../../lib/libgz/inflate.o \
+	../../../lib/libgz/inftrees.o \
+	../../../lib/libgz/trees.o \
+	../../../lib/libgz/uncompr.o \
+	../../../lib/libgz/zutil.o \
 	../../../lib/libmud/linux/vpf.o \
 	../../../lib/libmud/odr.o \
 	../../../lib/libmud/odr_pthread.o \

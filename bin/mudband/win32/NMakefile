@@ -2,7 +2,7 @@
 # NMakefile to build the mudband.
 #
 INCLUDE_DIRS = -I. -I..\common -I..\..\..\lib\libmud \
-	-I..\..\..\lib\libjansson \
+	-I..\..\..\lib\libgz -I..\..\..\lib\libjansson \
 	-I..\..\..\contrib\prebuilt\openssl\x86\include \
 	-I..\..\..\contrib\prebuilt\wintun\include
 LIBS= advapi32.lib crypt32.lib iphlpapi.lib ole32.lib shell32.lib \
@@ -46,6 +46,17 @@ OBJS=	\
         ..\..\..\lib\libjansson\strconv.obj \
         ..\..\..\lib\libjansson\utf.obj \
         ..\..\..\lib\libjansson\value.obj \
+	..\..\..\lib\libgz\adler32.obj \
+	..\..\..\lib\libgz\compress.obj \
+	..\..\..\lib\libgz\crc32.obj \
+	..\..\..\lib\libgz\deflate.obj \
+	..\..\..\lib\libgz\infback.obj \
+	..\..\..\lib\libgz\inffast.obj \
+	..\..\..\lib\libgz\inflate.obj \
+	..\..\..\lib\libgz\inftrees.obj \
+	..\..\..\lib\libgz\trees.obj \
+	..\..\..\lib\libgz\uncompr.obj \
+	..\..\..\lib\libgz\zutil.obj \
         ..\..\..\lib\libmud\odr.obj \
         ..\..\..\lib\libmud\odr_pthread.obj \
         ..\..\..\lib\libmud\vct.obj \
