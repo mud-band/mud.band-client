@@ -206,8 +206,12 @@ struct stun_client {
         int		test_i3_success;
         int		test_ii_success;
         int		test_ii_fail_no_ip_change;
+        int		test_ii_fail_parse_error;
+        int		test_ii_fail_wrong_test_num;
         int		test_iii_success;
         int		test_iii_fail_no_port_change;
+        int		test_iii_fail_parse_error;
+        int		test_iii_fail_wrong_test_num;
         int		preserve_port;
         int		hairpin;
         int		mapped_same_ip;
@@ -1039,10 +1043,18 @@ stun_sm_test_ii_recv(struct stun_client *sc)
     stun_recvmsg(sc->fd, msg, &msgLen, &from.addr, &from.port);
     memset(&resp, 0, sizeof(struct stun_msg));
     r = stun_parsemsg(msg, msgLen, &resp);
-    if (r == -1)
+    if (r == -1) {
         vtc_log(stunc_vl, 0, "BANDEC_00771: stun_parsemsg() failed.");
-
-    assert(resp.msg_hdr.id.octet[0] == 2);
+	sc->result.test_ii_fail_parse_error = 1;
+	sc->step = STUN_STEP_ERROR;
+	return (STUN_SM_RETURN_CONTINUE);
+    }
+    if (resp.msg_hdr.id.octet[0] != 2) {
+        vtc_log(stunc_vl, 0, "BANDEC_00809: Wrong test_num returned.");
+	sc->result.test_ii_fail_wrong_test_num = 1;
+	sc->step = STUN_STEP_ERROR;
+	return (STUN_SM_RETURN_CONTINUE);
+    }
 
     /* Test II completed.  Move to the next */
     if (sc->dst.addr == from.addr)
@@ -1084,10 +1096,18 @@ stun_sm_test_iii_recv(struct stun_client *sc)
     stun_recvmsg(sc->fd, msg, &msglen, &from.addr, &from.port);
     memset(&resp, 0, sizeof(struct stun_msg));
     r = stun_parsemsg(msg, msglen, &resp);
-    if (r == -1)
+    if (r == -1) {
         vtc_log(stunc_vl, 0, "BANDEC_00772: stun_parsemsg() failed.");
-
-    assert(resp.msg_hdr.id.octet[0] == 3);
+	sc->result.test_iii_fail_parse_error = 1;
+	sc->step = STUN_STEP_ERROR;
+	return (STUN_SM_RETURN_CONTINUE);
+    }
+    if (resp.msg_hdr.id.octet[0] != 3) {
+        vtc_log(stunc_vl, 0, "BANDEC_00810: Wrong test_num returned.");
+	sc->result.test_iii_fail_wrong_test_num = 1;
+	sc->step = STUN_STEP_ERROR;
+	return (STUN_SM_RETURN_CONTINUE);
+    }
 
     /* Test III completed.  Done. */
     if (sc->dst.port == from.port)
@@ -1310,6 +1330,10 @@ stun_client_get_nattype(struct stun_client *sc)
 {
 
     if (sc->result.test_ii_fail_no_ip_change ||
+	sc->result.test_ii_fail_parse_error ||
+	sc->result.test_ii_fail_wrong_test_num ||
+	sc->result.test_iii_fail_parse_error ||
+	sc->result.test_iii_fail_wrong_test_num ||
         sc->result.test_iii_fail_no_port_change) {
         /*
          * If we're here, it means something is wrong while performing
@@ -1395,22 +1419,28 @@ STUNC_test(void)
             STUNC_nattypestr(nattype),
             inet_ntoa(in));
 
-    if (in.s_addr == INADDR_ANY) {
+    if (in.s_addr == INADDR_ANY || nattype == STUN_NATTYPE_FAILURE) {
         vtc_log(stunc_vl, 1,
-		"BANDEC_00774: STUN client test failed."
-		" No mapped address found.");
+		"BANDEC_00774: STUN client test failed.");
 	vtc_log(stunc_vl, 1, 
 		"BANDEC_00775: test results:"
-		" i=%d i2=%d i3=%d ii=%d ii_no_ip=%d iii=%d"
-		" iii_no_port=%d is_nat=%d preserve_port=%d hairpin=%d"
+		" i=%d i2=%d i3=%d"
+		" ii=%d ii_no_ip=%d ii_parse_error=%d ii_test_num=%d"
+		" iii=%d"
+		" iii_no_port=%d iii_parse_error=%d iii_test_num=%d"
+		" is_nat=%d preserve_port=%d hairpin=%d"
 		" mapped_same_ip=%d",
 		sc.result.test_i_success,
 		sc.result.test_i2_success, 
 		sc.result.test_i3_success,
 		sc.result.test_ii_success,
 		sc.result.test_ii_fail_no_ip_change,
+		sc.result.test_ii_fail_parse_error,
+		sc.result.test_ii_fail_wrong_test_num,
 		sc.result.test_iii_success,
 		sc.result.test_iii_fail_no_port_change,
+		sc.result.test_iii_fail_parse_error,
+		sc.result.test_iii_fail_wrong_test_num,
 		sc.result.is_nat,
 		sc.result.preserve_port,
 		sc.result.hairpin,

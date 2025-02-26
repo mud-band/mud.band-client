@@ -198,7 +198,7 @@ fun UiDashboardStatusScreen(
                 if (data != null) {
                     connectMfaAlertDialogURL.value = data.getString("msg").toString()
                 } else {
-                    MudbandLog.e("BANDEC_XXXX: MFA required but no SSO_URL found.")
+                    MudbandLog.e("BANDEC_00808: MFA required but no SSO_URL found.")
                 }
             }
 

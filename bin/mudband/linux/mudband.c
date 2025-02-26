@@ -507,7 +507,10 @@ wireguard_iface_peer_output(struct wireguard_device *device, struct pbuf *q,
 	l = sendto(device->udp_fd, buf, buflen, 0,
 	    (struct sockaddr *)&sin, sizeof(sin));
 	if (l == -1) {
-		TODO();
+		vtc_log(band_vl, 0,
+		    "BANDEC_00815: sendto(2) to %s:%d failed: %d %s",
+		    inet_ntoa(sin.sin_addr), ntohs(sin.sin_port),
+		    errno, strerror(errno));
 		return (-1);
 	}
 	assert(l == buflen);
