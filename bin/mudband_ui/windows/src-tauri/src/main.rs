@@ -2,7 +2,7 @@
 
 use std::sync::Mutex;
 use std::fs;
-use std::io::{Write, Read, BufRead};
+use std::io::{Write, BufRead};
 use serde::{Deserialize, Serialize};
 use tauri::Manager;
 use std::io::BufReader;
