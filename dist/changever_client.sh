@@ -36,8 +36,11 @@ changeit ../bin/mudband/win32/NMakefile
 changeit ../bin/mudband/win32/NMakefile.x64
 changeit ../bin/mudband_service/linux/debian/changelog
 changeit ../bin/mudband_service/windows/NMakefile.x64
+changeit ../bin/mudband_ui/linux/package.json
 changeit ../bin/mudband_ui/linux/src-tauri/Cargo.toml
 changeit ../bin/mudband_ui/linux/src-tauri/tauri.conf.json
+changeit ../bin/mudband_ui/windows/NMakefile
+changeit ../bin/mudband_ui/windows/package.json
 changeit ../bin/mudband_ui/windows/src-tauri/Cargo.toml
 changeit ../bin/mudband_ui/windows/src-tauri/tauri.conf.json
 
@@ -49,5 +52,6 @@ changeit linux/package_x86_64-musl.sh
 changeit windows/package_single_x64.bat
 changeit windows/package_single_x86.bat
 changeit windows/package_ui_x64.bat
+changeit windows/wix/package.wxs
 
 changever ../bin/mudband/android/Mudband/app/build.gradle.kts
