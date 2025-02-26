@@ -1,4 +1,4 @@
-set VERSION=0.1.1
+set VERSION=0.1.2
 
 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
 cd ..
