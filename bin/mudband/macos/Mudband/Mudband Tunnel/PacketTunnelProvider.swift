@@ -132,7 +132,7 @@ import SwiftyJSON
                             return
                         }
                     }
-                    let etag = resp.response?.allHeaderFields["Mudband-ETag"] as? String
+                    let etag = resp.response?.allHeaderFields["mudband-etag"] as? String
                     let rv = mudband_tunnel_confmgr_parse_response(etag, resp_body)
                     if rv != 0 {
                         mudband_tunnel_log(0, "BANDEC_00338: mudband_tunnel_confmgr_parse_response() failed.")
