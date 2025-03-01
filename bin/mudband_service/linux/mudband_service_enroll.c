@@ -388,6 +388,9 @@ MBE_unenroll(const char *band_uuid)
 	ODR_snprintf(filepath, sizeof(filepath), "%s/conf_%s.json",
 	    band_confdir_enroll, band_uuid);
 	mbe_file_delete(filepath);
+	ODR_snprintf(filepath, sizeof(filepath), "%s/admin_%s.json",
+	    band_confdir_admin, band_uuid);
+	mbe_file_delete(filepath);
 	MPC_remove_default_band_uuid();
 	return (0);
 }

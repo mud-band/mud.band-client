@@ -68,6 +68,7 @@ OBJS=\
     ..\..\mudband\common\crypto\x25519.obj \
     ..\..\mudband\common\crypto.obj \
     ..\..\mudband\common\wireguard.obj \
+    mudband_service_bandadmin.obj \
     mudband_service_confmgr.obj \
     mudband_service_enroll.obj \
     mudband_service_progconf.obj \

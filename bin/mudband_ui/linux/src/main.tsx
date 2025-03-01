@@ -10,6 +10,7 @@ import {
 import LogoPage, { loader as loaderLogoPage } from "./pages/LogoPage";
 import RootPage from "./pages/RootPage";
 import TermsOfServicePage from "./pages/tos/TermsOfServicePage";
+import BandCreateAsGuestPage from "./pages/band/BandCreateAsGuestPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import EnrollmentNewPage from "./pages/enrollment/EnrollmentNewPage";
 import EnrollmentIntroPage from "./pages/enrollment/EnrollmentIntroPage";
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
         index: true,
         element: <LogoPage />,
         loader: loaderLogoPage
+      },
+      {
+        path: "/band/create_as_guest",
+        element: <BandCreateAsGuestPage />
       },
       {
         path: "/dashboard",

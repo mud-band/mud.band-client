@@ -32,8 +32,13 @@
 /* mudband_service.c */
 extern char *band_confdir_enroll;
 extern char *band_confdir_root;
+extern char *band_confdir_admin;
 struct vtclog;
 extern struct vtclog *vl;
+
+/* mudband_service_bandadmin.c */
+int	MBA_save(const char *band_uuid, const char *jwt);
+json_t *MBA_get(void);
 
 /* mudband_service_cmdctl.c */
 int	CMD_execute(int wait, const char *fmt, ...);
