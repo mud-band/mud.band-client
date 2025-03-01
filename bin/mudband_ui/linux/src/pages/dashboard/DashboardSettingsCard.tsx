@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator"
 import { useNavigate } from "react-router-dom"
 import EnrollmentNewDialog from "../enrollment/EnrollmentNewDialog"
 import EnrollmentChangeDialog from "../enrollment/EnrollmentChangeDialog"
+import BandCreateAsGuestDialog from "../band/BandCreateAsGuestDialog"
 import React from "react"
 import { invoke } from "@tauri-apps/api/tauri"
 import { useToast } from "@/hooks/use-toast"
@@ -31,6 +32,7 @@ export default function DashboardSettingsCard() {
   const navigate = useNavigate()
   const [newDialogOpen, setNewDialogOpen] = React.useState(false)
   const [changeDialogOpen, setChangeDialogOpen] = React.useState(false)
+  const [createBandDialogOpen, setCreateBandDialogOpen] = React.useState(false)
   const [unenrollDialogOpen, setUnenrollDialogOpen] = React.useState(false)
   const [isTunnelRunning, setIsTunnelRunning] = React.useState(false)
   const [isUnenrolling, setIsUnenrolling] = React.useState(false)
@@ -168,6 +170,26 @@ export default function DashboardSettingsCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">Band</h3>
+          <div className="space-y-2">
+            <Dialog open={createBandDialogOpen} onOpenChange={setCreateBandDialogOpen}>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  disabled={isTunnelRunning}
+                >
+                  Create Band as Guest
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <BandCreateAsGuestDialog open={createBandDialogOpen} onOpenChange={setCreateBandDialogOpen} onSuccess={() => setCreateBandDialogOpen(false)} />
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+        <Separator className="my-4" />
         <div className="space-y-4">
           <h3 className="text-lg font-medium">Enrollment</h3>
           <div className="space-y-2">
