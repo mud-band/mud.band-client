@@ -1,10 +1,11 @@
-/*-
- * Copyright (c) 2022 Weongyo Jeong <weongyo@gmail.com>
+/*
+ * Copyright (c) 2024 Weongyo Jeong (weongyo@gmail.com)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
@@ -24,42 +25,56 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _MUDBAND_SERVICE_H_
-#define	_MUDBAND_SERVICE_H_
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <direct.h>
+#include <io.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "jansson.h"
+#include "odr.h"
+#include "vassert.h"
+#include "vhttps.h"
+#include "vtc_log.h"
 
-/* mudband_service.c */
-extern char *band_confdir_enroll;
-extern char *band_confdir_root;
-extern char *band_confdir_admin;
-struct vtclog;
-extern struct vtclog *vl;
+#include "mudband_service.h"
 
-/* mudband_service_bandadmin.c */
-json_t *MBA_get(void);
-int	MBA_save(const char *band_uuid, const char *jwt);
+json_t *
+MBA_get(void)
+{
+	char filepath[ODR_BUFSIZ];
+	json_t *root;
+	const char *default_band_uuid;
 
-/* mudband_service_cmdctl.c */
-int	CMD_execute(int wait, const char *fmt, ...);
-void	CMD_init(void);
+	default_band_uuid = MPC_get_default_band_uuid();
+	if (default_band_uuid == NULL)
+		return (NULL);
+	ODR_snprintf(filepath, sizeof(filepath), "%s/admin_%s.json",
+	    band_confdir_admin, default_band_uuid);
+	root = json_load_file(filepath, 0, NULL);
+	if (root == NULL) {
+		vtc_log(vl, 0, "BANDEC_XXXXX: Failed to load band admin file.");
+		return (NULL);
+	}
+	return (root);
+}
 
-/* mudband_service_confmgr.c */
-json_t *CNF_get_active_conf(void);
+int
+MBA_save(const char *band_uuid, const char *jwt)
+{
+	char filepath[ODR_BUFSIZ];
+	json_t *root;
 
-/* mudband_service_enroll.c */
-int	MBE_get_enrollment_count(void);
-ssize_t	MBE_enroll(char *out, size_t outmax,const char *token,
-	    const char *name, const char *secret);
-json_t *MBE_get_active_band(void);
-json_t *MBE_get_enrollment_list(void);
-int	MBE_unenroll(const char *band_uuid);
-
-/* mudband_service_progconf.c */
-void	MPC_init(void);
-void	MPC_set_default_band_uuid(const char *band_uuid);
-const char *
-	MPC_get_default_band_uuid(void);
-void	MPC_remove_default_band_uuid(void);
-
-#endif /* _MUDBAND_SERVICE_H_ */
+	ODR_snprintf(filepath, sizeof(filepath), "%s/admin_%s.json",
+	    band_confdir_admin, band_uuid);
+	root = json_object();
+	AN(root);
+	json_object_set_new(root, "band_uuid", json_string(band_uuid));
+	json_object_set_new(root, "jwt", json_string(jwt));
+	json_dump_file(root, filepath, 0);
+	json_decref(root);
+	return (0);
+}

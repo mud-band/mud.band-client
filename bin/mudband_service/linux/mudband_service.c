@@ -56,6 +56,7 @@
 #include "mudband_service.h"
 
 char *band_confdir_enroll;
+char *band_confdir_admin;
 char *band_confdir_root;
 struct vtclog *vl;
 
@@ -541,6 +542,80 @@ cmd_get_enrollment_list(char *out, size_t outmax)
 }
 
 static ssize_t
+cmd_get_band_admin(char *out, size_t outmax, json_t *root)
+{
+	json_t *response, *jroot;
+	ssize_t outlen = 0;	
+	char *p;
+
+	(void)root;
+
+	response = json_object();
+	assert(response != NULL);
+
+	jroot = MBA_get();
+	if (jroot == NULL) {
+		json_object_set_new(response, "status", json_integer(404));
+		json_object_set_new(response, "msg", json_string("Not found."));
+	} else {
+		json_object_set_new(response, "status", json_integer(200));
+		json_object_set(response, "band_admin", jroot);
+		json_decref(jroot);
+	}
+	p = json_dumps(response, 0);
+	assert(p != NULL);
+	outlen = snprintf(out, outmax, "%s", p);
+	free(p);
+	json_decref(response);
+	return (outlen);
+}
+
+static ssize_t
+cmd_save_band_admin(char *out, size_t outmax, json_t *root)
+{
+	json_t *args, *band_uuid, *jwt, *response;
+	ssize_t outlen = 0;
+	int rv;
+	char *p;
+
+	args = json_object_get(root, "args");
+	if (!args || !json_is_object(args)) {
+		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
+			"BANDEC_XXXXX: Invalid arguments for save_band_admin");
+		return (-1);
+	}
+
+	band_uuid = json_object_get(args, "band_uuid");
+	if (!band_uuid || !json_is_string(band_uuid)) {
+		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
+			"BANDEC_XXXXX: Missing or invalid band UUID");
+		return (-1);
+	}
+
+	jwt = json_object_get(args, "jwt");
+	if (!jwt || !json_is_string(jwt)) {
+		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
+			"BANDEC_XXXXX: Missing or invalid JWT");
+		return (-1);
+	}
+	rv = MBA_save(json_string_value(band_uuid), json_string_value(jwt));
+	assert(rv == 0);
+
+	response = json_object();
+	AN(response);
+	json_object_set_new(response, "status", json_integer(200));	
+	json_object_set_new(response, "msg", 
+		json_string("Band admin saved successfully"));
+
+	p = json_dumps(response, 0);
+	AN(p);
+	outlen = snprintf(out, outmax, "%s", p);
+	free(p);
+	json_decref(response);
+	return (outlen);
+}
+
+static ssize_t
 cmd_change_enrollment(char *out, size_t outmax, json_t *root)
 {
 	json_t *args, *band_uuid;
@@ -720,6 +795,10 @@ main_loop(int fd)
 			outlen = cmd_get_enrollment_list(out, outmax);
 		else if (strcmp(cmdval, "change_enrollment") == 0)
 			outlen = cmd_change_enrollment(out, outmax, root);
+		else if (strcmp(cmdval, "get_band_admin") == 0)
+			outlen = cmd_get_band_admin(out, outmax, root);
+		else if (strcmp(cmdval, "save_band_admin") == 0)
+			outlen = cmd_save_band_admin(out, outmax, root);
 		else {
 			vtc_log(vl, 0, "BANDEC_00560: Unknown command: %s",
 			    json_string_value(cmd));
@@ -838,6 +917,10 @@ init(const char *pidpath)
 	ODR_mkdir_recursive(edir);
 	band_confdir_enroll = ODR_strdup(edir);
 	AN(band_confdir_enroll);
+	ODR_snprintf(edir, sizeof(edir), "%s/admin", band_confdir_root);
+	ODR_mkdir_recursive(edir);
+	band_confdir_admin = ODR_strdup(edir);
+	AN(band_confdir_admin);
 
 	MPC_init();
 	check_mudband_binary();

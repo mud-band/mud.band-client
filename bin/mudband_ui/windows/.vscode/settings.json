@@ -1,11 +1,9 @@
 {
     "files.associations": {
-	"*.md": "markdown",
 	"in.h": "c",
 	"miniobj.h": "c",
 	"odr.h": "c",
-	"vpf.h": "c",
-	"crypto.h": "c"
+	"vpf.h": "c"
 },
     "C_Cpp.clang_format_fallbackStyle": "LLVM",
     "editor.insertSpaces": false,
@@ -27,6 +25,11 @@
         "*.o": true,
         "*.pdb": true,
         "*.swp": true,
+	"mudband_service.exe": true,
+	"mudband_service_msg.h": true,
+	"mudband_service_msg.rc": true,
+	"mudband_service_msg.res": true,
+	"MSG00409.bin": true,
         "TAGS": true
     }
 }

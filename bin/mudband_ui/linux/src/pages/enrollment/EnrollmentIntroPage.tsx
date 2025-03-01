@@ -11,6 +11,10 @@ export default function EnrollmentIntroPage() {
         await open('https://mud.band/')
     }
 
+    const handleBandCreateAsGuest = () => {
+        navigate('/band/create_as_guest')
+    }
+
     return (
       <div className="min-h-screen bg-gray-50">
         <nav className="bg-white shadow-sm p-2 flex items-center">
@@ -25,19 +29,35 @@ export default function EnrollmentIntroPage() {
               </AlertDescription>
           </Alert>
 
-          <div className="flex gap-4 justify-center">
-            <Button 
-                onClick={() => navigate('/enrollment/new')}
-                variant="default"
-            >
-                Enroll
-            </Button>
-            <Button 
-                onClick={handleSignIn}
-                variant="outline"
-            >
-                Create
-            </Button>
+          <div className="space-y-6">
+            <div className="flex flex-col items-center gap-2">
+              <h2 className="text-lg font-medium">Join an existing band</h2>
+              <Button 
+                  onClick={() => navigate('/enrollment/new')}
+                  variant="default"
+                  className="w-64"
+              >
+                  Enroll
+              </Button>
+            </div>
+            
+            <div className="flex flex-col items-center gap-2">
+              <h2 className="text-lg font-medium">Create a new band</h2>
+              <div className="flex flex-col gap-2 w-64">
+                <Button 
+                    onClick={handleBandCreateAsGuest}
+                    variant="outline"
+                >
+                    Create Band as Guest
+                </Button>
+                <Button 
+                    onClick={handleSignIn}
+                    variant="outline"
+                >
+                    Sign in & Create Band
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

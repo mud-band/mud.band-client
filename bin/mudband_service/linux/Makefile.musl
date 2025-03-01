@@ -50,6 +50,7 @@ OBJS = \
 	../../mudband/common/crypto/x25519.o \
 	../../mudband/common/crypto.o \
 	../../mudband/common/wireguard.o \
+	mudband_service_bandadmin.o \
 	mudband_service_confmgr.o \
 	mudband_service_cmdctl.o \
 	mudband_service_enroll.o \

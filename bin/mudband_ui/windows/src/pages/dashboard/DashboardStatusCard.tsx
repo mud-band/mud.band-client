@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { invoke } from "@tauri-apps/api/tauri"
 import { useEffect, useState } from "react"
 import { useToast } from "@/hooks/use-toast"
+import DashboardBandAdminCard from "./DashboardBandAdminCard"
 
 export default function DashboardStatusCard() {
   const { toast } = useToast()
@@ -96,71 +97,74 @@ export default function DashboardStatusCard() {
   }, [])
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Status</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-gray-600">Band name: {bandName}</p>
-        {activeConf.interface.name && (
-          <p className="text-sm text-gray-600">Device name: {activeConf.interface.name}</p>
-        )}
-        {activeConf.interface.private_ip && (
-          <p className="text-sm text-gray-600">Private IP: {activeConf.interface.private_ip}</p>
-        )}
-        <Button 
-          className="mt-4 w-full" 
-          onClick={() => {
-            if (isTunnelRunning) {
-              invoke<number>("mudband_ui_tunnel_disconnect")
-                .then(status => {
-                  if (status === 200 || status == 400) {
-                    setIsTunnelRunning(false)
-                    toast({
-                      title: "Info",
-                      description: "Successfully disconnected from tunnel."
-                    })
-                  } else {
-                    toast({
-                      variant: "destructive",
-                      title: "Error",
-                      description: `BANDECBANDEC_00722_00622: Failed to disconnect tunnel: ${status}`
-                    })
-                  }
-                })
-                .catch(err => toast({
-                  variant: "destructive",
-                  title: "Error",
-                  description: `BANDEC_00723: Failed to disconnect tunnel: ${err}`
-                }))
-            } else {
-              invoke<number>("mudband_ui_tunnel_connect")
-                .then(status => {
-                  if (status === 200) {
-                    setIsTunnelRunning(true)
-                    toast({
-                      title: "Info",
-                      description: "Successfully connected to tunnel."
-                    })
-                  } else {
-                    toast({
-                      variant: "destructive",
-                      title: "Error",
-                      description: `BANDEC_00724: Failed to start the tunnel: ${status}`
-                    })
-                  }
-                })
-                .catch(err => toast({
-                  variant: "destructive",
-                  title: "Error",
-                  description: `BANDEC_00725: Failed to connect tunnel: ${err}`
-                }))
-            }
-          }}
-        >
-          {isTunnelRunning ? "Disconnect" : "Connect"}
-        </Button>
-      </CardContent>
-    </Card>
+    <>
+      <DashboardBandAdminCard />
+      <Card>
+        <CardHeader>
+          <CardTitle>Status</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-gray-600">Band name: {bandName}</p>
+          {activeConf.interface.name && (
+            <p className="text-sm text-gray-600">Device name: {activeConf.interface.name}</p>
+          )}
+          {activeConf.interface.private_ip && (
+            <p className="text-sm text-gray-600">Private IP: {activeConf.interface.private_ip}</p>
+          )}
+          <Button 
+            className="mt-4 w-full" 
+            onClick={() => {
+              if (isTunnelRunning) {
+                invoke<number>("mudband_ui_tunnel_disconnect")
+                  .then(status => {
+                    if (status === 200 || status == 400) {
+                      setIsTunnelRunning(false)
+                      toast({
+                        title: "Info",
+                        description: "Successfully disconnected from tunnel."
+                      })
+                    } else {
+                      toast({
+                        variant: "destructive",
+                        title: "Error",
+                        description: `BANDECBANDEC_00722_00622: Failed to disconnect tunnel: ${status}`
+                      })
+                    }
+                  })
+                  .catch(err => toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: `BANDEC_00723: Failed to disconnect tunnel: ${err}`
+                  }))
+              } else {
+                invoke<number>("mudband_ui_tunnel_connect")
+                  .then(status => {
+                    if (status === 200) {
+                      setIsTunnelRunning(true)
+                      toast({
+                        title: "Info",
+                        description: "Successfully connected to tunnel."
+                      })
+                    } else {
+                      toast({
+                        variant: "destructive",
+                        title: "Error",
+                        description: `BANDEC_00724: Failed to start the tunnel: ${status}`
+                      })
+                    }
+                  })
+                  .catch(err => toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: `BANDEC_00725: Failed to connect tunnel: ${err}`
+                  }))
+              }
+            }}
+          >
+            {isTunnelRunning ? "Disconnect" : "Connect"}
+          </Button>
+        </CardContent>
+      </Card>
+    </>
   )
 }

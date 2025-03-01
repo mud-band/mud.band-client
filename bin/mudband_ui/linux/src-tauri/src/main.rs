@@ -178,6 +178,44 @@ fn mudband_ui_get_active_band(_state: tauri::State<'_, Mutex<AppState>>) -> Stri
 }
 
 #[tauri::command]
+fn mudband_ui_get_band_admin(_state: tauri::State<'_, Mutex<AppState>>) -> String {
+    let command = serde_json::json!({
+        "cmd": "get_band_admin"
+    });
+
+    match mudband_ui_ipc_send(command) {
+        Ok(json) => {
+            serde_json::to_string(&json).unwrap_or_else(|_| "{}".to_string())
+        }
+        Err(e) => serde_json::to_string(&serde_json::json!({
+            "status": 500,
+            "msg": e.to_string()
+        })).unwrap_or_else(|_| "{}".to_string())
+    }
+}
+
+#[tauri::command]
+fn mudband_ui_save_band_admin(band_uuid: String, jwt: String) -> String {
+    let command = serde_json::json!({
+        "cmd": "save_band_admin",
+        "args": {
+            "band_uuid": band_uuid,
+            "jwt": jwt
+        }
+    });
+
+    match mudband_ui_ipc_send(command) {
+        Ok(json) => {
+            serde_json::to_string(&json).unwrap_or_else(|_| "{}".to_string())
+        }
+        Err(e) => serde_json::to_string(&serde_json::json!({
+            "status": 500,
+            "msg": e.to_string()
+        })).unwrap_or_else(|_| "{}".to_string())
+    }
+}
+
+#[tauri::command]
 fn mudband_ui_enroll(enrollment_token: String, device_name: String, enrollment_secret: Option<String>) -> String {
     let command = serde_json::json!({
         "cmd": "enroll",
@@ -285,6 +323,8 @@ fn main() {
             mudband_ui_get_active_band,
             mudband_ui_get_enrollment_count,
             mudband_ui_enroll,
+            mudband_ui_get_band_admin,
+            mudband_ui_save_band_admin,
             mudband_ui_tunnel_is_running,
             mudband_ui_tunnel_disconnect,
             mudband_ui_tunnel_connect,
