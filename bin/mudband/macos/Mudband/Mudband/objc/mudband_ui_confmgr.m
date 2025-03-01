@@ -39,7 +39,7 @@ static struct vtclog *confmgr_vl;
 static json_t *
 mudband_ui_confmgr_read(const char *filename)
 {
-    json_t *jroot, *juuid, *jband_name, *jband_jwt;
+    json_t *jroot;
     json_error_t jerror;
     char filepath[ODR_BUFSIZ];
 
