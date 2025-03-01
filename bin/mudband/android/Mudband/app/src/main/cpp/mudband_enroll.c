@@ -156,6 +156,9 @@ unenroll_force:
     snprintf(filepath, sizeof(filepath), "%s/conf_%s.json",
              band_enroll_dir, default_band_uuid);
     mbe_file_delete(filepath);
+    snprintf(filepath, sizeof(filepath), "%s/admin_%s.json",
+             band_admin_dir, default_band_uuid);
+    mbe_file_delete(filepath);
     if (mbe_jroot != NULL) {
         json_decref(mbe_jroot);
         mbe_jroot = NULL;

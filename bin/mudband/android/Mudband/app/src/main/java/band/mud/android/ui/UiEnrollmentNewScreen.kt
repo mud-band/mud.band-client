@@ -33,10 +33,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DevicesOther
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -52,6 +59,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import band.mud.android.MainApplication
@@ -67,6 +75,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import androidx.compose.foundation.layout.Arrangement
 
 @Serializable
 data class EnrollmentRequestData(
@@ -109,7 +118,8 @@ suspend fun makeEnrollRequest(enrollmentToken: String, deviceName: String,
         .post(post)
         .build()
     try {
-        val response = client.newCall(request).execute()
+	val response_p = client.newCall(request)
+        val response = response_p.execute()
         if (!response.isSuccessful) {
             return returnEnrollResult(-4, "BANDEC_00164: Unexpected status ${response.code}")
         }
@@ -218,113 +228,149 @@ fun UiEnrollmentNewScreen(
 ) {
     val uriHandler = LocalUriHandler.current
 
+    var enrollmentToken by remember { mutableStateOf("") }
+    var deviceName by remember { mutableStateOf("") }
+    var enrollmentSecret by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
+    val enrollmentErrorAlertDialogOpen = remember { mutableStateOf(false) }
+    val enrollmentErrorAlertDialogMessage = remember { mutableStateOf("") }
+    val enrollmentMfaAlertDialogOpen = remember { mutableStateOf(false) }
+    val enrollmentMfaAlertDialogURL = remember { mutableStateOf("") }
+
+    if (enrollmentErrorAlertDialogOpen.value) {
+        EnrollmentErrorAlertDialog(
+            onDismissRequest = {
+                enrollmentErrorAlertDialogOpen.value = false
+            },
+            dialogTitle = "Enrollment",
+            dialogText = enrollmentErrorAlertDialogMessage.value,
+            icon = Icons.Default.Info
+        )
+    }
+    
+    if (enrollmentMfaAlertDialogOpen.value) {
+        EnrollmentMfaAlertDialog(
+            onDismissRequest = {
+                enrollmentMfaAlertDialogOpen.value = false
+            },
+            onConfirmation = {
+                uriHandler.openUri(enrollmentMfaAlertDialogURL.value)
+            },
+            dialogTitle = "Enrollment MFA",
+            dialogText = "MFA (multi-factor authentication) is enabled to enroll.",
+            icon = Icons.Default.Info
+        )
+    }
+
     Column(
         modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            text = "Device Enrollment",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 24.dp)
+        )
+        
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            var enrollmentToken by remember { mutableStateOf("") }
-            var deviceName by remember { mutableStateOf("") }
-            var enrollmentSecret by remember { mutableStateOf("") }
-            val coroutineScope = rememberCoroutineScope()
-            val enrollmentErrorAlertDialogOpen = remember { mutableStateOf(false) }
-            val enrollmentErrorAlertDialogMessage = remember { mutableStateOf("") }
-            val enrollmentMfaAlertDialogOpen = remember { mutableStateOf(false) }
-            val enrollmentMfaAlertDialogURL = remember { mutableStateOf("") }
-
-            if (enrollmentErrorAlertDialogOpen.value) {
-                EnrollmentErrorAlertDialog(
-                    onDismissRequest = {
-                        enrollmentErrorAlertDialogOpen.value = false
-                    },
-                    dialogTitle = "Enrollment",
-                    dialogText = enrollmentErrorAlertDialogMessage.value,
-                    icon = Icons.Default.Info
-                )
-            }
-            if (enrollmentMfaAlertDialogOpen.value) {
-                EnrollmentMfaAlertDialog(
-                    onDismissRequest = {
-                        enrollmentMfaAlertDialogOpen.value = false
-                    },
-                    onConfirmation = {
-                        uriHandler.openUri(enrollmentMfaAlertDialogURL.value)
-                    },
-                    dialogTitle = "Enrollment MFA",
-                    dialogText = "MFA (multi-factor authentication) is enabled to enroll.",
-                    icon = Icons.Default.Info
-                )
-            }
-
             Text(
-                text = "Enrollment",
-                modifier = modifier
-                    .padding(dimensionResource(R.dimen.padding_small))
+                text = "Please enter your enrollment information below",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
-            TextField(
+            
+            OutlinedTextField(
                 value = enrollmentToken,
                 onValueChange = { enrollmentToken = it },
                 label = { Text("Enrollment Token") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_small))
+                leadingIcon = { 
+                    Icon(
+                        Icons.Default.Info, 
+                        contentDescription = "Token"
+                    ) 
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
-            TextField(
+            
+            OutlinedTextField(
                 value = deviceName,
                 onValueChange = { deviceName = it },
                 label = { Text("Device Name") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_small))
+                leadingIcon = { 
+                    Icon(
+                        Icons.Filled.DevicesOther, 
+                        contentDescription = "Device"
+                    ) 
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
-            TextField(
+            
+            OutlinedTextField(
                 value = enrollmentSecret,
                 onValueChange = { enrollmentSecret = it },
                 label = { Text("Enrollment Secret (optional)") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_small))
+                leadingIcon = { 
+                    Icon(
+                        Icons.Filled.Lock, 
+                        contentDescription = "Secret"
+                    ) 
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation()
             )
-            Column(
-                modifier = modifier,
-                horizontalAlignment = Alignment.CenterHorizontally
+        }
+        
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+        ) {
+            OutlinedButton(
+                onClick = { navController.navigateUp() },
+                modifier = Modifier.weight(1f)
             ) {
-                Row {
-                    Button(
-                        onClick = {
-                            coroutineScope.launch {
-                                withContext(Dispatchers.IO) {
-                                    var result = makeEnrollRequest(enrollmentToken, deviceName,
-                                        enrollmentSecret)
-                                    if (result.status != 0) {
-                                        if (result.status == -10 /* SSO_URL */) {
-                                            enrollmentMfaAlertDialogOpen.value = true
-                                            enrollmentMfaAlertDialogURL.value = result.msg
-                                        } else {
-                                            enrollmentErrorAlertDialogOpen.value = true
-                                            enrollmentErrorAlertDialogMessage.value = result.msg
-                                        }
-                                    } else {
-                                        withContext(Dispatchers.Main) {
-                                            navController.popBackStack()
-                                            onEnrollSuccess()
-                                        }
-                                    }
+                Text("Cancel")
+            }
+            
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        withContext(Dispatchers.IO) {
+                            var result = makeEnrollRequest(enrollmentToken, deviceName,
+                                enrollmentSecret)
+                            if (result.status != 0) {
+                                if (result.status == -10 /* SSO_URL */) {
+                                    enrollmentMfaAlertDialogOpen.value = true
+                                    enrollmentMfaAlertDialogURL.value = result.msg
+                                } else {
+                                    enrollmentErrorAlertDialogOpen.value = true
+                                    enrollmentErrorAlertDialogMessage.value = result.msg
+                                }
+                            } else {
+                                withContext(Dispatchers.Main) {
+                                    navController.popBackStack()
+                                    onEnrollSuccess()
                                 }
                             }
                         }
-                    ) {
-                        Text("Enroll")
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(onClick = { navController.navigateUp() }) {
-                        Text("Back")
-                    }
-                }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Enroll Device")
             }
         }
     }
+    
     SideEffect {
         viewModel.setTopAppBarTitle("New Enrollment")
     }

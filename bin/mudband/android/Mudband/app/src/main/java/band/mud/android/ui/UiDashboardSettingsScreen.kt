@@ -45,6 +45,7 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.List
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -450,12 +451,25 @@ fun UiDashboardSettingsScreen(
 
     Column(modifier = modifier) {
         SettingsGroup(
+            name = R.string.band,
+            modifier = modifier
+        ) {
+            SettingsClickableComp(
+                name = R.string.band_create_as_guest,
+                icon = Icons.Rounded.Create,
+                iconDesc = R.string.band_create_as_guest,
+            ) {
+                navController.navigate(MudbandScreen.BandCreateAsGuest.name)
+            }
+        }
+        
+        SettingsGroup(
             name = R.string.enrollment,
             modifier = modifier
         ) {
             SettingsClickableComp(
                 name = R.string.enrollment_new,
-                icon = Icons.Rounded.Create,
+                icon = Icons.Rounded.Add,
                 iconDesc = R.string.enrollment_new,
             ) {
                 navController.navigate(MudbandScreen.EnrollmentNew.name)

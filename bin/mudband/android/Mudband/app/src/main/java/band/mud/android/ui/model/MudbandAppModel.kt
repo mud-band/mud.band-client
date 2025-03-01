@@ -39,7 +39,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-
 @Serializable
 data class MudbandConfigInterfaceJson(
     val nat_type: Int,

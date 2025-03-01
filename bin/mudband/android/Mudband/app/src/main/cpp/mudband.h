@@ -40,6 +40,7 @@
 /* mudband.c */
 extern char band_root_dir[256];
 extern char band_enroll_dir[256];
+extern char band_admin_dir[256];
 extern int band_need_fetch_config;
 extern int band_need_iface_sync;
 int     mudband_log_printf(const char *id, int lvl, double t_elapsed, const char *msg);
@@ -47,6 +48,11 @@ void    mudband_tunnel_iface_write(uint8_t *buf, size_t buflen);
 uint8_t *
         mudband_tunnel_proxy_prepend_pkthdr(uint8_t *buf, size_t *buflen,
                                             uint32_t src_addr, uint32_t dst_addr);
+
+/* mudband_bandadmin.c */
+int     MBA_save(const char *band_uuid, const char *jwt);
+json_t *MBA_get(void);
+int     MBA_init(void);
 
 /* mudband_confmgr.c */
 struct cnf {

@@ -1,0 +1,38 @@
+{
+    "files.associations": {
+	"*.md": "markdown",
+	"in.h": "c",
+	"miniobj.h": "c",
+	"odr.h": "c",
+	"vpf.h": "c",
+	"crypto.h": "c"
+},
+    "C_Cpp.clang_format_fallbackStyle": "LLVM",
+    "editor.insertSpaces": false,
+    "editor.lineNumbers": "off",
+    "editor.rulers": [
+        80,
+        120
+    ],
+    "editor.glyphMargin": false,
+    "editor.folding": false,
+    "editor.tabSize": 8,
+    "editor.detectIndentation": false,
+    "files.eol": "\n",
+    "files.exclude": {
+        "**/*~": true,
+        "**/*.obj": true,
+        "**/.deps": true,
+        "**/build/": true,
+        "*.idb": true,
+        "*.o": true,
+        "*.pdb": true,
+        "*.swp": true,
+	".gradle": true,
+	".idea": true,
+	"app/.cxx": true,
+	"local.properties": true,
+        "TAGS": true
+},
+"java.configuration.updateBuildConfiguration": "interactive"
+}

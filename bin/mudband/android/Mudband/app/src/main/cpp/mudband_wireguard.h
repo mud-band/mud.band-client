@@ -136,6 +136,7 @@ struct wireguard_sockaddr {
 struct wireguard_device *
         wireguard_iface_init(struct vtclog *vl, struct wireguard_iface_init_data *init_data);
 void    wireguard_iface_sync(struct wireguard_device *device);
+struct pbuf;
 int     wireguard_iface_output(struct wireguard_device *device, struct pbuf *p, const uint32_t ipaddr);
 void    wireguard_iface_network_rx(struct wireguard_device *device, struct pbuf *p, struct wireguard_sockaddr *wsin);
 
