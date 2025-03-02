@@ -35,6 +35,20 @@ struct UiDashboardDevicesListView: View {
         var private_ip: String
     }
     @State var devices: [Device] = []
+    @State private var searchText: String = ""
+    @State private var isRefreshing: Bool = false
+    
+    // Filtered devices based on search text
+    private var filteredDevices: [Device] {
+        if searchText.isEmpty {
+            return devices
+        } else {
+            return devices.filter { 
+                $0.name.localizedCaseInsensitiveContains(searchText) ||
+                $0.private_ip.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
     
     private func read_band_conf() -> JSON? {
         guard let band_uuid = mudband_ui_enroll_get_band_uuid() else {
@@ -60,6 +74,7 @@ struct UiDashboardDevicesListView: View {
             return
         }
         for (_, peer) in obj["peers"] {
+	    mudband_ui_log(0, "\(peer)")
             devices.append(Device(name: peer["name"].stringValue,
                                   private_ip: peer["private_ip"].stringValue))
         }
@@ -67,19 +82,101 @@ struct UiDashboardDevicesListView: View {
     
     @ViewBuilder
     var body: some View {
-        VStack {
-            if devices.isEmpty {
-                Text("No devices found.")
-            } else {
-                List(devices, id: \.id) { device in
-                    VStack(alignment: .leading) {
-                        Text(device.name).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                        Text("Private IP: \(device.private_ip)")
+        VStack(spacing: 0) {
+            // Search bar
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(.gray)
+                TextField("Search devices...", text: $searchText)
+                    .padding(.vertical, 10)
+                
+                if !searchText.isEmpty {
+                    Button(action: {
+                        searchText = ""
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
+                    }
+                }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .background(Color.white)
+            .cornerRadius(10)
+            .padding()
+            
+            if isRefreshing {
+                ProgressView()
+                    .padding()
+            }
+            
+            if filteredDevices.isEmpty {
+                VStack {
+                    Image(systemName: "network")
+                        .font(.system(size: 50))
+                        .foregroundColor(.gray)
+                        .padding()
+                    
+                    if searchText.isEmpty {
+                        Text("No devices found.")
+                            .font(.headline)
+                        Text("Pull down to refresh the list")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    } else {
+                        Text("No matching devices")
+                            .font(.headline)
+                        Text("Try a different search term")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
                     }
                 }
                 .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            } else {
+                List {
+                    ForEach(filteredDevices) { device in
+                        HStack(spacing: 15) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.blue.opacity(0.1))
+                                    .frame(width: 40, height: 40)
+                                
+                                Image(systemName: "laptopcomputer")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.blue)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(device.name)
+                                    .font(.headline)
+                                
+                                HStack(spacing: 4) {
+                                    Image(systemName: "network")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                    Text(device.private_ip)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 8)
+                    }
+                }
+                .listStyle(PlainListStyle())
+                .padding(.horizontal)
+                .refreshable {
+                    isRefreshing = true
+                    update_device_list()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        isRefreshing = false
+                    }
+                }
             }
         }
+        .navigationTitle("Devices")
+        .background(Color.white)
         .onAppear() {
             update_device_list()
         }

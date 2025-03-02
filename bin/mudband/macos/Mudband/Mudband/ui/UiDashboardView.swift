@@ -40,22 +40,7 @@ struct UiDashboardView: View {
             } else if mAppModel.mEnrollmentCount > 0 {
                 UiDashboardSplitView()
             } else {
-                NavigationStack {
-                    VStack {
-                        Image(systemName: "globe")
-                            .imageScale(.large)
-                            .foregroundStyle(.tint)
-                        HStack {
-                            Text("No enrollment found.  Please enroll first.")
-                        }
-                        NavigationLink("Enroll", destination: UiEnrollmentNewView())
-                    }
-                    Spacer().frame(height: 50)
-                    VStack {
-                        Text("New to Mud.band? Create a band.")
-                        Link("Create", destination: URL(string: "https://mud.band")!)
-                    }
-                }
+                UiEnrollmentIntroView()
             }
         }
         .onAppear() {

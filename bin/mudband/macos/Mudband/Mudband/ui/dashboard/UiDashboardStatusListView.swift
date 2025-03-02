@@ -33,44 +33,208 @@ struct UiDashboardStatusListView: View {
 
     @ViewBuilder
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            HStack {
-                Text("Band name:")
-                Text(mAppModel.mBandName)
+        VStack(spacing: 12) {
+            // Header
+            VStack(spacing: 8) {
+                Image(systemName: "network")
+                    .font(.system(size: 32))
+                    .foregroundColor(.accentColor)
+                    .frame(width: 36, height: 36)
+                
+                Text("Status")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundColor(.primary)
             }
-            if !mAppModel.mDeviceName.isEmpty {
+            .padding(.top, 12)
+            
+            VStack(spacing: 12) {
                 HStack {
-                    Text("Device name:")
-                    Text(mAppModel.mDeviceName)
+                    Label {
+                        Text("Connection Details")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                    } icon: {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(.accentColor)
+                            .frame(width: 18, height: 18)
+                    }
+                    Spacer()
                 }
-            }
-            if !mAppModel.mPrivateIP.isEmpty {
-                HStack {
-                    Text("Private IP:")
-                    Text(mAppModel.mPrivateIP)
-                }
-            }
-            if mAppModel.mVPNStatusString == "Connected" {
-                Button("Disconnect") {
-                    mAppModel.mVpnManager.disconnectVPN()
-                }
-            } else if mAppModel.mVPNStatusString == "Disconnected" ||
-                        mAppModel.mVPNStatusString == "Not_ready" {
-                Button("Connect") {
-                    mAppModel.mVpnManager.connectVPN()
-                }
-            } else {
-                Button(action: {
+                .padding(.bottom, 4)
+                
+                // Connection Details
+                VStack(spacing: 8) {
+                    HStack {
+                        Image(systemName: "antenna.radiowaves.left.and.right")
+                            .foregroundColor(.accentColor)
+                            .frame(width: 18, height: 18)
+                        
+                        Text("Band Name:")
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                        
+                        Spacer(minLength: 8)
+                        
+                        Text(mAppModel.mBandName)
+                            .fontWeight(.medium)
+                            .foregroundColor(.primary)
+                            .textSelection(.enabled)
+                            .lineLimit(1)
+                    }
+                    .padding(.vertical, 2)
                     
-                }) {
-                    Text(mAppModel.mVPNStatusString)
-                }.disabled(true)
+                    // Device Info
+                    if !mAppModel.mDeviceName.isEmpty {
+                        HStack {
+                            Image(systemName: "desktopcomputer")
+                                .foregroundColor(.accentColor)
+                                .frame(width: 18, height: 18)
+                            
+                            Text("Device Name:")
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                            
+                            Spacer(minLength: 8)
+                            
+                            Text(mAppModel.mDeviceName)
+                                .fontWeight(.medium)
+                                .foregroundColor(.primary)
+                                .textSelection(.enabled)
+                                .lineLimit(1)
+                        }
+                        .padding(.vertical, 2)
+                    }
+                    
+                    // IP Address
+                    if !mAppModel.mPrivateIP.isEmpty {
+                        HStack {
+                            Image(systemName: "network")
+                                .foregroundColor(.accentColor)
+                                .frame(width: 18, height: 18)
+                            
+                            Text("Private IP:")
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                            
+                            Spacer(minLength: 8)
+                            
+                            Text(mAppModel.mPrivateIP)
+                                .fontWeight(.medium)
+                                .foregroundColor(.primary)
+                                .textSelection(.enabled)
+                                .lineLimit(1)
+                        }
+                        .padding(.vertical, 2)
+                    }
+                                        
+                    // Connection Status
+                    HStack {
+                        Image(systemName: connectionStatusIcon)
+                            .foregroundColor(connectionStatusColor)
+                            .frame(width: 18, height: 18)
+                        
+                        Text("Status:")
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                        
+                        Spacer(minLength: 8)
+                        
+                        Text(mAppModel.mVPNStatusString)
+                            .fontWeight(.medium)
+                            .foregroundColor(connectionStatusColor)
+                            .textSelection(.enabled)
+                            .lineLimit(1)
+                    }
+                    .padding(.vertical, 2)
+                }
             }
-        }.onReceive(timer) { _ in
+            .padding(.horizontal)
+            .background(Color.white)
+            .padding(.horizontal)
+            
+            // Connection Button
+            connectionButton
+                .padding(.horizontal)
+                .padding(.top, 8)
+            
+            Spacer()
+        }
+        .padding(12)
+        .background(Color.white)
+        .onReceive(timer) { _ in
             mAppModel.update_vpn_status()
+        }
+    }
+    
+    // Helper Views
+    private var connectionStatusIcon: String {
+        if mAppModel.mVPNStatusString == "Connected" {
+            return "checkmark.circle.fill"
+        } else if mAppModel.mVPNStatusString == "Disconnected" {
+            return "x.circle.fill"
+        } else {
+            return "ellipsis.circle.fill"
+        }
+    }
+    
+    private var connectionStatusColor: Color {
+        if mAppModel.mVPNStatusString == "Connected" {
+            return .green
+        } else if mAppModel.mVPNStatusString == "Disconnected" {
+            return .red
+        } else {
+            return .orange
+        }
+    }
+    
+    private var connectionButton: some View {
+        Group {
+            if mAppModel.mVPNStatusString == "Connected" {
+                Button(action: {
+                    mAppModel.mVpnManager.disconnectVPN()
+                }) {
+                    HStack {
+                        Image(systemName: "xmark.circle.fill")
+                            .frame(width: 18, height: 18)
+                        Text("Disconnect")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.red)
+                .controlSize(.regular)
+                .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 1)
+            } else if mAppModel.mVPNStatusString == "Disconnected" || mAppModel.mVPNStatusString == "Not_ready" {
+                Button(action: {
+                    mAppModel.mVpnManager.connectVPN()
+                }) {
+                    HStack {
+                        Image(systemName: "lock.shield.fill")
+                            .frame(width: 18, height: 18)
+                        Text("Connect")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)
+                .controlSize(.regular)
+                .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 1)
+            } else {
+                Button(action: {}) {
+                    HStack {
+                        Image(systemName: "ellipsis.circle.fill")
+                            .frame(width: 18, height: 18)
+                        Text(mAppModel.mVPNStatusString)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                }
+                .controlSize(.regular)
+                .disabled(true)
+            }
         }
     }
 }

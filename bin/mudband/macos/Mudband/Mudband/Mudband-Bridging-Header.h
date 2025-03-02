@@ -30,10 +30,15 @@
 void    mudband_ui_log(int level, NSString *msg);
 void    mudband_ui_set_tapname(NSString *name);
 void    mudband_ui_init(NSString *top_dir,
-                        NSString *enroll_dir, NSString *ui_logfile,
-                        NSString *tunnel_logfile);
+                        NSString *enroll_dir, NSString *admin_dir,
+                        NSString *ui_logfile, NSString *tunnel_logfile);
 NSMutableArray *
         mudband_ui_create_wireguard_keys(void);
+
+/* mudband_ui_bandadmin.m */
+int     mudband_ui_bandadmin_save(NSString *ns_band_uuid, NSString *ns_jwt);
+NSString *
+        mudband_ui_bandadmin_get(void);
 
 /* mudband_ui_confmgr.m */
 NSString *

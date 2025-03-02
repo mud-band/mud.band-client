@@ -79,6 +79,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         FileManager.initMudbandAppGroupDirs()
         mudband_ui_init(FileManager.TopDirURL?.path,
                         FileManager.EnrollDirURL?.path,
+                        FileManager.AdminDirURL?.path,
                         FileManager.UiLogFileURL?.path,
                         FileManager.TunnelLogFileURL?.path)
         super.init()

@@ -358,6 +358,9 @@ mudband_ui_enroll_unenroll(NSString *band_uuid)
     snprintf(filepath, sizeof(filepath), "%s/conf_%s.json",
              band_enroll_dir, band_uuidp);
     mudband_ui_enroll_file_delete(filepath);
+    snprintf(filepath, sizeof(filepath), "%s/admin_%s.json",
+             band_admin_dir, band_uuidp);
+    mudband_ui_enroll_file_delete(filepath);
     if (enroll_jroot != NULL) {
         json_decref(enroll_jroot);
         enroll_jroot = NULL;
