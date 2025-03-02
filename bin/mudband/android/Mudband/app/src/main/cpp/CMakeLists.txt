@@ -30,6 +30,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         libmud/vtim.c
         libmud/vuuid.c
         mudband.c
+        mudband_bandadmin.c
         mudband_confmgr.c
         mudband_connmgr.c
         mudband_enroll.c

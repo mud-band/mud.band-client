@@ -67,6 +67,8 @@ class JniWrapper private constructor() {
     external fun parseConfigResponse(etag: String?, body: String): Int
     external fun parseUnenrollmentResponse(body: String): Int
     external fun getVpnServiceConfig(): String?
+    external fun saveBandAdmin(bandUuid: String, jwt: String): Boolean
+    external fun getBandAdmin(): String?
     external fun tunnelInit(tunFd: Int)
     external fun tunnelLoop(): Int
     external fun tunnelFini()

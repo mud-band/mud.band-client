@@ -78,6 +78,7 @@ static pthread_mutex_t  band_mtx = PTHREAD_MUTEX_INITIALIZER;
 static int              band_inited;
 char                    band_root_dir[256];
 char                    band_enroll_dir[256];
+char                    band_admin_dir[256];
 static struct vtclog    *band_vl;
 static struct vtclog    *band_ui_vl;
 static struct wireguard_device *band_device;
@@ -437,6 +438,45 @@ Java_band_mud_android_JniWrapper_getBandUUIDs(JNIEnv *env, jobject thiz) {
         (*env)->DeleteLocalRef(env, stringElement);
     }
     return (stringArray);
+}
+
+jstring
+Java_band_mud_android_JniWrapper_getBandAdmin(JNIEnv *env, jobject thiz)
+{
+    json_t *jroot;
+    jstring str;
+
+    (void)thiz;
+
+    jroot = MBA_get();
+    if (jroot == NULL)
+        return (NULL);
+    str = (*env)->NewStringUTF(env, json_dumps(jroot, 0));
+    json_decref(jroot);
+    return (str);
+}
+
+jboolean
+Java_band_mud_android_JniWrapper_saveBandAdmin(JNIEnv *env, jobject thiz,
+                                               jstring mBandUuid, jstring mJwt)
+{
+    const char *bandUuid, *jwt;
+    int rv;
+
+    (void)thiz;
+    
+    bandUuid = (*env)->GetStringUTFChars(env, mBandUuid, NULL);
+    AN(bandUuid);
+    jwt = (*env)->GetStringUTFChars(env, mJwt, NULL);
+    AN(jwt);
+
+    rv = MBA_save(bandUuid, jwt);
+    assert(rv == 0);
+
+    (*env)->ReleaseStringUTFChars(env, mJwt, jwt);
+    (*env)->ReleaseStringUTFChars(env, mBandUuid, bandUuid);
+
+    return (true);
 }
 
 jobjectArray
@@ -852,16 +892,19 @@ Java_band_mud_android_JniWrapper_initJni(JNIEnv *env, jobject thiz, jstring mRoo
     }
     snprintf(band_root_dir, sizeof(band_root_dir), "%s", root_dir);
     snprintf(band_enroll_dir, sizeof(band_enroll_dir), "%s/enroll", root_dir);
+    snprintf(band_admin_dir, sizeof(band_admin_dir), "%s/admin", root_dir);
     (*env)->ReleaseStringUTFChars(env, mRootDir, root_dir);
 
     ODR_libinit();
     vtc_loginit();
     ODR_mkdir_recursive(band_enroll_dir);
+    ODR_mkdir_recursive(band_admin_dir);
     band_vl = vtc_logopen("band", mudband_log_printf);
     AN(band_vl);
     band_ui_vl = vtc_logopen("ui", mudband_log_printf);
     AN(band_ui_vl);
 
+    MBA_init();
     PBUF_init();
     MBE_init();
     MPC_init();

@@ -29,16 +29,30 @@ package band.mud.android.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import band.mud.android.ui.model.MudbandAppViewModel
@@ -50,37 +64,118 @@ fun UiDashboardNotEnrolledScreen(
     modifier: Modifier = Modifier
 ) {
     val uriHandler = LocalUriHandler.current
+    val scrollState = rememberScrollState()
 
     Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Not enrolled.  Please enroll first."
+            text = "Welcome to Mud.band",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(vertical = 16.dp)
         )
-        Button(
-            onClick = {
-                navController.navigate(MudbandScreen.EnrollmentNew.name)
-            }
+
+        // Section 1: Joining an existing band
+        ElevatedCard(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
-            Text(text = "Enroll")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Joining an existing band",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+                
+                Text(
+                    text = "Connect with your band members by enrolling in an existing band",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                
+                Button(
+                    onClick = {
+                        navController.navigate(MudbandScreen.EnrollmentNew.name)
+                    },
+                    modifier = Modifier.fillMaxWidth(0.7f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PersonAdd,
+                        contentDescription = "Enroll icon",
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(text = "Enroll Now")
+                }
+            }
         }
-        Spacer(Modifier.height(24.dp))
-        Text(
-            text = "New to Mud.band?"
-        )
-        Text(
-            text = "Create a band."
-        )
-        Button(
-            onClick = {
-                uriHandler.openUri("https://mud.band/")
-            }
+        
+        // Section 2: Create a band
+        ElevatedCard(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
-            Text(text = "Create")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Create a band",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+                
+                Text(
+                    text = "Start your own band and invite others to join",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                
+                Button(
+                    onClick = {
+                        navController.navigate(MudbandScreen.BandCreateAsGuest.name)
+                    },
+                    modifier = Modifier.fillMaxWidth(0.7f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Public,
+                        contentDescription = "Create guest band icon",
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(text = "Create Band as Guest")
+                }
+
+                Button(
+                    onClick = {
+                        uriHandler.openUri("https://mud.band/")
+                    },
+                    modifier = Modifier.fillMaxWidth(0.7f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AddCircle,
+                        contentDescription = "Create band icon",
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(text = "Create a band")
+                }
+            }
         }
     }
+    
     SideEffect {
         viewModel.setTopAppBarTitle("Mud.band")
     }

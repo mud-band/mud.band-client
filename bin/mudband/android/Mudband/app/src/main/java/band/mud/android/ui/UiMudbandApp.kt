@@ -91,6 +91,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
 enum class MudbandScreen(@StringRes val title: Int) {
+    BandCreateAsGuest(title = R.string.band_create_as_guest),
     EnrollmentNew(title = R.string.enrollment_new),
     EnrollmentChange(title = R.string.enrollment_change),
     Dashboard(title = R.string.dashboard),
@@ -179,6 +180,36 @@ fun UiMudbandScaffold(viewModel: MudbandAppViewModel, navController: NavHostCont
                                 viewModel.setEnrollStatus(true)
                                 snackbarHostState.showSnackbar(
                                     message = "Enrolled successfully.",
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding()
+                )
+            }
+            composable(route = MudbandScreen.BandCreateAsGuest.name) {
+                UiBandCreateAsGuestScreen(
+                    viewModel = viewModel,
+                    navController = navController,
+                    onBandCreateAsGuestSuccess = {
+                        coroutineScope.launch {
+                            withContext(Dispatchers.Main) {
+                                viewModel.setEnrollStatus(true)
+                                snackbarHostState.showSnackbar(
+                                    message = "Band created successfully.",
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        }
+                    },
+                    onBandCreateAsGuestError = { errorMessage ->
+                        coroutineScope.launch {
+                            withContext(Dispatchers.Main) {
+                                snackbarHostState.showSnackbar(
+                                    message = errorMessage ?: "Band creation failed.",
                                     duration = SnackbarDuration.Short
                                 )
                             }
