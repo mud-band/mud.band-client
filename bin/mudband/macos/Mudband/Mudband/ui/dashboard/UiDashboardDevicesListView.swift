@@ -175,7 +175,6 @@ struct UiDashboardDevicesListView: View {
                 }
             }
         }
-        .navigationTitle("Devices")
         .background(Color.white)
         .onAppear() {
             update_device_list()

@@ -284,17 +284,10 @@ struct UiDashboardSetupListView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Header with toolbar look
-            HStack {
-                Text("Setup")
-                    .font(.system(size: 22, weight: .semibold))
-            }
-            .padding(.horizontal)
-            .padding(.top, 16)
-            .padding(.bottom, 12)
-            
-            Divider()
-                .padding(.bottom, 16)
+            Text("You can change your settings here.")
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(.secondary)
+                .padding()
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {

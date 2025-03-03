@@ -40,11 +40,6 @@ struct UiDashboardStatusListView: View {
                     .font(.system(size: 32))
                     .foregroundColor(.accentColor)
                     .frame(width: 36, height: 36)
-                
-                Text("Status")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
             }
             .padding(.top, 12)
             

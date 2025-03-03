@@ -33,6 +33,7 @@ struct UiDashboardSplitView: View {
     @EnvironmentObject private var mAppModel: AppModel
     @Environment(\.openURL) var openURL
     @State private var selectedItem: String? = "Status"
+    @Environment(\.colorScheme) private var colorScheme
         
     @State private var items_private = [
         "Status",
@@ -48,6 +49,24 @@ struct UiDashboardSplitView: View {
         "WebCLI",
         "Setup",
     ]
+    
+    // Helper to get icon for menu item
+    func getIcon(for item: String) -> String {
+        switch item {
+        case "Status":
+            return "chart.bar"
+        case "Devices":
+            return "network"
+        case "Links":
+            return "link"
+        case "WebCLI":
+            return "terminal"
+        case "Setup":
+            return "gearshape"
+        default:
+            return "questionmark"
+        }
+    }
     
     func getWebCliUrl() {
         var headers: HTTPHeaders = []
@@ -90,51 +109,125 @@ struct UiDashboardSplitView: View {
 
     var body: some View {
         NavigationSplitView {
-            if mAppModel.mBandIsPublic {
-                List(selection: $selectedItem) {
-                    ForEach(items_public, id: \.self) { folder in
-                        NavigationLink(value: folder) {
-                            Text(verbatim: folder)
+            List(selection: $selectedItem) {
+                Section {
+                    ForEach(mAppModel.mBandIsPublic ? items_public : items_private, id: \.self) { item in
+                        NavigationLink(value: item) {
+                            Label {
+                                Text(item)
+                                    .font(.body)
+                            } icon: {
+                                Image(systemName: getIcon(for: item))
+                            }
                         }
+                        .padding(.vertical, 4)
                     }
                 }
-                .navigationTitle("Sidebar")
-            } else {
-                List(selection: $selectedItem) {
-                    ForEach(items_private, id: \.self) { folder in
-                        NavigationLink(value: folder) {
-                            Text(verbatim: folder)
-                        }
+            }
+            .listStyle(.sidebar)
+            .navigationTitle("Mud.band")
+            .navigationSubtitle("Control Panel")
+            .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    Button(action: {
+                        NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
+                    }) {
+                        Image(systemName: "sidebar.left")
                     }
                 }
-                .navigationTitle("Sidebar")
             }
         } detail: {
             if let selectedItem {
-                if selectedItem == "Status" {
-                    UiDashboardStatusListView()
-                        .tag("Status")
-                } else if selectedItem == "Devices" {
-                    UiDashboardDevicesListView()
-                        .tag("Devices")
-                } else if selectedItem == "Links" {
-                    UiDashboardLinksListView()
-                        .tag("Links")
-                } else if selectedItem == "Setup" {
-                    UiDashboardSetupListView()
-                        .tag("Setup")
-                } else if selectedItem == "WebCLI" {
-                    Button("Open WebCLI") {
-                        getWebCliUrl()
+                VStack(alignment: .leading, spacing: 0) {
+                    // Header with macOS style
+                    ZStack(alignment: .leading) {
+                        Rectangle()
+                            .fill(Color(NSColor.controlBackgroundColor))
+                            .frame(height: 45)
+                        
+                        HStack(spacing: 12) {
+                            Image(systemName: getIcon(for: selectedItem))
+                                .font(.system(size: 18, weight: .semibold))
+                            
+                            Text(selectedItem)
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(Color(NSColor.labelColor))
+                        }
+                        .padding(.leading)
                     }
-                } else {
-                    NavigationLink(value: selectedItem) {
-                        Text(verbatim: selectedItem)
-                            .navigationTitle(selectedItem)
+                    .frame(maxWidth: .infinity)
+                    
+                    Divider()
+                    
+                    // Content area
+                    Group {
+                        if selectedItem == "Status" {
+                            UiDashboardStatusListView()
+                                .tag("Status")
+                        } else if selectedItem == "Devices" {
+                            UiDashboardDevicesListView()
+                                .tag("Devices")
+                        } else if selectedItem == "Links" {
+                            UiDashboardLinksListView()
+                                .tag("Links")
+                        } else if selectedItem == "Setup" {
+                            UiDashboardSetupListView()
+                                .tag("Setup")
+                        } else if selectedItem == "WebCLI" {
+                            VStack(spacing: 24) {
+                                Spacer()
+                                
+                                Image(systemName: "terminal")
+                                    .font(.system(size: 56))
+                                    .symbolRenderingMode(.hierarchical)
+                                    .foregroundStyle(Color.accentColor)
+                                
+                                Text("Web Command Line Interface")
+                                    .font(.title2)
+                                    .fontWeight(.medium)
+                                
+                                Text("Access the web-based command line interface")
+                                    .font(.subheadline)
+                                    .foregroundColor(Color(NSColor.secondaryLabelColor))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal)
+                                
+                                Button(action: getWebCliUrl) {
+                                    Text("Open WebCLI in Browser")
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .controlSize(.large)
+                                
+                                Spacer()
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        } else {
+                            Text(verbatim: selectedItem)
+                        }
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
+                .background(Color(NSColor.windowBackgroundColor))
             } else {
-                Text("Choose a menu from the sidebar")
+                VStack(spacing: 16) {
+                    Image(systemName: "arrow.left")
+                        .font(.system(size: 36))
+                        .foregroundColor(Color(NSColor.secondaryLabelColor))
+                    
+                    Text("Select an option from the sidebar")
+                        .font(.title3)
+                        .foregroundColor(Color(NSColor.secondaryLabelColor))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(NSColor.windowBackgroundColor))
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Button(action: {}) {
+                    Image(systemName: "gear")
+                }
+                .help("Settings")
             }
         }
     }

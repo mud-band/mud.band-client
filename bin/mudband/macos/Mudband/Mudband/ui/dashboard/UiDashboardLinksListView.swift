@@ -150,7 +150,6 @@ struct UiDashboardLinksListView: View {
                 }
             }
         }
-	.navigationTitle("Links")
         .background(Color.white)
         .onAppear() {
             update_link_list()
