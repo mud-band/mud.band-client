@@ -24,6 +24,7 @@
 // SUCH DAMAGE.
 //
 
+import AlertToast
 import Alamofire
 import Foundation
 import SwiftUI
@@ -92,15 +93,11 @@ class UiDashboardSetupDangerZoneUnenrollModel : ObservableObject {
     }
 }
 
-struct UiDashboardSetupDangerZoneUnenrollView: View {
+struct UiDashboardSetupEnrollmentNewView: View {
     @EnvironmentObject private var mAppModel: AppModel
-    @ObservedObject private var mUnenrollModel = UiDashboardSetupDangerZoneUnenrollModel()
-    @State private var mNeedToShowPopupConnect = false
-    @State private var mUnenrollAlertNeed = false
-    @State private var mUnenrollAlertMessage = ""
-    @State private var mCanUnenroll = true
+    @State private var mCanEnroll = true
     
-    private func isUnenrollable() -> Bool {
+    private func isEnrollable() -> Bool {
         if mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" ||
            mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
             return true
@@ -109,50 +106,31 @@ struct UiDashboardSetupDangerZoneUnenrollView: View {
     }
     
     var body: some View {
-        HStack {
-            Text("Remove the enrollment")
-            Spacer()
-            Button(action: {
-                mNeedToShowPopupConnect = true
-            }) {
-                Text("Unenroll").foregroundStyle(.red)
+        NavigationLink(destination: UiEnrollmentNewView()) {
+            HStack(spacing: 12) {
+                Image(systemName: "plus.circle.fill")
+                    .foregroundColor(.blue)
+                    .font(.system(size: 18))
+                    .frame(width: 24, height: 24)
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Add New Enrollment")
+                        .font(.system(size: 14, weight: .medium))
+                    
+                    Text("Set up a new connection")
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
             }
-            .disabled(mCanUnenroll == false)
+            .padding(.vertical, 6)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(!mCanEnroll)
         .onAppear {
-            if isUnenrollable() {
-                mCanUnenroll = true
-            } else {
-                mCanUnenroll = false
-            }
-        }
-        .popover(isPresented: $mNeedToShowPopupConnect,
-                 attachmentAnchor: .point(.bottom),
-                 arrowEdge: .bottom) {
-            Text("Do you really want to remove the enrollment?")
-                .font(.headline)
-                .padding()
-            HStack {
-                Button("Yes") {
-                    mNeedToShowPopupConnect = false
-                    mUnenrollModel.mudband_unenroll(unenrollCompletionHandler: { error in
-                        if let error = error {
-                            mUnenrollAlertNeed = true
-                            mUnenrollAlertMessage = "\(error)"
-                            return
-                        }
-                        mAppModel.update_enrollments()
-                    })
-                }
-                Button("No") {
-                    mNeedToShowPopupConnect = false
-                }
-            }.padding()
-        }
-        .alert("Unenroll Error", isPresented: $mUnenrollAlertNeed) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text(mUnenrollAlertMessage)
+            mCanEnroll = isEnrollable()
         }
     }
 }
@@ -170,27 +148,46 @@ struct UiDashboardSetupEnrollmentChangeView: View {
     }
     
     var body: some View {
-        HStack {
-            NavigationLink(destination: UiEnrollmentChangeView()) {
-                Text("Change the enrollment")
+        NavigationLink(destination: UiEnrollmentChangeView()) {
+            HStack(spacing: 12) {
+                Image(systemName: "arrow.triangle.swap")
+                    .foregroundColor(.blue)
+                    .font(.system(size: 18))
+                    .frame(width: 24, height: 24)
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Change Enrollment")
+                        .font(.system(size: 14, weight: .medium))
+                    
+                    Text("Switch to another connection")
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
             }
-            .disabled(mCanChangeEnrollment == false)
+            .padding(.vertical, 6)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(!mCanChangeEnrollment)
         .onAppear {
-            if isChangable() {
-                mCanChangeEnrollment = true
-            } else {
-                mCanChangeEnrollment = false
-            }
+            mCanChangeEnrollment = isChangable()
         }
     }
 }
 
-struct UiDashboardSetupEnrollmentNewView: View {
+struct UiDashboardSetupDangerZoneUnenrollView: View {
     @EnvironmentObject private var mAppModel: AppModel
-    @State private var mCanEnroll = true
+    @ObservedObject private var mUnenrollModel = UiDashboardSetupDangerZoneUnenrollModel()
+    @State private var mShowConfirmationSheet = false
+    @State private var mUnenrollAlertNeed = false
+    @State private var mUnenrollAlertMessage = ""
+    @State private var mCanUnenroll = true
     
-    private func isEnrollable() -> Bool {
+    var onUnenrollSuccess: () -> Void
+    
+    private func isUnenrollable() -> Bool {
         if mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" ||
            mAppModel.mVpnManager.getVPNStatusString() == "Not_ready" {
             return true
@@ -199,35 +196,186 @@ struct UiDashboardSetupEnrollmentNewView: View {
     }
     
     var body: some View {
-        HStack {
-            NavigationLink(destination: UiEnrollmentNewView()) {
-                Text("Add new enrollment")
+        Button(action: {
+            mShowConfirmationSheet = true
+        }) {
+            HStack(spacing: 12) {
+                Image(systemName: "trash.fill")
+                    .foregroundColor(.red)
+                    .font(.system(size: 18))
+                    .frame(width: 24, height: 24)
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Remove Enrollment")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.red)
+                    
+                    Text("Disconnect permanently from this network")
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
             }
-            .disabled(mCanEnroll == false)
+            .padding(.vertical, 6)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(!mCanUnenroll)
         .onAppear {
-            if isEnrollable() {
-                mCanEnroll = true
-            } else {
-                mCanEnroll = false
+            mCanUnenroll = isUnenrollable()
+        }
+        .sheet(isPresented: $mShowConfirmationSheet) {
+            VStack(spacing: 20) {
+                Image(systemName: "exclamationmark.triangle")
+                    .font(.system(size: 36))
+                    .foregroundColor(.red)
+                    .padding(.top, 24)
+                
+                Text("Confirm Unenrollment")
+                    .font(.headline)
+                
+                Text("Are you sure you want to remove this enrollment?\nThis action cannot be undone.")
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 300)
+                    .padding(.horizontal)
+                
+                HStack(spacing: 16) {
+                    Button("Cancel") {
+                        mShowConfirmationSheet = false
+                    }
+                    .keyboardShortcut(.escape, modifiers: [])
+                    
+                    Button("Remove") {
+                        mShowConfirmationSheet = false
+                        mUnenrollModel.mudband_unenroll(unenrollCompletionHandler: { error in
+                            if let error = error {
+                                mUnenrollAlertNeed = true
+                                mUnenrollAlertMessage = "\(error)"
+                                return
+                            }
+                            onUnenrollSuccess()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                mAppModel.update_enrollments()
+                            }
+                        })
+                    }
+                    .keyboardShortcut(.return, modifiers: [])
+                    .foregroundColor(.red)
+                }
+                .padding(.bottom, 24)
             }
+            .frame(width: 400, height: 280)
+        }
+        .alert(isPresented: $mUnenrollAlertNeed) {
+            Alert(
+                title: Text("Unenroll Error"),
+                message: Text(mUnenrollAlertMessage),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
 }
 
 struct UiDashboardSetupListView: View {
-    @ViewBuilder
+    @State private var mShowSuccessToast = false
+    @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject private var mAppModel: AppModel
+    
     var body: some View {
-        VStack {
-            List {
-                Section(header: Text("Enrollment")) {
-                    UiDashboardSetupEnrollmentNewView()
-                    UiDashboardSetupEnrollmentChangeView()
+        VStack(alignment: .leading, spacing: 0) {
+            // Header with toolbar look
+            HStack {
+                Text("Setup")
+                    .font(.system(size: 22, weight: .semibold))
+            }
+            .padding(.horizontal)
+            .padding(.top, 16)
+            .padding(.bottom, 12)
+            
+            Divider()
+                .padding(.bottom, 16)
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    // Enrollment Options Group
+                    GroupBox(label: 
+                        Label("Enrollment", systemImage: "network")
+                            .font(.system(size: 13, weight: .semibold))
+                    ) {
+                        VStack(spacing: 0) {
+                            UiDashboardSetupEnrollmentNewView()
+                                .padding(.vertical, 4)
+                            
+                            Divider()
+                                .padding(.leading, 36)
+                            
+                            UiDashboardSetupEnrollmentChangeView()
+                                .padding(.vertical, 4)
+                        }
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 2)
+                    }
+                    .groupBoxStyle(MacGroupBoxStyle())
+                    
+                    // Danger Zone Group
+                    GroupBox(label: 
+                        Label("Danger Zone", systemImage: "exclamationmark.triangle")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.red)
+                    ) {
+                        UiDashboardSetupDangerZoneUnenrollView(onUnenrollSuccess: {
+                            mShowSuccessToast = true
+                        })
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 2)
+                    }
+                    .groupBoxStyle(DangerZoneGroupBoxStyle())
                 }
-                Section(header: Text("DANGER ZONE")) {
-                    UiDashboardSetupDangerZoneUnenrollView()
-                }
-            }.padding()
+                .padding(.horizontal)
+                .padding(.bottom, 16)
+            }
+        }
+        .background(colorScheme == .dark ? Color(NSColor.windowBackgroundColor) : Color(NSColor.controlBackgroundColor))
+        .toast(isPresenting: $mShowSuccessToast) {
+            AlertToast(displayMode: .hud, type: .complete(.green), title: "Unenroll Successful")
+        }
+    }
+}
+
+// Custom GroupBox styles for macOS
+struct MacGroupBoxStyle: GroupBoxStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(alignment: .leading) {
+            configuration.label
+                .padding(.bottom, 4)
+            
+            configuration.content
+                .padding(10)
+                .background(Color(NSColor.controlBackgroundColor))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                )
+        }
+    }
+}
+
+struct DangerZoneGroupBoxStyle: GroupBoxStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(alignment: .leading) {
+            configuration.label
+                .padding(.bottom, 4)
+            
+            configuration.content
+                .padding(10)
+                .background(Color.red.opacity(0.05))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Color.red.opacity(0.3), lineWidth: 1)
+                )
         }
     }
 }

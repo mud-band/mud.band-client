@@ -42,6 +42,10 @@
 		FBB31E612D0AAA32005D1D51 /* mudband_ui_enroll.m in Sources */ = {isa = PBXBuildFile; fileRef = FBB31E602D0AAA32005D1D51 /* mudband_ui_enroll.m */; };
 		FBBBA3B62D4B28F300227E55 /* mudband_bpf.c in Sources */ = {isa = PBXBuildFile; fileRef = FBBBA3B42D4B28F300227E55 /* mudband_bpf.c */; };
 		FBCF074C2D4B2CE400CE7436 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = FBCF074B2D4B2CE400CE7436 /* SwiftyJSON */; };
+		FBD64A7E2D74F9350036BC2C /* UiEnrollmentIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD64A7D2D74F9350036BC2C /* UiEnrollmentIntroView.swift */; };
+		FBD64A802D7503870036BC2C /* UiBandCreateAsGuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD64A7F2D7503760036BC2C /* UiBandCreateAsGuestView.swift */; };
+		FBD64A822D751A260036BC2C /* mudband_ui_bandadmin.m in Sources */ = {isa = PBXBuildFile; fileRef = FBD64A812D751A1F0036BC2C /* mudband_ui_bandadmin.m */; };
+		FBD64A852D7521230036BC2C /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = FBD64A842D7521230036BC2C /* AlertToast */; };
 		FBF4100F2D4ACFBE00F8A45A /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410052D4ACFBE00F8A45A /* crypto.c */; };
 		FBF410132D4AD04900F8A45A /* callout.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF4100B2D4ACFBE00F8A45A /* callout.c */; };
 		FBF410172D4AD08B00F8A45A /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = FBF410152D4AD08B00F8A45A /* odr.c */; };
@@ -166,6 +170,9 @@
 		FBB31E622D0AAAAC005D1D51 /* mudband_ui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mudband_ui.h; sourceTree = "<group>"; };
 		FBBBA3B42D4B28F300227E55 /* mudband_bpf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mudband_bpf.c; path = ../../../../../../common/mudband_bpf.c; sourceTree = "<group>"; };
 		FBBBA3B52D4B28F300227E55 /* mudband_bpf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mudband_bpf.h; path = ../../../../../../common/mudband_bpf.h; sourceTree = "<group>"; };
+		FBD64A7D2D74F9350036BC2C /* UiEnrollmentIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiEnrollmentIntroView.swift; sourceTree = "<group>"; };
+		FBD64A7F2D7503760036BC2C /* UiBandCreateAsGuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiBandCreateAsGuestView.swift; sourceTree = "<group>"; };
+		FBD64A812D751A1F0036BC2C /* mudband_ui_bandadmin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mudband_ui_bandadmin.m; sourceTree = "<group>"; };
 		FBF410012D4ACFBE00F8A45A /* wireguard-platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "wireguard-platform.h"; path = "../../../../../../common/wireguard-platform.h"; sourceTree = "<group>"; };
 		FBF410032D4ACFBE00F8A45A /* crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crypto.h; path = ../../../../../../common/crypto.h; sourceTree = "<group>"; };
 		FBF410052D4ACFBE00F8A45A /* crypto.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = crypto.c; path = ../../../../../../common/crypto.c; sourceTree = "<group>"; };
@@ -221,6 +228,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBD64A852D7521230036BC2C /* AlertToast in Frameworks */,
 				FBA7F4162D094D5100C3E25D /* SwiftyJSON in Frameworks */,
 				FBA7F4082D09210F00C3E25D /* Alamofire in Frameworks */,
 			);
@@ -340,6 +348,7 @@
 				FBB31E622D0AAAAC005D1D51 /* mudband_ui.h */,
 				FB21383B2D0656B3008C4BB7 /* mudband_ui.m */,
 				FB91D0412D692DAC0035DF2B /* mudband_ui_confmgr.m */,
+				FBD64A812D751A1F0036BC2C /* mudband_ui_bandadmin.m */,
 				FBB31E602D0AAA32005D1D51 /* mudband_ui_enroll.m */,
 				FBA4CEC32D0D2EC400252A0F /* mudband_ui_progconf.m */,
 			);
@@ -353,8 +362,10 @@
 				FB6909BC2D4BFFD70086B56F /* UiDashboardSplitView.swift */,
 				FB0C309B2D52B4430071F768 /* UiDashboardUserTosAgreement.swift */,
 				FBB31E5E2D0A9FED005D1D51 /* UiDashboardView.swift */,
+				FBD64A7F2D7503760036BC2C /* UiBandCreateAsGuestView.swift */,
 				FB796A592D14DF310061007D /* UiEnrollmentChangeView.swift */,
 				FB2138412D067C01008C4BB7 /* UiEnrollmentNewView.swift */,
+				FBD64A7D2D74F9350036BC2C /* UiEnrollmentIntroView.swift */,
 				FB2138162D064BA1008C4BB7 /* UiMainEntryView.swift */,
 			);
 			path = ui;
@@ -494,6 +505,7 @@
 			packageProductDependencies = (
 				FBA7F4072D09210F00C3E25D /* Alamofire */,
 				FBA7F4152D094D5100C3E25D /* SwiftyJSON */,
+				FBD64A842D7521230036BC2C /* AlertToast */,
 			);
 			productName = Mudband;
 			productReference = FB2138112D064BA1008C4BB7 /* Mud.band.app */;
@@ -552,6 +564,7 @@
 			packageReferences = (
 				FBF5D1A42D080E2100BF6D73 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				FBA7F4142D094D3D00C3E25D /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+				FBD64A832D7521230036BC2C /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = FB2138122D064BA1008C4BB7 /* Products */;
 			projectDirPath = "";
@@ -613,6 +626,7 @@
 				FB91D0422D692DAC0035DF2B /* mudband_ui_confmgr.m in Sources */,
 				FBF4105F2D4AD1E700F8A45A /* strbuffer.c in Sources */,
 				FBF410662D4AD20B00F8A45A /* chacha20poly1305.c in Sources */,
+				FBD64A822D751A260036BC2C /* mudband_ui_bandadmin.m in Sources */,
 				FB7CEF812D4D80250010D660 /* UiDashboardLinksListView.swift in Sources */,
 				FBF410652D4AD20800F8A45A /* chacha20.c in Sources */,
 				FBF410692D4AD22300F8A45A /* vtc_log.c in Sources */,
@@ -625,7 +639,9 @@
 				FBF410582D4AD1D300F8A45A /* dump.c in Sources */,
 				FBF4105E2D4AD1E400F8A45A /* pack_unpack.c in Sources */,
 				FBF4105C2D4AD1DE00F8A45A /* load.c in Sources */,
+				FBD64A802D7503870036BC2C /* UiBandCreateAsGuestView.swift in Sources */,
 				FBF410622D4AD1EE00F8A45A /* value.c in Sources */,
+				FBD64A7E2D74F9350036BC2C /* UiEnrollmentIntroView.swift in Sources */,
 				FBF4106A2D4AD22D00F8A45A /* vsb.c in Sources */,
 				FB21383C2D0656B3008C4BB7 /* mudband_ui.m in Sources */,
 			);
@@ -1007,6 +1023,14 @@
 				minimumVersion = 5.0.2;
 			};
 		};
+		FBD64A832D7521230036BC2C /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.9;
+			};
+		};
 		FBF5D1A42D080E2100BF6D73 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -1037,6 +1061,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FBA7F4142D094D3D00C3E25D /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
 			productName = SwiftyJSON;
+		};
+		FBD64A842D7521230036BC2C /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FBD64A832D7521230036BC2C /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

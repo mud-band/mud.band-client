@@ -24,6 +24,7 @@
 // SUCH DAMAGE.
 //
 
+import AlertToast
 import Alamofire
 import SwiftUI
 import SwiftyJSON
@@ -52,8 +53,8 @@ class UiEnrollmentNewModel : ObservableObject {
                 target.mMfaAlertNeed = true
                 target.mMfaAlertURL = msg
             } else {
-                target.mErrorAlertNeed = true
                 target.mErrorAlertMessage = msg
+                target.mShowErrorToast = true
             }
         }
     }
@@ -66,8 +67,11 @@ class UiEnrollmentNewModel : ObservableObject {
             return
         }
         DispatchQueue.main.async {
-            appModel.update_enrollments()
-            target.dismiss()
+            target.mShowSuccessToast = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                appModel.update_enrollments()
+                target.dismiss()
+            }
         }
     }
     
@@ -90,38 +94,37 @@ class UiEnrollmentNewModel : ObservableObject {
                                        name: mDeviceName,
                                        wireguard_pubkey: pub_key,
                                        secret: mEnrollmentSecret)
-        AF.request("https://www.mud.band/api/band/enroll",
-                   method: .post,
-                   parameters: parameters,
-                   encoder: JSONParameterEncoder.default,
-                   interceptor: .retryPolicy)
-        .responseString { resp in
-            self.update_is_enrolling(target: target, ing: false)
-            switch resp.result {
-            case .success(let str):
-                if let obj = try? JSON(data: Data(str.utf8)) {
-                    if obj["status"].intValue != 200 {
-                        if obj["status"].intValue == 301 {
-                            self.enroll_set_result(target: target,
-                                                   status: 301,
-                                                   msg: obj["sso_url"].stringValue)
-                            return
-                        }
+        let resp = await AF.request("https://www.mud.band/api/band/enroll",
+                                    method: .post,
+                                    parameters: parameters,
+                                    encoder: JSONParameterEncoder.default,
+                                    interceptor: .retryPolicy)
+            .serializingString().response
+        self.update_is_enrolling(target: target, ing: false)
+        switch resp.result {
+        case .success(let str):
+            if let obj = try? JSON(data: Data(str.utf8)) {
+                if obj["status"].intValue != 200 {
+                    if obj["status"].intValue == 301 {
                         self.enroll_set_result(target: target,
-                                               status: 501,
-                                               msg: obj["msg"].stringValue)
+                                               status: 301,
+                                               msg: obj["sso_url"].stringValue)
                         return
                     }
+                    self.enroll_set_result(target: target,
+                                           status: 501,
+                                           msg: obj["msg"].stringValue)
+                    return
                 }
-                self.enroll_success(target: target,
-                                    appModel: appModel, priv_key: priv_key, raw_str: str)
-            case .failure(let error):
-                self.enroll_set_result(target: target,
-                                       status: 502,
-                                       msg: "\(error)")
             }
+            self.enroll_success(target: target,
+                                appModel: appModel, priv_key: priv_key, raw_str: str)
+        case .failure(let error):
+            self.enroll_set_result(target: target,
+                                   status: 502,
+                                   msg: "\(error)")
         }
-        enroll_set_result(target: target, status: 200, msg: "")
+        self.enroll_set_result(target: target, status: 200, msg: "")
     }
 }
 
@@ -135,60 +138,128 @@ struct UiEnrollmentNewView: View {
     @State var mErrorAlertNeed = false
     @State var mErrorAlertMessage = ""
     @State var mIsEnrolling = false
+    @State var mShowSuccessToast = false
+    @State var mShowErrorToast = false
 
     @ViewBuilder
     var body: some View {
-        VStack {
-            Text("Enrollment").font(.title).padding()
-            Text("Input the enrollment information.")
-                .padding(.bottom, 10)
-            Form {
-                TextField(text: $mEnrollmentModel.mEnrollmentToken, prompt: Text("Required")) {
+        VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Device Enrollment")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.primary)
+                
+                Text("Enter the information to register your new device.")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal)
+            
+            VStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
                     Text("Enrollment Token")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    
+                    TextField("Enter your enrollment token", text: $mEnrollmentModel.mEnrollmentToken)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(maxWidth: .infinity)
                 }
-                TextField(text: $mEnrollmentModel.mDeviceName, prompt: Text("Required")) {
+                
+                VStack(alignment: .leading, spacing: 8) {
                     Text("Device Name")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    
+                    TextField("Enter a name for this device", text: $mEnrollmentModel.mDeviceName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(maxWidth: .infinity)
                 }
-                TextField(text: $mEnrollmentModel.mEnrollmentSecret, prompt: Text("Optional")) {
-                    Text("Enrollment Secret")
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Enrollment Secret (Optional)")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    
+                    TextField("Enter your secret if you have one", text: $mEnrollmentModel.mEnrollmentSecret)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(maxWidth: .infinity)
                 }
             }
+            .padding()
+            
+            Spacer()
+            
             HStack {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Text("Back")
+                        .frame(minWidth: 100)
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 12)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.regular)
+                .disabled(mIsEnrolling)
+                
                 Spacer()
-                if mIsEnrolling {
-                    ProgressView().controlSize(.small)
-                        .padding(.trailing, 2)
-                }
-                Button("Enroll") {
+                
+                Button(action: {
                     Task {
-                        await mEnrollmentModel.enroll(target: self,
-                                                      appModel: mAppModel)
+                        await mEnrollmentModel.enroll(target: self, appModel: mAppModel)
                     }
-                }
-                .disabled(mIsEnrolling == true)
-                .alert("Enrollment Error", isPresented: $mErrorAlertNeed) {
-                    Button("Dismiss", role: .cancel) { }
-                } message: {
-                    Text(mErrorAlertMessage)
-                }
-                .alert("MFA Required", isPresented: $mMfaAlertNeed) {
-                    Button("Open URL") {
-                        if let url = URL(string: mMfaAlertURL) {
-                            openURL(url)
+                }) {
+                    HStack {
+                        if mIsEnrolling {
+                            ProgressView()
+                                .controlSize(.small)
+                                .padding(.trailing, 4)
                         }
-                    }
-                    Button("Dismiss", role: .cancel) {
                         
+                        Text(mIsEnrolling ? "Enrolling..." : "Enroll Device")
                     }
-                } message: {
-                    Text("MFA required to enroll")
+                    .frame(minWidth: 100)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 12)
                 }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.regular)
+                .disabled(mIsEnrolling)
             }
+            .padding(.horizontal)
+            .padding(.bottom)
         }
         .padding()
+        .background(Color.white)
+        .alert("MFA Authentication Required", isPresented: $mMfaAlertNeed) {
+            Button("Open URL") {
+                if let url = URL(string: mMfaAlertURL) {
+                    openURL(url)
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Multi-factor authentication is required to complete enrollment.")
+        }
+        .toast(isPresenting: $mShowSuccessToast) {
+            AlertToast(displayMode: .banner(.slide),
+                       type: .complete(.green),
+                       title: "Enrollment Successful",
+                       subTitle: "Your device has been successfully enrolled.")
+        }
+        .toast(isPresenting: $mShowErrorToast) {
+            AlertToast(displayMode: .hud,
+                       type: .error(.red),
+                       title: "Enrollment Error",
+                       subTitle: mErrorAlertMessage)
+        }
     }
 }
 
 #Preview {
     UiEnrollmentNewView()
+        .frame(minWidth: 400, maxWidth: 500, minHeight: 500, maxHeight: 600)
+        .background(Color.white)
 }

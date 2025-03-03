@@ -37,6 +37,10 @@ struct mudband_ui_traversal_dir_arg {
 /* mudband_ui.m */
 extern const char *band_enroll_dir;
 extern const char *band_top_dir;
+extern const char *band_admin_dir;
+
+/* mudband_ui_bandadmin.m */
+int     mudband_ui_bandadmin_init(void);
 
 /* mudband_ui_confmgr.m */
 void    mudband_ui_confmgr_init(void);

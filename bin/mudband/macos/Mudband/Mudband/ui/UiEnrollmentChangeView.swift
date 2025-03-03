@@ -31,6 +31,8 @@ import SwiftyJSON
 struct UiEnrollmentChangeView: View {
     @EnvironmentObject private var mAppModel: AppModel
     @Environment(\.dismiss) var dismiss
+    @State private var searchText = ""
+    @State private var selectedEnrollment: String?
     
     struct Enrollment: Identifiable {
         var id = UUID()
@@ -73,26 +75,133 @@ struct UiEnrollmentChangeView: View {
         self.dismiss()
     }
     
+    private var filteredEnrollments: [Enrollment] {
+        if searchText.isEmpty {
+            return enrollments
+        } else {
+            return enrollments.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
+    
     @ViewBuilder
     var body: some View {
-        VStack {
-            Text("Enrollment List").font(.title).padding()
-            List(enrollments, id: \.id) { enrollment in
-                HStack{
-                    Text(enrollment.name).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                    Spacer()
-                    Button {
-                        change_enrollment_default_band_uuid(band_uuid: enrollment.band_uuid)
-                    } label: {
-                        Text("Change")
+        VStack(alignment: .leading, spacing: 0) {
+            // Header
+            HStack {
+                Text("Select Enrollment")
+                    .font(.system(size: 18, weight: .semibold))
+                
+                Spacer()
+                
+                Button(action: { dismiss() }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                        .font(.system(size: 16))
+                }
+                .buttonStyle(.plain)
+            }
+            .padding([.horizontal, .top])
+            .padding(.bottom, 8)
+            
+            // Search bar
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(.gray)
+                
+                TextField("Search", text: $searchText)
+                    .textFieldStyle(PlainTextFieldStyle())
+                
+                if !searchText.isEmpty {
+                    Button(action: { searchText = "" }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
                     }
+                    .buttonStyle(.plain)
                 }
             }
-            .padding()
-            .onAppear() {
-                update_enrollment_list()
+            .padding(7)
+            .background(Color(white: 0.95))
+            .cornerRadius(8)
+            .padding(.horizontal)
+            .padding(.bottom, 12)
+            
+            // Divider
+            Divider()
+                .padding(.horizontal)
+            
+            // Enrollment list
+            if filteredEnrollments.isEmpty {
+                VStack(spacing: 12) {
+                    Image(systemName: "questionmark.folder")
+                        .font(.system(size: 32))
+                        .foregroundColor(.gray)
+                    Text("No enrollments found")
+                        .foregroundColor(.gray)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding()
+            } else {
+                List(selection: $selectedEnrollment) {
+                    ForEach(filteredEnrollments) { enrollment in
+                        EnrollmentRow(enrollment: enrollment, isSelected: selectedEnrollment == enrollment.band_uuid) {
+                            change_enrollment_default_band_uuid(band_uuid: enrollment.band_uuid)
+                        }
+                        .tag(enrollment.band_uuid)
+                    }
+                }
+                .listStyle(InsetListStyle())
+                .background(Color.white)
             }
+            
+            // Footer
+            HStack {
+                Spacer()
+                Button("Cancel") {
+                    dismiss()
+                }
+                .keyboardShortcut(.cancelAction)
+                
+                Button("Select") {
+                    if let selected = selectedEnrollment,
+                       let enrollment = enrollments.first(where: { $0.band_uuid == selected }) {
+                        change_enrollment_default_band_uuid(band_uuid: enrollment.band_uuid)
+                    }
+                }
+                .keyboardShortcut(.defaultAction)
+                .disabled(selectedEnrollment == nil)
+                .buttonStyle(.borderedProminent)
+            }
+            .padding()
         }
+        .background(Color.white)
+        .onAppear {
+            update_enrollment_list()
+        }
+    }
+}
+
+struct EnrollmentRow: View {
+    let enrollment: UiEnrollmentChangeView.Enrollment
+    let isSelected: Bool
+    let onSelect: () -> Void
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(enrollment.name)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(isSelected ? .white : .black)
+                
+                Text(enrollment.band_uuid)
+                    .font(.system(size: 12))
+                    .foregroundColor(isSelected ? .white.opacity(0.8) : .gray)
+                    .lineLimit(1)
+            }            
+        }
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
+        .background(isSelected ? Color.blue.opacity(0.1) : Color.clear)
+        .cornerRadius(4)
     }
 }
 
