@@ -32,7 +32,7 @@ mudband_ui_bandadmin_get(void)
              band_admin_dir, default_band_uuid);
     root = json_load_file(filepath, 0, NULL);
     if (root == NULL) {
-        vtc_log(bandadmin_vl, 0, "BANDEC_XXXXX: Failed to load band admin file.");
+        vtc_log(bandadmin_vl, 0, "BANDEC_00842: Failed to load band admin file.");
         return (NULL);
     }
     body = json_dumps(root, JSON_INDENT(2));

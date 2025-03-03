@@ -126,7 +126,7 @@ static uint8_t mqtt_recvbuf[1024];
 static int mqtt_fd = -1;
 static int mqtt_connected = 0;
 
-static void mudband_tunnel_mqtt_connect(void);
+static int mudband_tunnel_mqtt_connect(void);
 
 static int
 mqtt_open_sock(const char* addr, const char* port)
@@ -1679,11 +1679,17 @@ mudband_tunnel_mqtt_disconnect(void)
 static void
 mudband_tunnel_mqtt_reconnect(void)
 {
+	int r;
 
 	vtc_log(mqtt_vl, 2, "Trying to reconnect to MQTT broker.");
 
 	mudband_tunnel_mqtt_disconnect();
-	mudband_tunnel_mqtt_connect();
+	r = mudband_tunnel_mqtt_connect();
+	if (r != 0) {
+		vtc_log(mqtt_vl, 0,
+		    "BANDEC_00840: Failed to reconnect to MQTT broker.");
+		return;
+	}
 	mudband_tunnel_mqtt_subscribe();
 }
 
@@ -1746,7 +1752,7 @@ mudband_tunnel_mqtt_subscribe(void)
     }
 }
 
-static void
+static int
 mudband_tunnel_mqtt_connect(void)
 {
     enum mqtt_error error;
@@ -1757,7 +1763,7 @@ mudband_tunnel_mqtt_connect(void)
     if (mqtt_fd == -1) {
         vtc_log(mqtt_vl, 0,
 		"BANDEC_00682: Failed to connect to MQTT broker.");
-	return;
+	return (-1);
     }
     error = mqtt_init(&mqtt_client, mqtt_fd,
 		      mqtt_sendbuf, sizeof(mqtt_sendbuf),
@@ -1772,14 +1778,21 @@ mudband_tunnel_mqtt_connect(void)
     vtc_log(mqtt_vl, 2, "Connected to MQTT broker.");
 
     mqtt_connected = 1;
+    return (0);
 }
 
 int
 mudband_tunnel_mqtt_init(void)
 {
+    int r;
 
     mqtt_vl = vtc_logopen("mqtt", mudband_tunnel_log_callback);
     AN(mqtt_vl);
-    mudband_tunnel_mqtt_connect();
+    r = mudband_tunnel_mqtt_connect();
+    if (r != 0) {
+	vtc_log(mqtt_vl, 0,
+		"BANDEC_00841: Failed to connect to MQTT broker.");
+	return (-1);
+    }
     return (0);
 }

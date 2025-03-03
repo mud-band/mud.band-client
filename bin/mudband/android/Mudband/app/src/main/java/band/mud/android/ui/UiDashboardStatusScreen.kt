@@ -350,11 +350,11 @@ fun UiDashboardStatusScreen(
                                 }
                             } catch (e: Exception) {
                                 tokenError = "Failed to parse response: ${e.message}"
-                                MudbandLog.e("BANDEC_XXXXX: Failed to parse enrollment token response: ${e.message}")
+                                MudbandLog.e("BANDEC_00832: Failed to parse enrollment token response: ${e.message}")
                             }
                         } else {
                             tokenError = "Server returned ${response.code}: $responseBody"
-                            MudbandLog.e("BANDEC_XXXXX: Failed to get enrollment token: ${response.code}")
+                            MudbandLog.e("BANDEC_00833: Failed to get enrollment token: ${response.code}")
                         }
                     }
                 }
@@ -362,7 +362,7 @@ fun UiDashboardStatusScreen(
                 withContext(Dispatchers.Main) {
                     isLoadingToken = false
                     tokenError = "Network error: ${e.message}"
-                    MudbandLog.e("BANDEC_XXXXX: Network error getting enrollment token: ${e.message}")
+                    MudbandLog.e("BANDEC_00834: Network error getting enrollment token: ${e.message}")
                 }
             }
         }

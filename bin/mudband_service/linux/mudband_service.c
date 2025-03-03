@@ -581,21 +581,21 @@ cmd_save_band_admin(char *out, size_t outmax, json_t *root)
 	args = json_object_get(root, "args");
 	if (!args || !json_is_object(args)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_XXXXX: Invalid arguments for save_band_admin");
+			"BANDEC_00818: Invalid arguments for save_band_admin");
 		return (-1);
 	}
 
 	band_uuid = json_object_get(args, "band_uuid");
 	if (!band_uuid || !json_is_string(band_uuid)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_XXXXX: Missing or invalid band UUID");
+			"BANDEC_00819: Missing or invalid band UUID");
 		return (-1);
 	}
 
 	jwt = json_object_get(args, "jwt");
 	if (!jwt || !json_is_string(jwt)) {
 		vtc_log(vl, VTCLOG_LEVEL_ERROR, 
-			"BANDEC_XXXXX: Missing or invalid JWT");
+			"BANDEC_00820: Missing or invalid JWT");
 		return (-1);
 	}
 	rv = MBA_save(json_string_value(band_uuid), json_string_value(jwt));

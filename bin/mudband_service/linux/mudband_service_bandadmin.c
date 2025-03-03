@@ -66,7 +66,7 @@ MBA_get(void)
 	    band_confdir_admin, default_band_uuid);
 	root = json_load_file(filepath, 0, NULL);
 	if (root == NULL) {
-		vtc_log(vl, 0, "BANDEC_XXXXX: Failed to load band admin file.");
+		vtc_log(vl, 0, "BANDEC_00821: Failed to load band admin file.");
 		return (NULL);
 	}
 	return (root);

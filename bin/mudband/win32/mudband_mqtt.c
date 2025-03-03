@@ -129,7 +129,7 @@ static uint8_t mqtt_recvbuf[1024];
 static int mqtt_fd = -1;
 static int mqtt_connected = 0;
 
-static void	MQTT_connect(void);
+static int	MQTT_connect(void);
 
 #include <ws2tcpip.h>
 
@@ -1677,11 +1677,17 @@ MQTT_disconnect(void)
 static void
 MQTT_reconnect(void)
 {
+	int r;
 
 	vtc_log(mqtt_vl, 2, "Trying to reconnect to MQTT broker.");
 
 	MQTT_disconnect();
-	MQTT_connect();
+	r = MQTT_connect();
+	if (r != 0) {
+		vtc_log(mqtt_vl, 0,
+		    "BANDEC_00828: Failed to reconnect to MQTT broker.");
+		return;
+	}
 	MQTT_subscribe();
 }
 
@@ -1744,7 +1750,7 @@ MQTT_subscribe(void)
 	}
 }
 
-static void
+static int
 MQTT_connect(void)
 {
 	enum mqtt_error error;
@@ -1755,7 +1761,7 @@ MQTT_connect(void)
 	if (mqtt_fd == -1) {
 		vtc_log(mqtt_vl, 0,
 		    "BANDEC_00678: Failed to connect to MQTT broker.");
-		return;
+		return (-1);
 	}
 	error = mqtt_init(&mqtt_client, mqtt_fd,
 	    mqtt_sendbuf, sizeof(mqtt_sendbuf),
@@ -1769,15 +1775,22 @@ MQTT_connect(void)
 	vtc_log(mqtt_vl, 2, "Connected to MQTT broker.");
 
 	mqtt_connected = 1;
+	return (0);
 }
 
 int
 MQTT_init(void)
 {
+	int r;
 
 	mqtt_vl = vtc_logopen("mqtt", NULL);
 	AN(mqtt_vl);
-	MQTT_connect();
+	r = MQTT_connect();
+	if (r != 0) {
+		vtc_log(mqtt_vl, 0,
+		    "BANDEC_00829: Failed to connect to MQTT broker.");
+		return (-1);
+	}
 
 	return (0);
 }
