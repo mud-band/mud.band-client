@@ -179,6 +179,18 @@ mudband_ui_progconf_get_default_band_uuid(void)
     return (json_string_value(default_band_uuid));
 }
 
+NSString *
+mudband_ui_progconf_get_default_band_uuid_objc(void)
+{
+    const char *default_band_uuid;
+
+    default_band_uuid = mudband_ui_progconf_get_default_band_uuid();
+    if (default_band_uuid == NULL) {
+        return (NULL);
+    }
+    return ([NSString stringWithUTF8String:default_band_uuid]);
+}
+
 void
 mudband_ui_progconf_init(void)
 {

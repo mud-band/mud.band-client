@@ -36,6 +36,7 @@ struct UiDashboardDevicesListView: View {
         var private_ip: String
     }
     @State var devices: [Device] = []
+    @State private var searchText: String = ""
     
     private func read_band_conf() -> JSON? {
         guard let band_uuid = mudband_ui_enroll_get_band_uuid() else {
@@ -66,20 +67,77 @@ struct UiDashboardDevicesListView: View {
         }
     }
     
+    private var filteredDevices: [Device] {
+        if searchText.isEmpty {
+            return devices
+        } else {
+            return devices.filter { device in
+                device.name.localizedCaseInsensitiveContains(searchText) ||
+                device.private_ip.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
     @ViewBuilder
     var body: some View {
         VStack {
             if devices.isEmpty {
-                Text("No devices found.")
+                VStack(spacing: 20) {
+                    Image(systemName: "desktopcomputer")
+                        .font(.system(size: 60))
+                        .foregroundColor(.gray)
+                    Text("No devices found")
+                        .font(.headline)
+                    Text("Devices connected to your band will appear here")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(.systemGroupedBackground))
             } else {
-                List(devices, id: \.id) { device in
-                    VStack(alignment: .leading) {
-                        Text(device.name).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                        Text("Private IP: \(device.private_ip)")
+                List {
+                    ForEach(filteredDevices) { device in
+                        HStack {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(device.name)
+                                    .font(.headline)
+                                HStack {
+                                    Image(systemName: "network")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                    Text(device.private_ip)
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            Spacer()
+                            Image(systemName: "desktopcomputer")
+                                .font(.system(size: 16))
+                                .foregroundColor(.blue)
+                        }
+                        .padding(.vertical, 4)
                     }
                 }
+                .listStyle(InsetGroupedListStyle())
+                .searchable(text: $searchText, prompt: "Search devices")
+                .overlay(
+                    Group {
+                        if filteredDevices.isEmpty {
+                            VStack(spacing: 15) {
+                                Image(systemName: "magnifyingglass")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(.gray)
+                                Text("No matching devices found")
+                                    .font(.headline)
+                            }
+                        }
+                    }
+                )
             }
         }
+        .navigationTitle("Devices")
         .onAppear() {
             update_device_list()
         }
