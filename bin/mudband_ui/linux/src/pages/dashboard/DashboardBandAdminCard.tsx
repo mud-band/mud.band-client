@@ -39,7 +39,7 @@ export default function DashboardAdminCard() {
       .catch(err => toast({
         variant: "destructive",
         title: "Error",
-        description: `BANDEC_XXXXX: Failed to get band admin: ${err}`
+        description: `BANDEC_00826: Failed to get band admin: ${err}`
       }))
   }, [])
 

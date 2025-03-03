@@ -71,7 +71,7 @@ struct UiBandCreateAsGuestView: View {
     func enroll_success(priv_key: String, raw_str: String) {
         let r = mudband_ui_enroll_post(priv_key, raw_str)
         if r != 0 {
-            mudband_ui_log(0, "BANDEC_XXXXX: mudband_ui_enroll() failed.")
+            mudband_ui_log(0, "BANDEC_00843: mudband_ui_enroll() failed.")
             return
         }
         DispatchQueue.main.async {
@@ -91,7 +91,7 @@ struct UiBandCreateAsGuestView: View {
         let keys = mudband_ui_create_wireguard_keys()
         if keys == nil || keys?.count != 2 {
             enroll_set_result(status: 500,
-                              msg: "BANDEC_XXXXX: mudband_ui_create_wireguard_keys() failed.")
+                              msg: "BANDEC_00844: mudband_ui_create_wireguard_keys() failed.")
             return
         }
         let pub_key: String = keys![0] as! String
