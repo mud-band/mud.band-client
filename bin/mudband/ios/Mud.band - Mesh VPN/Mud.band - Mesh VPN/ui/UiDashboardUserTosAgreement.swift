@@ -32,39 +32,110 @@ import SwiftUI
 struct UiDashboardUserTosAgreement: View {
     @EnvironmentObject private var mAppModel: AppModel
     @Environment(\.openURL) var openURL
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
-        VStack {
-            Text("Mud.band")
-                .padding()
-                .font(.title)
-            Text("User Agreement")
-            List {
-                Section {
-                    Text("Public IP")
-                    Text("Private / Local IP")
-                    Text("NAT type")
-                } header: {
-                    Text("The following information is collected while mud.band app is running to perform P2P (Peer To Peer) connection:")
-                } footer: {
-                    Text("No other information except for the above is logged on the mud.band server, and the data will not be shared with any third parties." + " " + "By clicking the \"I agree\" button, you agree to our Terms of Service and Privacy Policy. ")
+        ZStack {
+            (colorScheme == .dark ? Color.black : Color(UIColor.systemGroupedBackground))
+                .ignoresSafeArea()
+            
+            VStack(spacing: 16) {
+                VStack(spacing: 4) {
+                    Text("Mud.band")
+                        .font(.system(size: 28, weight: .bold))
+                    
+                    Text("User Agreement")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.secondary)
                 }
-            }
-            HStack {
-                Button {
-                    mAppModel.set_user_tos_agreement(agreed: true)
-                } label: {
-                    Text("I agree").font(.system(size: 20, weight: .bold))
-                }
-                Spacer()
-                Button {
-                    if let url = URL(string: "https://www.mud.band/policy/tos") {
-                        openURL(url)
+                .padding(.top, 16)
+                
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Information We Collect")
+                        .font(.headline)
+                        .padding(.bottom, 2)
+                    
+                    Text("The following information is collected while the app is running to perform P2P (Peer To Peer) connection:")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .padding(.bottom, 4)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.leading)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        InfoRow(icon: "network", text: "Public IP")
+                        InfoRow(icon: "house.fill", text: "Private / Local IP")
+                        InfoRow(icon: "arrow.triangle.branch", text: "NAT type")
                     }
-                } label: {
-                    Text("View ToS")
+                    .padding(.leading, 4)
+                    
+                    Text("No other information except for the above is logged on the mud.band server, and the data will not be shared with any third parties.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .padding(.top, 4)
                 }
-            }.padding()
+                .padding(12)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(colorScheme == .dark ? Color(UIColor.secondarySystemBackground) : Color.white)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                )
+                
+                Spacer()
+                
+                Text("By clicking the \"I agree\" button, you agree to our Terms of Service and Privacy Policy.")
+                    .font(.footnote)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal)
+                
+                VStack(spacing: 8) {
+                    Button {
+                        mAppModel.set_user_tos_agreement(agreed: true)
+                    } label: {
+                        Text("I Agree")
+                            .font(.system(size: 16, weight: .semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    
+                    Button {
+                        if let url = URL(string: "https://www.mud.band/policy/tos") {
+                            openURL(url)
+                        }
+                    } label: {
+                        Text("View Terms of Service")
+                            .font(.system(size: 14))
+                            .foregroundColor(.blue)
+                    }
+                    .padding(.bottom, 4)
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 16)
+            }
+            .padding(12)
+        }
+    }
+}
+
+struct InfoRow: View {
+    let icon: String
+    let text: String
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .foregroundColor(.blue)
+                .frame(width: 20, height: 20)
+            
+            Text(text)
+                .font(.system(size: 14))
         }
     }
 }

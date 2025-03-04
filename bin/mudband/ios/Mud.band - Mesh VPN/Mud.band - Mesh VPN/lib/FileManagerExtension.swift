@@ -53,6 +53,7 @@ extension FileManager {
     
     static func initMudbandAppGroupDirs() {
         if let url = sharedFolderURL {
+            createDir(url.appendingPathComponent("admin").path)
             createDir(url.appendingPathComponent("enroll").path)
             createDir(url.appendingPathComponent("logs").path)
         }
@@ -61,6 +62,13 @@ extension FileManager {
     static var TopDirURL: URL? {
         if let url = sharedFolderURL {
             return url
+        }
+        return nil
+    }
+
+    static var AdminDirURL: URL? {
+        if let url = sharedFolderURL {
+            return url.appendingPathComponent("admin")
         }
         return nil
     }

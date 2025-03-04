@@ -90,38 +90,37 @@ class UiEnrollmentNewModel : ObservableObject {
                                        name: mDeviceName,
                                        wireguard_pubkey: pub_key,
                                        secret: mEnrollmentSecret)
-        AF.request("https://www.mud.band/api/band/enroll",
-                   method: .post,
-                   parameters: parameters,
-                   encoder: JSONParameterEncoder.default,
-                   interceptor: .retryPolicy)
-        .responseString { resp in
-            self.update_is_enrolling(target: target, ing: false)
-            switch resp.result {
-            case .success(let str):
-                if let obj = try? JSON(data: Data(str.utf8)) {
-                    if obj["status"].intValue != 200 {
-                        if obj["status"].intValue == 301 {
-                            self.enroll_set_result(target: target,
-                                                   status: 301,
-                                                   msg: obj["sso_url"].stringValue)
-                            return
-                        }
+        let resp = await AF.request("https://www.mud.band/api/band/enroll",
+                                    method: .post,
+                                    parameters: parameters,
+                                    encoder: JSONParameterEncoder.default,
+                                    interceptor: .retryPolicy)
+            .serializingString().response
+        self.update_is_enrolling(target: target, ing: false)
+        switch resp.result {
+        case .success(let str):
+            if let obj = try? JSON(data: Data(str.utf8)) {
+                if obj["status"].intValue != 200 {
+                    if obj["status"].intValue == 301 {
                         self.enroll_set_result(target: target,
-                                               status: 501,
-                                               msg: obj["msg"].stringValue)
+                                               status: 301,
+                                               msg: obj["sso_url"].stringValue)
                         return
                     }
+                    self.enroll_set_result(target: target,
+                                           status: 501,
+                                           msg: obj["msg"].stringValue)
+                    return
                 }
-                self.enroll_success(target: target,
-                                    appModel: appModel, priv_key: priv_key, raw_str: str)
-            case .failure(let error):
-                self.enroll_set_result(target: target,
-                                       status: 502,
-                                       msg: "\(error)")
             }
+            self.enroll_success(target: target,
+                                appModel: appModel, priv_key: priv_key, raw_str: str)
+        case .failure(let error):
+            self.enroll_set_result(target: target,
+                                   status: 502,
+                                   msg: "\(error)")
         }
-        enroll_set_result(target: target, status: 200, msg: "")
+        self.enroll_set_result(target: target, status: 200, msg: "")
     }
 }
 
@@ -130,6 +129,7 @@ struct UiEnrollmentNewView: View {
     @ObservedObject private var mEnrollmentModel = UiEnrollmentNewModel()
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
+    @Environment(\.colorScheme) var colorScheme
     @State var mMfaAlertNeed = false
     @State var mMfaAlertURL = ""
     @State var mErrorAlertNeed = false
@@ -139,48 +139,100 @@ struct UiEnrollmentNewView: View {
     @ViewBuilder
     var body: some View {
         NavigationStack {
-            VStack {
-                Text("Input the enrollment information.")
-                    .padding(.bottom, 10)
+            VStack(spacing: 0) {
+                VStack(spacing: 8) {
+                    Image(systemName: "network")
+                        .font(.system(size: 45))
+                        .foregroundStyle(.blue)
+                        .padding(.top, 10)
+                    
+                    Text("Device Enrollment")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                    
+                    Text("Connect your device to the mesh network by entering your enrollment information.")
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 5)
+                }
+                .padding(.vertical, 8)
+                
                 Form {
-                    TextField("Enrollment Token", text: $mEnrollmentModel.mEnrollmentToken)
-                    TextField("Device Name", text: $mEnrollmentModel.mDeviceName)
-                    TextField("Enrollment Secret", text: $mEnrollmentModel.mEnrollmentSecret)
+                    Section(header: Text("ENROLLMENT DETAILS").font(.caption)) {
+                        HStack {
+                            Image(systemName: "key.fill")
+                                .foregroundStyle(.blue)
+                                .frame(width: 20)
+                            TextField("Enrollment Token", text: $mEnrollmentModel.mEnrollmentToken)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                        }
+                        .padding(.vertical, 2)
+                        
+                        HStack {
+                            Image(systemName: "display")
+                                .foregroundStyle(.blue)
+                                .frame(width: 20)
+                            TextField("Device Name", text: $mEnrollmentModel.mDeviceName)
+                        }
+                        .padding(.vertical, 2)
+                        
+                        HStack {
+                            Image(systemName: "lock.fill")
+                                .foregroundStyle(.blue)
+                                .frame(width: 20)
+                            SecureField("Enrollment Secret (Optional)", text: $mEnrollmentModel.mEnrollmentSecret)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                        }
+                        .padding(.vertical, 2)
+                    }
+                    .listRowBackground(colorScheme == .dark ? Color(UIColor.secondarySystemBackground) : Color(UIColor.systemBackground))
                 }
-                HStack {
-                    Spacer()
-                    if mIsEnrolling {
-                        ProgressView().controlSize(.small)
-                            .padding(.trailing, 2)
+                .scrollContentBackground(.hidden)
+                
+                Button {
+                    Task {
+                        await mEnrollmentModel.enroll(target: self, appModel: mAppModel)
                     }
-                    Button("Enroll") {
-                        Task {
-                            await mEnrollmentModel.enroll(target: self,
-                                                          appModel: mAppModel)
+                } label: {
+                    HStack {
+                        if mIsEnrolling {
+                            ProgressView()
+                                .padding(.trailing, 5)
                         }
+                        Text(mIsEnrolling ? "Enrolling..." : "Enroll Device")
+                            .fontWeight(.semibold)
                     }
-                    .disabled(mIsEnrolling == true)
-                    .alert("Enrollment Error", isPresented: $mErrorAlertNeed) {
-                        Button("Dismiss", role: .cancel) { }
-                    } message: {
-                        Text(mErrorAlertMessage)
-                    }
-                    .alert("MFA Required", isPresented: $mMfaAlertNeed) {
-                        Button("Open URL") {
-                            if let url = URL(string: mMfaAlertURL) {
-                                openURL(url)
-                            }
-                        }
-                        Button("Dismiss", role: .cancel) {
-                            
-                        }
-                    }message: {
-                        Text("MFA required to enroll")
-                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
                 }
-                .padding()
+                .disabled(mIsEnrolling)
+                .padding(.horizontal)
+                .padding(.vertical, 10)
             }
             .navigationTitle("Enrollment")
+            .navigationBarTitleDisplayMode(.inline)
+            .alert("Enrollment Error", isPresented: $mErrorAlertNeed) {
+                Button("Dismiss", role: .cancel) { }
+            } message: {
+                Text(mErrorAlertMessage)
+            }
+            .alert("MFA Required", isPresented: $mMfaAlertNeed) {
+                Button("Open URL") {
+                    if let url = URL(string: mMfaAlertURL) {
+                        openURL(url)
+                    }
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("Multi-factor authentication is required to complete the enrollment process.")
+            }
         }
     }
 }

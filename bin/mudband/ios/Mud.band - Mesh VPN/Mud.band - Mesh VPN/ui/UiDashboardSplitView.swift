@@ -32,6 +32,7 @@ import SwiftyJSON
 struct UiDashboardSplitView: View {
     @EnvironmentObject private var mAppModel: AppModel
     @Environment(\.openURL) var openURL
+    @Environment(\.colorScheme) var colorScheme
     @State private var selectedItem: String? = "Status"
     
     @State private var items_private = [
@@ -48,6 +49,24 @@ struct UiDashboardSplitView: View {
         "WebCLI",
         "Setup",
     ]
+    
+    // 메뉴 아이템에 사용할 아이콘을 반환하는 함수
+    func iconForItem(_ item: String) -> String {
+        switch item {
+        case "Status":
+            return "gauge"
+        case "Devices":
+            return "desktopcomputer"
+        case "Links":
+            return "link"
+        case "WebCLI":
+            return "terminal"
+        case "Setup":
+            return "gearshape"
+        default:
+            return "circle"
+        }
+    }
     
     func getWebCliUrl() {
         var headers: HTTPHeaders = []
@@ -90,52 +109,90 @@ struct UiDashboardSplitView: View {
     
     var body: some View {
         NavigationSplitView {
-            if mAppModel.mBandIsPublic {
-                List(selection: $selectedItem) {
-                    ForEach(items_public, id: \.self) { folder in
-                        NavigationLink(value: folder) {
-                            Text(verbatim: folder)
-                        }
+            List(selection: $selectedItem) {
+                ForEach(mAppModel.mBandIsPublic ? items_public : items_private, id: \.self) { item in
+                    Label {
+                        Text(verbatim: item)
+                    } icon: {
+                        Image(systemName: iconForItem(item))
                     }
+                    .padding(.vertical, 4)
                 }
-                .navigationTitle("Menu")
-            } else {
-                List(selection: $selectedItem) {
-                    ForEach(items_private, id: \.self) { folder in
-                        NavigationLink(value: folder) {
-                            Text(verbatim: folder)
-                        }
-                    }
+            }
+            .navigationTitle("Mud.band")
+            .listStyle(SidebarListStyle())
+            .onAppear {
+                if selectedItem == nil {
+                    selectedItem = "Status"
                 }
-                .navigationTitle("Menu")
             }
         } detail: {
             if let selectedItem {
-                if selectedItem == "Status" {
-                    UiDashboardStatusListView()
-                        .tag("Status")
-                } else if selectedItem == "Devices" {
-                    UiDashboardDevicesListView()
-                        .tag("Devices")
-                } else if selectedItem == "Links" {
-                    UiDashboardLinksListView()
-                        .tag("Links")
-                } else if selectedItem == "Setup" {
-                    UiDashboardSetupListView()
-                        .tag("Setup")
-                } else if selectedItem == "WebCLI" {
-                    Button("Open WebCLI") {
-                        getWebCliUrl()
-                    }
-                } else {
-                    NavigationLink(value: selectedItem) {
+                VStack {
+                    switch selectedItem {
+                    case "Status":
+                        UiDashboardStatusListView()
+                            .tag("Status")
+                            .transition(.opacity)
+                    case "Devices":
+                        UiDashboardDevicesListView()
+                            .tag("Devices")
+                            .transition(.opacity)
+                    case "Links":
+                        UiDashboardLinksListView()
+                            .tag("Links")
+                            .transition(.opacity)
+                    case "Setup":
+                        UiDashboardSetupListView()
+                            .tag("Setup")
+                            .transition(.opacity)
+                    case "WebCLI":
+                        Spacer()
+                        VStack(spacing: 20) {
+                            Image(systemName: "terminal")
+                                .font(.system(size: 60))
+                                .foregroundColor(.accentColor)
+                            
+                            Text("Access Web Command Line Interface")
+                                .font(.headline)
+                            
+                            Button(action: getWebCliUrl) {
+                                HStack {
+                                    Image(systemName: "globe")
+                                    Text("Open WebCLI")
+                                }
+                                .padding()
+                                .frame(minWidth: 200)
+                                .background(Color.accentColor)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                                .shadow(radius: 2)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(colorScheme == .dark ? Color.black.opacity(0.3) : Color.white.opacity(0.7))
+                        .cornerRadius(12)
+                        .padding()
+                    default:
                         Text(verbatim: selectedItem)
                             .navigationTitle(selectedItem)
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .navigationTitle(selectedItem)
             } else {
-                Text("Choose a menu from the sidebar")
+                VStack(spacing: 20) {
+                    Image(systemName: "sidebar.left")
+                        .font(.system(size: 60))
+                        .foregroundColor(.gray)
+                    Text("Choose a menu from the sidebar")
+                        .font(.headline)
+                        .foregroundColor(.gray)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        .accentColor(.blue)
     }
 }

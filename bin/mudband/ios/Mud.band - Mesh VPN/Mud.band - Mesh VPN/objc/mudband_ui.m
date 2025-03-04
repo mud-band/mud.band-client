@@ -39,6 +39,7 @@ static const char *band_ui_logfile;
 static const char *band_tunnel_logfile;
 const char *band_enroll_dir;
 const char *band_top_dir;
+const char *band_admin_dir;
 
 void
 VAS_Fail(const char *func, const char *file, int line, const char *cond,
@@ -99,8 +100,8 @@ mudband_ui_create_wireguard_keys(void)
 }
 
 void
-mudband_ui_init(NSString *top_dir, NSString *enroll_dir, NSString *ui_logfile,
-                NSString *tunnel_logfile)
+mudband_ui_init(NSString *top_dir, NSString *enroll_dir, NSString *admin_dir,
+                NSString *ui_logfile, NSString *tunnel_logfile)
 {
 
     ODR_libinit();
@@ -113,9 +114,12 @@ mudband_ui_init(NSString *top_dir, NSString *enroll_dir, NSString *ui_logfile,
     AN(band_top_dir);
     band_enroll_dir = strdup([enroll_dir UTF8String]);
     AN(band_enroll_dir);
+    band_admin_dir = strdup([admin_dir UTF8String]);
+    AN(band_admin_dir);
     band_vl = vtc_logopen("band", NULL);
     AN(band_vl);
     mudband_ui_enroll_init();
     mudband_ui_progconf_init();
     mudband_ui_confmgr_init();
+    mudband_ui_bandadmin_init();
 }

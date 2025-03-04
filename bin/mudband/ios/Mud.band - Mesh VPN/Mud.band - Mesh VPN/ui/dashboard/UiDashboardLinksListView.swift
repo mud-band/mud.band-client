@@ -36,6 +36,7 @@ struct UiDashboardLinksListView: View {
         var url: String
     }
     @State var links: [Link] = []
+    @State private var searchText: String = ""
     
     private func read_band_conf() -> JSON? {
         guard let band_uuid = mudband_ui_enroll_get_band_uuid() else {
@@ -66,25 +67,80 @@ struct UiDashboardLinksListView: View {
         }
     }
     
+    private var filteredLinks: [Link] {
+        if searchText.isEmpty {
+            return links
+        } else {
+            return links.filter { 
+                $0.name.localizedCaseInsensitiveContains(searchText) ||
+                $0.url.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
     @ViewBuilder
     var body: some View {
         VStack {
             if links.isEmpty {
-                Text("No links found.")
+                VStack(spacing: 20) {
+                    Image(systemName: "link.circle")
+                        .font(.system(size: 60))
+                        .foregroundColor(.gray)
+                    Text("No links found")
+                        .font(.headline)
+                    Text("Links added to your band will appear here")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(.systemGroupedBackground))
             } else {
-                List(links, id: \.id) { link in
-                    VStack(alignment: .leading) {
-                        Text(link.name).fontWeight(.bold)
-                        Text("URL: \(link.url)")
-                    }
-                    .onTapGesture {
-                        if let url = URL(string: link.url) {
-                            openURL(url)
+                List {
+                    ForEach(filteredLinks) { link in
+                        Button(action: {
+                            if let url = URL(string: link.url) {
+                                openURL(url)
+                            }
+                        }) {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text(link.name)
+                                        .font(.headline)
+                                    Text(link.url)
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                        .lineLimit(1)
+                                }
+                                Spacer()
+                                Image(systemName: "arrow.up.right.square")
+                                    .font(.system(size: 16))
+                                    .foregroundColor(.blue)
+                            }
+                            .padding(.vertical, 4)
                         }
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
+                .listStyle(InsetGroupedListStyle())
+                .searchable(text: $searchText, prompt: "Search links")
+                .overlay(
+                    Group {
+                        if filteredLinks.isEmpty {
+                            VStack(spacing: 15) {
+                                Image(systemName: "magnifyingglass")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(.gray)
+                                Text("No matching links found")
+                                    .font(.headline)
+                            }
+                        }
+                    }
+                )
             }
         }
+        .navigationTitle("Links")
         .onAppear() {
             update_link_list()
         }

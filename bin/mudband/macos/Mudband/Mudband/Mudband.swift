@@ -65,9 +65,8 @@ class AppModel: ObservableObject {
     }
     
     func update_vpn_status() {
-        let prevStatusString = mVPNStatusString
         mVPNStatusString = mVpnManager.getVPNStatusString()
-        if prevStatusString != mVPNStatusString && mVPNStatusString == "Connected" {
+        if mVPNStatusString == "Connected" && mPrivateIP.isEmpty {
             mDeviceName = mudband_ui_confmgr_get_device_name()
             mPrivateIP = mudband_ui_confmgr_get_private_ip()
         }

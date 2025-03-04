@@ -31,6 +31,7 @@ class AppModel: ObservableObject {
     @Published var mVPNStatusString = "Unknown"
     @Published var mEnrollmentCount: Int32 = mudband_ui_enroll_get_count()
     @Published var mBandIsPublic: Bool = mudband_ui_enroll_is_public()
+    @Published var mBandAdminJsonString: String? = mudband_ui_bandadmin_get()
     @Published var mBandName: String = ""
     @Published var mDeviceName: String = ""
     @Published var mPrivateIP: String = ""
@@ -60,16 +61,17 @@ class AppModel: ObservableObject {
         }
         mBandIsPublic = mudband_ui_enroll_is_public()
         mBandName = mudband_ui_enroll_get_band_name()
+        mBandAdminJsonString = mudband_ui_bandadmin_get()
         mDeviceName = mudband_ui_confmgr_get_device_name()
         mPrivateIP = mudband_ui_confmgr_get_private_ip()
     }
     
     func update_vpn_status() {
-        let prevStatusString = mVPNStatusString
         mVPNStatusString = mVpnManager.getVPNStatusString()
-        if prevStatusString != mVPNStatusString && mVPNStatusString == "Connected" {
+        if mVPNStatusString == "Connected" && mPrivateIP.isEmpty {
             mDeviceName = mudband_ui_confmgr_get_device_name()
             mPrivateIP = mudband_ui_confmgr_get_private_ip()
+            mBandAdminJsonString = mudband_ui_bandadmin_get()
         }
     }
 }
@@ -79,6 +81,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         FileManager.initMudbandAppGroupDirs()
         mudband_ui_init(FileManager.TopDirURL?.path,
                         FileManager.EnrollDirURL?.path,
+                        FileManager.AdminDirURL?.path,
                         FileManager.UiLogFileURL?.path,
                         FileManager.TunnelLogFileURL?.path)
         super.init()

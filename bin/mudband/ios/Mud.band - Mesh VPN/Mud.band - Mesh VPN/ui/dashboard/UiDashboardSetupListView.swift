@@ -116,45 +116,99 @@ struct UiDashboardSetupDangerZoneUnenrollView: View {
     }
     
     var body: some View {
-        HStack {
-            Text("Remove the enrollment")
-            Spacer()
-            Button(action: {
-                mNeedToShowPopupConnect = true
-            }) {
-                Text("Unenroll").foregroundStyle(.red)
+        VStack(alignment: .leading) {
+            HStack(spacing: 12) {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundColor(.red)
+                    .font(.title2)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Remove Enrollment")
+                        .font(.headline)
+                    
+                    Text("Disconnect and remove this device from the network")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                Button(action: {
+                    mNeedToShowPopupConnect = true
+                }) {
+                    Text("Unenroll")
+                        .fontWeight(.medium)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(mCanUnenroll ? Color.red.opacity(0.8) : Color.gray.opacity(0.3))
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+                .disabled(!mCanUnenroll)
             }
-            .disabled(mCanUnenroll == false)
+            .padding()
+            .background(Color(UIColor.secondarySystemBackground))
+            .cornerRadius(12)
         }
         .onAppear {
-            if isUnenrollable() {
-                mCanUnenroll = true
-            } else {
-                mCanUnenroll = false
-            }
+            mCanUnenroll = isUnenrollable()
         }
         .popover(isPresented: $mNeedToShowPopupConnect,
                  attachmentAnchor: .point(.bottom),
                  arrowEdge: .bottom) {
-            Text("Do you really want to remove the enrollment?")
-                .font(.headline)
-                .padding()
-            HStack {
-                Button("Yes") {
-                    mNeedToShowPopupConnect = false
-                    mUnenrollModel.mudband_unenroll(unenrollCompletionHandler: { error in
-                        if let error = error {
-                            mUnenrollAlertNeed = true
-                            mUnenrollAlertMessage = "\(error)"
-                            return
-                        }
-                        mAppModel.update_enrollments()
-                    })
+            VStack(spacing: 20) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundColor(.orange)
+                    .font(.system(size: 40))
+                    .padding(.top)
+                
+                Text("Do you really want to remove the enrollment?")
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                
+                Text("This action cannot be undone.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                
+                HStack(spacing: 20) {
+                    Button(action: {
+                        mNeedToShowPopupConnect = false
+                    }) {
+                        Text("Cancel")
+                            .fontWeight(.medium)
+                            .frame(minWidth: 100)
+                            .padding(.vertical, 8)
+                            .foregroundColor(.primary)
+                            .background(Color(UIColor.secondarySystemBackground))
+                            .cornerRadius(8)
+                    }
+                    
+                    Button(action: {
+                        mNeedToShowPopupConnect = false
+                        mUnenrollModel.mudband_unenroll(unenrollCompletionHandler: { error in
+                            if let error = error {
+                                mUnenrollAlertNeed = true
+                                mUnenrollAlertMessage = "\(error)"
+                                return
+                            }
+                            mAppModel.update_enrollments()
+                        })
+                    }) {
+                        Text("Yes")
+                            .fontWeight(.medium)
+                            .frame(minWidth: 100)
+                            .padding(.vertical, 8)
+                            .foregroundColor(.white)
+                            .background(Color.red)
+                            .cornerRadius(8)
+                    }
                 }
-                Button("No") {
-                    mNeedToShowPopupConnect = false
-                }
-            }.padding()
+                .padding(.bottom)
+            }
+            .frame(width: 300)
+            .padding()
         }
         .alert("Unenroll Error", isPresented: $mUnenrollAlertNeed) {
             Button("OK", role: .cancel) { }
@@ -167,6 +221,7 @@ struct UiDashboardSetupDangerZoneUnenrollView: View {
 struct UiDashboardSetupEnrollmentChangeView: View {
     @EnvironmentObject private var mAppModel: AppModel
     @State var mCanChangeEnrollment = true
+    @State private var navigateToChangeView = false
     
     private func isChangable() -> Bool {
         if mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" ||
@@ -177,18 +232,43 @@ struct UiDashboardSetupEnrollmentChangeView: View {
     }
     
     var body: some View {
-        HStack {
-            NavigationLink(destination: UiEnrollmentChangeView()) {
-                Text("Change the enrollment")
+        Button(action: {
+            if mCanChangeEnrollment {
+                navigateToChangeView = true
             }
-            .disabled(mCanChangeEnrollment == false)
+        }) {
+            HStack(spacing: 12) {
+                Image(systemName: "arrow.triangle.swap")
+                    .foregroundColor(.blue)
+                    .font(.title2)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Change Enrollment")
+                        .font(.headline)
+                    
+                    Text("Switch to a different band")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding()
+            .background(Color(UIColor.secondarySystemBackground))
+            .cornerRadius(12)
         }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(!mCanChangeEnrollment)
+        .opacity(mCanChangeEnrollment ? 1.0 : 0.6)
         .onAppear {
-            if isChangable() {
-                mCanChangeEnrollment = true
-            } else {
-                mCanChangeEnrollment = false
-            }
+            mCanChangeEnrollment = isChangable()
+        }
+        .navigationDestination(isPresented: $navigateToChangeView) {
+            UiEnrollmentChangeView()
         }
     }
 }
@@ -196,6 +276,7 @@ struct UiDashboardSetupEnrollmentChangeView: View {
 struct UiDashboardSetupEnrollmentNewView: View {
     @EnvironmentObject private var mAppModel: AppModel
     @State private var mCanEnroll = true
+    @State private var navigateToNewView = false
 
     private func isEnrollable() -> Bool {
         if mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" ||
@@ -206,33 +287,125 @@ struct UiDashboardSetupEnrollmentNewView: View {
     }
     
     var body: some View {
-        HStack {
-            NavigationLink(destination: UiEnrollmentNewView()) {
-                Text("Add new enrollment")
+        Button(action: {
+            if mCanEnroll {
+                navigateToNewView = true
             }
-            .disabled(mCanEnroll == false)
+        }) {
+            HStack(spacing: 12) {
+                Image(systemName: "plus.circle.fill")
+                    .foregroundColor(.green)
+                    .font(.title2)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Add New Enrollment")
+                        .font(.headline)
+                    
+                    Text("Connect to a new network")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding()
+            .background(Color(UIColor.secondarySystemBackground))
+            .cornerRadius(12)
         }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(!mCanEnroll)
+        .opacity(mCanEnroll ? 1.0 : 0.6)
         .onAppear {
-            if isEnrollable() {
-                mCanEnroll = true
-            } else {
-                mCanEnroll = false
+            mCanEnroll = isEnrollable()
+        }
+        .navigationDestination(isPresented: $navigateToNewView) {
+            UiEnrollmentNewView()
+        }
+    }
+}
+
+struct UiBandCreateAsGuestOptionView: View {
+    @State private var navigateToBandCreateView = false
+    
+    var body: some View {
+        Button(action: {
+            navigateToBandCreateView = true
+        }) {
+            HStack(spacing: 12) {
+                Image(systemName: "network")
+                    .foregroundColor(.purple)
+                    .font(.title2)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Create Band as Guest")
+                        .font(.headline)
+                    
+                    Text("Create a new band network")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
+            .padding()
+            .background(Color(UIColor.secondarySystemBackground))
+            .cornerRadius(12)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .navigationDestination(isPresented: $navigateToBandCreateView) {
+            UiBandCreateAsGuestView()
         }
     }
 }
 
 struct UiDashboardSetupListView: View {
-    @ViewBuilder
     var body: some View {
-        List {
-            Section(header: Text("Enrollment")) {
-                UiDashboardSetupEnrollmentNewView()
-                UiDashboardSetupEnrollmentChangeView()
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("BAND")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal)
+                        
+                        UiBandCreateAsGuestOptionView()
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("ENROLLMENT OPTIONS")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal)
+                        
+                        UiDashboardSetupEnrollmentNewView()
+                        UiDashboardSetupEnrollmentChangeView()
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("DANGER ZONE")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.red)
+                            .padding(.horizontal)
+                        
+                        UiDashboardSetupDangerZoneUnenrollView()
+                    }
+                }
+                .padding()
             }
-            Section(header: Text("DANGER ZONE")) {
-                UiDashboardSetupDangerZoneUnenrollView()
-            }
+            .background(Color(UIColor.systemGroupedBackground))
+            .navigationTitle("Settings")
         }
     }
 }
