@@ -172,6 +172,7 @@ struct UiEnrollmentChangeView: View {
                 .buttonStyle(.borderedProminent)
             }
             .padding()
+            .background(Color(white: 0.95))
         }
         .background(Color.white)
         .onAppear {

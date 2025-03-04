@@ -126,16 +126,6 @@ struct UiDashboardSplitView: View {
             }
             .listStyle(.sidebar)
             .navigationTitle("Mud.band")
-            .navigationSubtitle("Control Panel")
-            .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    Button(action: {
-                        NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
-                    }) {
-                        Image(systemName: "sidebar.left")
-                    }
-                }
-            }
         } detail: {
             if let selectedItem {
                 VStack(alignment: .leading, spacing: 0) {
@@ -220,14 +210,6 @@ struct UiDashboardSplitView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color(NSColor.windowBackgroundColor))
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .automatic) {
-                Button(action: {}) {
-                    Image(systemName: "gear")
-                }
-                .help("Settings")
             }
         }
     }
