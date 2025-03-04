@@ -40,8 +40,7 @@ fun UiDashboardScreen(
     viewModel: MudbandAppViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    onUnenrollSuccess: () -> Unit,
-    onNotConnected: () -> Unit
+    onUnenrollSuccess: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -66,8 +65,7 @@ fun UiDashboardScreen(
         } else if (uiState.dashboardScreenName == "links") {
             UiDashboardLinksScreen(
                 viewModel = viewModel,
-                navController = navController,
-                onNotConnected = onNotConnected
+                navController = navController
             )
         } else if (uiState.dashboardScreenName == "settings") {
             UiDashboardSettingsScreen(

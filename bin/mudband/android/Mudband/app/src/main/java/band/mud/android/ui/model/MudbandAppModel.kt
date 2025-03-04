@@ -292,23 +292,21 @@ class MudbandAppViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private fun setActivePrivateIP(ip: String?) {
-        if (ip == null) {
-            return
-        }
-        _uiState.update { currentState ->
+        val new_ip = ip ?: ""
+
+	_uiState.update { currentState ->
             currentState.copy(
-                activePrivateIP = ip
+                activePrivateIP = new_ip
             )
         }
     }
 
     private fun setActiveDeviceName(deviceName: String?) {
-        if (deviceName == null) {
-            return
-        }
+        val new_deviceName = deviceName ?: ""
+
         _uiState.update { currentState ->
             currentState.copy(
-                activeDeviceName = deviceName
+                activeDeviceName = new_deviceName
             )
         }
     }
