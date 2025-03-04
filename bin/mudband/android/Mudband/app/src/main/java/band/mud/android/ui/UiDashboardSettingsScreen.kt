@@ -105,35 +105,33 @@ fun SettingsSwitchComp(
         color = Color.Transparent,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(vertical = 8.dp),
         onClick = onClick,
     ) {
-        Column {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painterResource(id = icon),
-                        contentDescription = stringResource(id = iconDesc),
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(id = name),
-                        modifier = Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Start,
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                Switch(
-                    checked = state.value,
-                    onCheckedChange = { onClick() }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painterResource(id = icon),
+                    contentDescription = stringResource(id = iconDesc),
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = stringResource(id = name),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Start,
                 )
             }
-            Divider()
+            Spacer(modifier = Modifier.weight(1f))
+            Switch(
+                checked = state.value,
+                onCheckedChange = { onClick() }
+            )
         }
     }
 }
@@ -193,11 +191,10 @@ fun SettingsTextComp(
     @DrawableRes icon: Int,
     @StringRes iconDesc: Int,
     @StringRes name: Int,
-    state: State<String>, // current value
-    onSave: (String) -> Unit, // method to save the new value
-    onCheck: (String) -> Boolean // check if new value is valid to save
+    state: State<String>,
+    onSave: (String) -> Unit,
+    onCheck: (String) -> Boolean
 ) {
-
     // if the dialog is visible
     var isDialogShown by remember { mutableStateOf(false) }
 
@@ -217,40 +214,44 @@ fun SettingsTextComp(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(vertical = 8.dp),
         onClick = {
-            // clicking on the preference, will show the dialog
             isDialogShown = true
         },
     ) {
-        Column {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically, 
+                modifier = Modifier.weight(1f)) {
                 Icon(
                     painterResource(id = icon),
                     contentDescription = stringResource(id = iconDesc),
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Column(modifier = Modifier.padding(8.dp)) {
-                    // setting text title
+                Column {
                     Text(
                         text = stringResource(id = name),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Start,
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    // current value shown
                     Text(
                         text = state.value,
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Start,
                     )
                 }
             }
-            Divider()
+            Icon(
+                Icons.Rounded.KeyboardArrowRight,
+                contentDescription = stringResource(id = R.string.ic_arrow_forward),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -265,40 +266,39 @@ fun SettingsClickableComp(
     Surface(
         color = Color.Transparent,
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
         onClick = onClick,
     ) {
-        Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.weight(1f)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        icon,
-                        contentDescription = stringResource(id = iconDesc),
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Text(
-                        text = stringResource(id = name),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.surfaceTint
-                        ),
-                        modifier = Modifier
-                            .padding(8.dp),
-                        textAlign = TextAlign.Start,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1.0f))
                 Icon(
-                    Icons.Rounded.KeyboardArrowRight,
-                    tint = MaterialTheme.colorScheme.surfaceTint,
-                    contentDescription = stringResource(id = R.string.ic_arrow_forward)
+                    icon,
+                    contentDescription = stringResource(id = iconDesc),
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = stringResource(id = name),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Start,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
+            Icon(
+                Icons.Rounded.KeyboardArrowRight,
+                contentDescription = stringResource(id = R.string.ic_arrow_forward),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
-
     }
 }
 
@@ -308,14 +308,20 @@ fun SettingsGroup(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(modifier = modifier.padding(16.dp)) {
-        Text(stringResource(id = name))
-        Spacer(modifier = modifier.height(8.dp))
+    Column(modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Text(
+            text = stringResource(id = name),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+        )
         Surface(
             modifier = modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(4),
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            tonalElevation = 1.dp
         ) {
-            Column {
+            Column(modifier = Modifier.padding(vertical = 4.dp)) {
                 content()
             }
         }
@@ -380,26 +386,28 @@ fun UnenrollmentAlertDialog(
     onUnenrollSuccess: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    var isLoading by remember { mutableStateOf(false) }
 
     AlertDialog(
         icon = {
-            Icon(icon, contentDescription = "Example Icon")
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.error)
         },
         title = {
-            Text(text = dialogTitle)
+            Text(text = dialogTitle, style = MaterialTheme.typography.headlineSmall)
         },
         text = {
-            Text(text = dialogText)
+            Text(text = dialogText, style = MaterialTheme.typography.bodyMedium)
         },
         onDismissRequest = {
-            onDismissRequest()
+            if (!isLoading) onDismissRequest()
         },
         confirmButton = {
             TextButton(
                 onClick = {
+                    isLoading = true
                     coroutineScope.launch {
                         withContext(Dispatchers.IO) {
-                            var result = makeUnenrollRequest()
+                            val result = makeUnenrollRequest()
                             if (result.status == 0) {
                                 withContext(Dispatchers.Main) {
                                     viewModel.refreshEnrollStatus()
@@ -407,18 +415,21 @@ fun UnenrollmentAlertDialog(
                                     onUnenrollSuccess()
                                 }
                             }
+                            isLoading = false
                         }
                     }
-                }
+                },
+                enabled = !isLoading
             ) {
-                Text("Unenroll")
+                Text("Unenroll", color = MaterialTheme.colorScheme.error)
             }
         },
         dismissButton = {
             TextButton(
                 onClick = {
-                    onDismissRequest()
-                }
+                    if (!isLoading) onDismissRequest()
+                },
+                enabled = !isLoading
             ) {
                 Text("Cancel")
             }
@@ -449,7 +460,11 @@ fun UiDashboardSettingsScreen(
         )
     }
 
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+    ) {
         SettingsGroup(
             name = R.string.band,
             modifier = modifier
@@ -463,6 +478,8 @@ fun UiDashboardSettingsScreen(
             }
         }
         
+        Spacer(modifier = Modifier.height(8.dp))
+        
         SettingsGroup(
             name = R.string.enrollment,
             modifier = modifier
@@ -474,6 +491,10 @@ fun UiDashboardSettingsScreen(
             ) {
                 navController.navigate(MudbandScreen.EnrollmentNew.name)
             }
+            Divider(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            )
             SettingsClickableComp(
                 name = R.string.enrollment_change,
                 icon = Icons.Rounded.List,
@@ -482,6 +503,9 @@ fun UiDashboardSettingsScreen(
                 navController.navigate(MudbandScreen.EnrollmentChange.name)
             }
         }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
         SettingsGroup(
             name = R.string.danger_zone,
             modifier = modifier

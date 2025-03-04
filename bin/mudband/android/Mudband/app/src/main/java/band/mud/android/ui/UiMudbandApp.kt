@@ -256,16 +256,6 @@ fun UiMudbandScaffold(viewModel: MudbandAppViewModel, navController: NavHostCont
                                 )
                             }
                         }
-                    },
-                    onNotConnected = {
-                        coroutineScope.launch {
-                            withContext(Dispatchers.Main) {
-                                snackbarHostState.showSnackbar(
-                                    message = "Not connected.",
-                                    duration = SnackbarDuration.Short
-                                )
-                            }
-                        }
                     }
                 )
             }

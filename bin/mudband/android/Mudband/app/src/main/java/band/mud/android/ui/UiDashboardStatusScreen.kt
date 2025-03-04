@@ -368,15 +368,76 @@ fun UiDashboardStatusScreen(
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier.fillMaxWidth()
     ) {
-        // Only show Admin Controls card if user is a band admin
-        if (isBandAdmin) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Only show Admin Controls card if user is a band admin
+            if (isBandAdmin) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Admin Controls",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        
+                        Text(
+                            text = "You are the admin of this band.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        
+                        Divider(modifier = Modifier.padding(vertical = 8.dp))
+                        
+                        Button(
+                            onClick = { fetchEnrollmentToken() },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary
+                            ),
+                            enabled = !isLoadingToken
+                        ) {
+                            if (isLoadingToken) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = MaterialTheme.colorScheme.onSecondary,
+                                    strokeWidth = 2.dp
+                                )
+                                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+                            }
+                            Text(
+                                text = if (isLoadingToken) "Getting token..." else "Get enrollment token",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                        
+                        if (tokenError != null) {
+                            Text(
+                                text = tokenError!!,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -386,118 +447,60 @@ fun UiDashboardStatusScreen(
                     modifier = Modifier.padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = "Admin Controls",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    
-                    Text(
-                        text = "You are the admin of this band.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Connection Status",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (uiState.isConnected) Color.Green else Color.Red
+                                    )
+                            )
+                            Spacer(modifier = Modifier.padding(4.dp))
+                            Text(
+                                text = if (uiState.isConnected) "Connected" else "Disconnected",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
                     
                     Divider(modifier = Modifier.padding(vertical = 8.dp))
                     
-                    Button(
-                        onClick = { fetchEnrollmentToken() },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary
-                        ),
-                        enabled = !isLoadingToken
-                    ) {
-                        if (isLoadingToken) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = MaterialTheme.colorScheme.onSecondary,
-                                strokeWidth = 2.dp
-                            )
-                            Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                        }
+                    Text(
+                        text = "Band: ${uiState.activeBandName}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    
+                    if (uiState.activeDeviceName.isNotEmpty()) {
                         Text(
-                            text = if (isLoadingToken) "Getting token..." else "Get enrollment token",
+                            text = "Device: ${uiState.activeDeviceName}",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
                     
-                    if (tokenError != null) {
+                    if (uiState.activePrivateIP.isNotEmpty()) {
                         Text(
-                            text = tokenError!!,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(top = 4.dp)
+                            text = "Private IP: ${uiState.activePrivateIP}",
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }
             }
         }
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Connection Status",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(12.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (uiState.isConnected) Color.Green else Color.Red
-                                )
-                        )
-                        Spacer(modifier = Modifier.padding(4.dp))
-                        Text(
-                            text = if (uiState.isConnected) "Connected" else "Disconnected",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
-                
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
-                
-                Text(
-                    text = "Band: ${uiState.activeBandName}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium
-                )
-                
-                if (uiState.activeDeviceName.isNotEmpty()) {
-                    Text(
-                        text = "Device: ${uiState.activeDeviceName}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                
-                if (uiState.activePrivateIP.isNotEmpty()) {
-                    Text(
-                        text = "Private IP: ${uiState.activePrivateIP}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        
+        // Float the button at the bottom of the screen
         Button(
             onClick = {
                 val act = context.getActivity() as MainActivity
@@ -510,8 +513,10 @@ fun UiDashboardStatusScreen(
             },
             enabled = connectButtonEnabled || uiState.isConnected,
             modifier = Modifier
+                .align(Alignment.BottomCenter)
                 .fillMaxWidth(0.8f)
-                .height(56.dp),
+                .height(56.dp)
+                .padding(bottom = 16.dp),
             shape = RoundedCornerShape(28.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (uiState.isConnected) 
