@@ -10,7 +10,7 @@ build: build64
 build64:
 	npm run tauri build -- --target x86_64-pc-windows-msvc
 	$(VERPATCH) .\src-tauri\target\x86_64-pc-windows-msvc\release\mudband_ui.exe \
-	    /va "0.1.2" /pv "0.1.2" \
+	    /va "0.1.3" /pv "0.1.3" \
 	    /s desc "Mudband UI" \
 	    /s copyright "Copyright (c) 2024-2025 by Mudfish Networks" \
 	    /s product "Mudband"
