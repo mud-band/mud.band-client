@@ -117,9 +117,9 @@ class MudbandVpnConnection(
         var builder = Request.Builder()
             .url("https://www.mud.band/api/band/conf")
         builder = builder.addHeader("Authorization", app.jni.getBandJWT())
-        val etag = app.jni.getBandConfigEtag()
-        if (etag != null) {
-            builder = builder.addHeader("If-None-Match", etag)
+        val reqEtag = app.jni.getBandConfigEtag()
+        if (reqEtag != null) {
+            builder = builder.addHeader("If-None-Match", reqEtag)
         }
         val request = builder.post(post)
             .build()
@@ -131,7 +131,7 @@ class MudbandVpnConnection(
                 }
                 return fetchResult(-4, "BANDEC_00178: Unexpected status ${response.code}")
             }
-            val etag = response.headers["Mudband-ETag"]
+            val respEtag = response.headers["Mudband-ETag"]
             val responseData = response.body?.string()
                 ?: return fetchResult(-2, "BANDEC_00179: Failed to get the response body.")
             val jsonWithUnknownKeys = Json { ignoreUnknownKeys = true }
@@ -142,7 +142,7 @@ class MudbandVpnConnection(
                 }
                 return fetchResult(-5, obj.msg ?: "BANDEC_00180: msg is null")
             }
-            var r = app.jni.parseConfigResponse(etag, responseData)
+            val r = app.jni.parseConfigResponse(respEtag, responseData)
             if (r != 0) {
                 return fetchResult(-7, "BANDEC_00181: app.jni.parseConfigResponse() failed.")
             }
@@ -205,10 +205,10 @@ class MudbandVpnConnection(
                     1 -> {
                         mConfigFetcherThread?.interrupt()
                         mConfigFetcherThread = Thread {
-                            var result = fetchConfAndConnect("when_it_gots_a_event")
-                            if (result.status != 0) {
-                                if (result.status == -10 /* SSO_URL */) {
-                                    saveMfaUrlIntoPref(result.msg)
+                            val configResult = fetchConfAndConnect("when_it_gots_a_event")
+                            if (configResult.status != 0) {
+                                if (configResult.status == -10 /* SSO_URL */) {
+                                    saveMfaUrlIntoPref(configResult.msg)
                                 } else {
                                     MudbandLog.e("BANDEC_00503: fetchConfAndConnect() failed.")
                                 }
