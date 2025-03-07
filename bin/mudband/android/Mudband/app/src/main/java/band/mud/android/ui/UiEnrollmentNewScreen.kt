@@ -234,79 +234,6 @@ fun EnrollmentMfaAlertDialog(
 }
 
 @Composable
-fun EnrollmentSuccessAlertDialog(
-    onConfirmation: () -> Unit,
-    isPublic: Boolean
-) {
-    val uriHandler = LocalUriHandler.current
-    val message = if (isPublic) {
-        buildAnnotatedString {
-            append("NOTE: This band is public.\n\n")
-            append("• Nobody can connect to your device without your permission\n")
-            append("• Your default policy is 'block'\n")
-            append("• You need to add an ACL rule to allow the connection\n")
-            append("• To control ACL, you need to open the WebCLI\n\n")
-            append("For details, please visit ")
-            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
-                pushStringAnnotation(
-                    tag = "URL",
-                    annotation = "https://mud.band/docs/public-band"
-                )
-                append("https://mud.band/docs/public-band")
-                pop()
-            }
-        }
-    } else {
-        buildAnnotatedString {
-            append("NOTE: This band is private.\n\n")
-            append("• Band admin only can control ACL rules and the default policy\n")
-            append("• You can't control your device\n\n")
-            append("For details, please visit ")
-            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
-                pushStringAnnotation(
-                    tag = "URL",
-                    annotation = "https://mud.band/docs/private-band"
-                )
-                append("https://mud.band/docs/private-band")
-                pop()
-            }
-        }
-    }
-
-    AlertDialog(
-        icon = {
-            Icon(Icons.Default.Info, contentDescription = "Success Icon")
-        },
-        title = {
-            Text(text = "Enrollment successful")
-        },
-        text = {
-            ClickableText(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.onSurface
-                ),
-                onClick = { offset: Int ->
-                    message.getStringAnnotations(tag = "URL", start = offset, end = offset)
-                        .firstOrNull()?.let { annotation ->
-                            uriHandler.openUri(annotation.item)
-                        }
-                }
-            )
-        },
-        onDismissRequest = {},
-        confirmButton = {
-            TextButton(
-                onClick = onConfirmation
-            ) {
-                Text("Okay")
-            }
-        },
-        dismissButton = null
-    )
-}
-
-@Composable
 fun UiEnrollmentNewScreen(
     viewModel: MudbandAppViewModel,
     navController: NavHostController,
@@ -323,8 +250,6 @@ fun UiEnrollmentNewScreen(
     val enrollmentErrorAlertDialogMessage = remember { mutableStateOf("") }
     val enrollmentMfaAlertDialogOpen = remember { mutableStateOf(false) }
     val enrollmentMfaAlertDialogURL = remember { mutableStateOf("") }
-    val enrollmentSuccessDialogOpen = remember { mutableStateOf(false) }
-    val enrollmentSuccessPublicValue = remember { mutableStateOf(0) }
 
     if (enrollmentErrorAlertDialogOpen.value) {
         EnrollmentErrorAlertDialog(
@@ -348,17 +273,6 @@ fun UiEnrollmentNewScreen(
             dialogTitle = "Enrollment MFA",
             dialogText = "MFA (multi-factor authentication) is enabled to enroll.",
             icon = Icons.Default.Info
-        )
-    }
-
-    if (enrollmentSuccessDialogOpen.value) {
-        EnrollmentSuccessAlertDialog(
-            onConfirmation = {
-                enrollmentSuccessDialogOpen.value = false
-                navController.popBackStack()
-                onEnrollSuccess()
-            },
-            isPublic = enrollmentSuccessPublicValue.value == 1
         )
     }
 
@@ -456,8 +370,15 @@ fun UiEnrollmentNewScreen(
                                     enrollmentErrorAlertDialogMessage.value = result.msg
                                 }
                             } else {
-                                enrollmentSuccessPublicValue.value = result.opt_public
-                                enrollmentSuccessDialogOpen.value = true
+                                withContext(Dispatchers.Main) {
+                                    navController.popBackStack()
+                                    onEnrollSuccess()
+                                    if (result.opt_public == 1) {
+                                        navController.navigate(MudbandScreen.EnrollmentGuideBandTypePublic.name)
+                                    } else {
+                                        navController.navigate(MudbandScreen.EnrollmentGuideBandTypePrivate.name)
+                                    }
+                                }
                             }
                         }
                     }

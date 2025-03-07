@@ -38,4 +38,6 @@
     <string name="enrollment_change">Change enrollment</string>
     <string name="band_create_as_guest">Create Band as Guest</string>
     <string name="band">Band</string>
+    <string name="enrollment_guide_band_type_public">Enrollment Guide for Public Band</string>
+    <string name="enrollment_guide_band_type_private">Enrollment Guide for Private Band</string>
 </resources>

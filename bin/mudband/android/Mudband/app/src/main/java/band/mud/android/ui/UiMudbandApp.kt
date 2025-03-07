@@ -95,6 +95,8 @@ enum class MudbandScreen(@StringRes val title: Int) {
     EnrollmentNew(title = R.string.enrollment_new),
     EnrollmentChange(title = R.string.enrollment_change),
     Dashboard(title = R.string.dashboard),
+    EnrollmentGuideBandTypePublic(title = R.string.enrollment_guide_band_type_public),
+    EnrollmentGuideBandTypePrivate(title = R.string.enrollment_guide_band_type_private)
 }
 
 @Composable
@@ -257,6 +259,18 @@ fun UiMudbandScaffold(viewModel: MudbandAppViewModel, navController: NavHostCont
                             }
                         }
                     }
+                )
+            }
+            composable(route = MudbandScreen.EnrollmentGuideBandTypePublic.name) {
+                UiEnrollmentGuideBandTypePublicScreen(
+                    viewModel = viewModel,
+                    navController = navController
+                )
+            }
+            composable(route = MudbandScreen.EnrollmentGuideBandTypePrivate.name) {
+                UiEnrollmentGuideBandTypePrivateScreen(
+                    viewModel = viewModel,
+                    navController = navController
                 )
             }
         }
