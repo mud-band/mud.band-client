@@ -139,7 +139,6 @@ struct UiEnrollmentIntroView: View {
                 }
             }
             .navigationTitle("Mudband")
-            .background(Color.white)
         }
     }
     

@@ -245,7 +245,6 @@ struct UiEnrollmentNewView: View {
             .padding(.bottom)
         }
         .padding()
-        .background(Color.white)
         .alert("MFA Authentication Required", isPresented: $mMfaAlertNeed) {
             Button("Open URL") {
                 if let url = URL(string: mMfaAlertURL) {
@@ -331,5 +330,4 @@ struct UiEnrollmentNewView: View {
 #Preview {
     UiEnrollmentNewView()
         .frame(minWidth: 400, maxWidth: 500, minHeight: 500, maxHeight: 600)
-        .background(Color.white)
 }
