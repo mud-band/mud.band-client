@@ -35,8 +35,7 @@ export default function EnrollmentChangeDialog({ onSuccess }: EnrollmentChangeDi
                         uuid: string,
                         opt_public: number,
                         description: string,
-                        jwt: string,
-                        wireguard_privkey: string
+                        jwt: string
                     } 
                 };
                 if (parsedActiveBand.status === 200 && parsedActiveBand.band) {

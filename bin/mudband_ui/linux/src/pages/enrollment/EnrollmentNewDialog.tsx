@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { invoke } from "@tauri-apps/api/tauri"
 import { useState } from "react"
-import { useToast } from "@/hooks/use-toast"
 import { useNavigate } from "react-router-dom"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { open } from '@tauri-apps/api/shell'
@@ -14,13 +13,16 @@ interface EnrollmentNewDialogProps {
 
 export default function EnrollmentNewDialog({ onSuccess }: EnrollmentNewDialogProps) {
     const navigate = useNavigate()
-    const { toast } = useToast()
     const [enrollmentToken, setEnrollmentToken] = useState("")
     const [deviceName, setDeviceName] = useState("")
     const [enrollmentSecret, setEnrollmentSecret] = useState("")
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [showSsoDialog, setShowSsoDialog] = useState(false)
     const [ssoUrl, setSsoUrl] = useState("")
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+    const [successDialogContent, setSuccessDialogContent] = useState<{
+        isPublic: boolean;
+    }>({ isPublic: false })
 
     const handleOpenSsoUrl = async () => {
         try {
@@ -41,9 +43,16 @@ export default function EnrollmentNewDialog({ onSuccess }: EnrollmentNewDialogPr
                 enrollmentSecret: enrollmentSecret || undefined
             })
             const result = JSON.parse(response as string) as {
-                status: number;
-                sso_url?: string;
-                msg?: string
+                status: number,
+                sso_url?: string,
+                msg?: string,
+                band?: { 
+                    name: string,
+                    uuid: string,
+                    opt_public: number,
+                    description: string,
+                    jwt: string
+                }
             }
             
             if (result.status !== 200) {
@@ -55,12 +64,14 @@ export default function EnrollmentNewDialog({ onSuccess }: EnrollmentNewDialogPr
                 setErrorMessage(result.msg || "Failed to enroll.")
                 return
             }
-            toast({
-                title: "Info",
-                description: "Enrollment successful.",
-            });
-            navigate("/")
-            onSuccess?.();
+            if (!result.band) {
+                setErrorMessage("Failed to enroll.")
+                return
+            }
+            setSuccessDialogContent({
+                isPublic: result.band.opt_public === 1
+            })
+            setShowSuccessDialog(true)
         } catch (error) {
             setErrorMessage(`Encountered an error while enrolling: ${error}`)
         }
@@ -127,7 +138,7 @@ export default function EnrollmentNewDialog({ onSuccess }: EnrollmentNewDialogPr
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Authentication Required</DialogTitle>
-                        <DialogDescription>
+                        <DialogDescription className="text-left">
                             Additional authentication is required to complete the enrollment process. 
                             Please click the button below to open the authentication page.
                         </DialogDescription>
@@ -135,6 +146,49 @@ export default function EnrollmentNewDialog({ onSuccess }: EnrollmentNewDialogPr
                     <DialogFooter>
                         <Button onClick={handleOpenSsoUrl}>
                             Open Authentication Page
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={showSuccessDialog} onOpenChange={(open) => {
+                if (open === false) return;
+                setShowSuccessDialog(open);
+            }}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Enrollment successful.</DialogTitle>
+                        <DialogDescription className="pt-4 text-left">
+                            {successDialogContent.isPublic ? (
+                                <div className="space-y-2">
+                                    <p><strong>NOTE: This band is public. This means that</strong></p>
+                                    <ul className="list-disc pl-5 space-y-1">
+                                        <li>Your default policy is 'block'. This means that nobody can connect to your device without your permission.</li>
+                                        <li>You can change the default policy to 'allow' at the WebCLI.</li>
+                                        <li>You need to add an ACL rule to allow the connection.</li>
+                                        <li>To control ACL, you need to open the WebCLI which found in the menu.</li>
+                                        <li>For details, please visit <a href="https://mud.band/docs/public-band" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">https://mud.band/docs/public-band</a></li>
+                                    </ul>
+                                </div>
+                            ) : (
+                                <div className="space-y-2">
+                                    <p><strong>NOTE: This band is private. This means that</strong></p>
+                                    <ul className="list-disc pl-5 space-y-1">
+                                        <li>Band admin only can control ACL rules and the default policy.</li>
+                                        <li>You can't control your device.</li>
+                                        <li>For details, please visit <a href="https://mud.band/docs/private-band" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">https://mud.band/docs/private-band</a></li>
+                                    </ul>
+                                </div>
+                            )}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button onClick={() => {
+                            setShowSuccessDialog(false);
+                            navigate("/");
+                            onSuccess?.();
+                        }}>
+                            Okay
                         </Button>
                     </DialogFooter>
                 </DialogContent>

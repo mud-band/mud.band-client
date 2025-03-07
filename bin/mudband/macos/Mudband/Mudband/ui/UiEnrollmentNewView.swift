@@ -33,6 +33,9 @@ class UiEnrollmentNewModel : ObservableObject {
     var mEnrollmentToken: String = ""
     var mDeviceName: String = ""
     var mEnrollmentSecret: String = ""
+    
+    @Published var showSuccessAlert: Bool = false
+    @Published var isPublicBand: Bool = false
 
     struct enroll_params: Encodable {
         let token: String
@@ -60,18 +63,17 @@ class UiEnrollmentNewModel : ObservableObject {
     }
     
     func enroll_success(target: UiEnrollmentNewView, appModel: AppModel,
-                        priv_key: String, raw_str: String) {
+                        priv_key: String, obj: JSON, raw_str: String) {
         let r = mudband_ui_enroll_post(priv_key, raw_str)
         if r != 0 {
             mudband_ui_log(0, "BANDEC_00414: mudband_ui_enroll() failed.")
             return
         }
+        
+        let isPublic = obj["band"]["opt_public"].intValue == 1
         DispatchQueue.main.async {
-            target.mShowSuccessToast = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                appModel.update_enrollments()
-                target.dismiss()
-            }
+            target.mIsPublicBand = isPublic
+            target.mShowEnrollmentSuccessAlert = true
         }
     }
     
@@ -116,9 +118,15 @@ class UiEnrollmentNewModel : ObservableObject {
                                            msg: obj["msg"].stringValue)
                     return
                 }
+                self.enroll_success(target: target,
+                                    appModel: appModel, priv_key: priv_key,
+                                    obj: obj,
+                                    raw_str: str)
+            } else {
+                self.enroll_set_result(target: target,
+                                       status: 503,
+                                       msg: "Failed to parse to JSON object.")
             }
-            self.enroll_success(target: target,
-                                appModel: appModel, priv_key: priv_key, raw_str: str)
         case .failure(let error):
             self.enroll_set_result(target: target,
                                    status: 502,
@@ -140,6 +148,11 @@ struct UiEnrollmentNewView: View {
     @State var mIsEnrolling = false
     @State var mShowSuccessToast = false
     @State var mShowErrorToast = false
+    
+    @State var mShowEnrollmentSuccessAlert = false
+    @State var mIsPublicBand = false
+    @State var mShowLearnMoreSheet = false
+    @State var mLearnMoreURL = ""
 
     @ViewBuilder
     var body: some View {
@@ -242,6 +255,63 @@ struct UiEnrollmentNewView: View {
             Button("Cancel", role: .cancel) { }
         } message: {
             Text("Multi-factor authentication is required to complete enrollment.")
+        }
+        .alert("Enrollment successful", isPresented: $mShowEnrollmentSuccessAlert) {
+            Button("Learn More") {
+                if mIsPublicBand {
+                    mLearnMoreURL = "https://mud.band/docs/public-band"
+                } else {
+                    mLearnMoreURL = "https://mud.band/docs/private-band"
+                }
+                mShowLearnMoreSheet = true
+                mShowEnrollmentSuccessAlert = false
+            }
+            Button("Okay") {
+                mShowSuccessToast = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    mAppModel.update_enrollments()
+                    dismiss()
+                }
+            }
+        } message: {
+            if mIsPublicBand {
+                Text("NOTE: This band is public. This means that:\n• Nobody can connect to your device without your permission.\n• Your default policy is 'block'.\n• You need to add an ACL rule to allow the connection.\n• To control ACL, you need to open the WebCLI.")
+                    .multilineTextAlignment(.leading)
+            } else {
+                Text("NOTE: This band is private. This means that:\n• Band admin only can control ACL rules and the default policy.\n• You can't control your device.")
+                    .multilineTextAlignment(.leading)
+            }
+        }
+        .sheet(isPresented: $mShowLearnMoreSheet) {
+            VStack(spacing: 20) {
+                Text("Documentation")
+                    .font(.title)
+                    .fontWeight(.bold)
+                
+                Text("You'll be redirected to the documentation website.")
+                    .multilineTextAlignment(.center)
+                
+                HStack(spacing: 20) {
+                    Button("Cancel") {
+                        mShowLearnMoreSheet = false
+                        mShowEnrollmentSuccessAlert = true
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    
+                    Button("Open Link") {
+                        if let url = URL(string: mLearnMoreURL) {
+                            openURL(url)
+                        }
+                        mShowLearnMoreSheet = false
+                        mShowEnrollmentSuccessAlert = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                }
+            }
+            .padding(30)
+            .frame(width: 400)
         }
         .toast(isPresenting: $mShowSuccessToast) {
             AlertToast(displayMode: .banner(.slide),

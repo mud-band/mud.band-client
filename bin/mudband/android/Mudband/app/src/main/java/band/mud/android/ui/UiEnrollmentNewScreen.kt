@@ -59,7 +59,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import band.mud.android.MainApplication
@@ -76,6 +78,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.foundation.clickable
 
 @Serializable
 data class EnrollmentRequestData(
@@ -86,22 +92,30 @@ data class EnrollmentRequestData(
 )
 
 @Serializable
+data class EnrollmentResponseBandData(
+    val opt_public: Int,
+    val name: String
+)
+
+@Serializable
 data class EnrollmentResponseData(
     val status: Int,
     val msg: String? = null,
-    val sso_url: String? = null
+    val sso_url: String? = null,
+    val band: EnrollmentResponseBandData? = null
 )
 
 data class EnrollmentResult(
     var status: Int,
-    var msg: String
+    var msg: String,
+    var opt_public: Int = 0
 )
 
-fun returnEnrollResult(status: Int, msg: String): EnrollmentResult {
+fun returnEnrollResult(status: Int, msg: String, opt_public: Int = 0): EnrollmentResult {
     if (status != 0) {
         MudbandLog.e(msg)
     }
-    return EnrollmentResult(status, msg)
+    return EnrollmentResult(status, msg, opt_public)
 }
 
 suspend fun makeEnrollRequest(enrollmentToken: String, deviceName: String,
@@ -137,7 +151,7 @@ suspend fun makeEnrollRequest(enrollmentToken: String, deviceName: String,
         if (r != 0) {
             return returnEnrollResult(-7, "BANDEC_00167: app.jni.parseEnrollmentResponse() failed.")
         }
-        return returnEnrollResult(0, "Okay")
+        return returnEnrollResult(0, "Okay", obj.band?.opt_public ?: 0)
     } catch (e: Exception) {
         e.printStackTrace()
         return returnEnrollResult(-3, "BANDEC_00168: Exception ${e.message}")
@@ -220,6 +234,79 @@ fun EnrollmentMfaAlertDialog(
 }
 
 @Composable
+fun EnrollmentSuccessAlertDialog(
+    onConfirmation: () -> Unit,
+    isPublic: Boolean
+) {
+    val uriHandler = LocalUriHandler.current
+    val message = if (isPublic) {
+        buildAnnotatedString {
+            append("NOTE: This band is public.\n\n")
+            append("• Nobody can connect to your device without your permission\n")
+            append("• Your default policy is 'block'\n")
+            append("• You need to add an ACL rule to allow the connection\n")
+            append("• To control ACL, you need to open the WebCLI\n\n")
+            append("For details, please visit ")
+            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                pushStringAnnotation(
+                    tag = "URL",
+                    annotation = "https://mud.band/docs/public-band"
+                )
+                append("https://mud.band/docs/public-band")
+                pop()
+            }
+        }
+    } else {
+        buildAnnotatedString {
+            append("NOTE: This band is private.\n\n")
+            append("• Band admin only can control ACL rules and the default policy\n")
+            append("• You can't control your device\n\n")
+            append("For details, please visit ")
+            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                pushStringAnnotation(
+                    tag = "URL",
+                    annotation = "https://mud.band/docs/private-band"
+                )
+                append("https://mud.band/docs/private-band")
+                pop()
+            }
+        }
+    }
+
+    AlertDialog(
+        icon = {
+            Icon(Icons.Default.Info, contentDescription = "Success Icon")
+        },
+        title = {
+            Text(text = "Enrollment successful")
+        },
+        text = {
+            ClickableText(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
+                onClick = { offset: Int ->
+                    message.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                        .firstOrNull()?.let { annotation ->
+                            uriHandler.openUri(annotation.item)
+                        }
+                }
+            )
+        },
+        onDismissRequest = {},
+        confirmButton = {
+            TextButton(
+                onClick = onConfirmation
+            ) {
+                Text("Okay")
+            }
+        },
+        dismissButton = null
+    )
+}
+
+@Composable
 fun UiEnrollmentNewScreen(
     viewModel: MudbandAppViewModel,
     navController: NavHostController,
@@ -236,6 +323,8 @@ fun UiEnrollmentNewScreen(
     val enrollmentErrorAlertDialogMessage = remember { mutableStateOf("") }
     val enrollmentMfaAlertDialogOpen = remember { mutableStateOf(false) }
     val enrollmentMfaAlertDialogURL = remember { mutableStateOf("") }
+    val enrollmentSuccessDialogOpen = remember { mutableStateOf(false) }
+    val enrollmentSuccessPublicValue = remember { mutableStateOf(0) }
 
     if (enrollmentErrorAlertDialogOpen.value) {
         EnrollmentErrorAlertDialog(
@@ -259,6 +348,17 @@ fun UiEnrollmentNewScreen(
             dialogTitle = "Enrollment MFA",
             dialogText = "MFA (multi-factor authentication) is enabled to enroll.",
             icon = Icons.Default.Info
+        )
+    }
+
+    if (enrollmentSuccessDialogOpen.value) {
+        EnrollmentSuccessAlertDialog(
+            onConfirmation = {
+                enrollmentSuccessDialogOpen.value = false
+                navController.popBackStack()
+                onEnrollSuccess()
+            },
+            isPublic = enrollmentSuccessPublicValue.value == 1
         )
     }
 
@@ -356,10 +456,8 @@ fun UiEnrollmentNewScreen(
                                     enrollmentErrorAlertDialogMessage.value = result.msg
                                 }
                             } else {
-                                withContext(Dispatchers.Main) {
-                                    navController.popBackStack()
-                                    onEnrollSuccess()
-                                }
+                                enrollmentSuccessPublicValue.value = result.opt_public
+                                enrollmentSuccessDialogOpen.value = true
                             }
                         }
                     }

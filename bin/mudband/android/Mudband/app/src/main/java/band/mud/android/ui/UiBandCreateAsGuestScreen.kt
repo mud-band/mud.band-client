@@ -215,10 +215,16 @@ fun UiBandCreateAsGuestScreen(
             val enrollResult = withContext(Dispatchers.IO) {
                 makeEnrollRequest(enrollmentToken, deviceName, "")
             }
-            if (enrollResult.status == 0) {
-                return Pair(true, "")
-            } else {
-                return Pair(false, "Band created but enrollment failed: ${enrollResult.msg}")
+            return when {
+                enrollResult.status == 0 -> {
+                    Pair(true, "")
+                }
+                enrollResult.status == -10 -> {
+                    Pair(false, "Requires SSO authentication?  Something went wrong.")
+                }
+                else -> {
+                    Pair(false, "Band created but enrollment failed: ${enrollResult.msg}")
+                }
             }
         } else {
             return Pair(false, "Band created but: ${enrollmentResult.second}")
