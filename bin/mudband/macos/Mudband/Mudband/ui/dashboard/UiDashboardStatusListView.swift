@@ -58,7 +58,6 @@ struct UiDashboardStatusListView: View {
                 
                 // Connection Details (now using the separated view)
                 ConnectionDetailsView()
-                    .background(Color.white)
                 
                 Spacer()
             }
@@ -71,7 +70,6 @@ struct UiDashboardStatusListView: View {
             }
         }
         .padding(12)
-        .background(Color.white)
         .onReceive(timer) { _ in
             mAppModel.update_vpn_status()
         }
@@ -155,7 +153,6 @@ struct UiDashboardStatusListView: View {
         .padding(.horizontal, 16)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color.white)
                 .shadow(color: Color.black.opacity(0.12), radius: 6, x: 0, y: 3)
         )
         .overlay(

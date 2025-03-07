@@ -120,7 +120,6 @@ struct UiEnrollmentChangeView: View {
                 }
             }
             .padding(7)
-            .background(Color(white: 0.95))
             .cornerRadius(8)
             .padding(.horizontal)
             .padding(.bottom, 12)
@@ -150,7 +149,6 @@ struct UiEnrollmentChangeView: View {
                     }
                 }
                 .listStyle(InsetListStyle())
-                .background(Color.white)
             }
             
             // Footer
@@ -172,9 +170,7 @@ struct UiEnrollmentChangeView: View {
                 .buttonStyle(.borderedProminent)
             }
             .padding()
-            .background(Color(white: 0.95))
         }
-        .background(Color.white)
         .onAppear {
             update_enrollment_list()
         }

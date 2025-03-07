@@ -74,7 +74,6 @@ struct UiDashboardDevicesListView: View {
             return
         }
         for (_, peer) in obj["peers"] {
-	    mudband_ui_log(0, "\(peer)")
             devices.append(Device(name: peer["name"].stringValue,
                                   private_ip: peer["private_ip"].stringValue))
         }
@@ -99,9 +98,6 @@ struct UiDashboardDevicesListView: View {
                     }
                 }
             }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-            .background(Color.white)
             .cornerRadius(10)
             .padding()
             
@@ -164,8 +160,7 @@ struct UiDashboardDevicesListView: View {
                         .padding(.vertical, 8)
                     }
                 }
-                .listStyle(PlainListStyle())
-                .padding(.horizontal)
+                .padding()
                 .refreshable {
                     isRefreshing = true
                     update_device_list()
@@ -175,7 +170,6 @@ struct UiDashboardDevicesListView: View {
                 }
             }
         }
-        .background(Color.white)
         .onAppear() {
             update_device_list()
         }

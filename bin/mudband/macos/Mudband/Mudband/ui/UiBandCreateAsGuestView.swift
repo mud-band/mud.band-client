@@ -234,7 +234,6 @@ struct UiBandCreateAsGuestView: View {
                 .padding(.bottom, 20)
                 .padding(.top, 16)
             }
-            .background(Color.white)
             
             if isSubmitting {
                 ZStack {
