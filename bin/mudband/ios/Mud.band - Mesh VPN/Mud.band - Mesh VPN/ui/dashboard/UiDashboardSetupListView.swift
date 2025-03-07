@@ -100,12 +100,7 @@ struct UiDashboardSetupDangerZoneUnenrollView: View {
     @State private var mUnenrollAlertNeed = false
     @State private var mUnenrollAlertMessage = ""
     @State private var mCanUnenroll = true
-
-    private func need_enrollment_count_refresh() {
-        DispatchQueue.main.async {
-            /* XXX */
-        }
-    }
+    @State private var mIsUnenrolling = false
     
     private func isUnenrollable() -> Bool {
         if mAppModel.mVpnManager.getVPNStatusString() == "Disconnected" ||
@@ -186,24 +181,39 @@ struct UiDashboardSetupDangerZoneUnenrollView: View {
                     }
                     
                     Button(action: {
-                        mNeedToShowPopupConnect = false
+                        mIsUnenrolling = true
                         mUnenrollModel.mudband_unenroll(unenrollCompletionHandler: { error in
+                            mIsUnenrolling = false
+                            mNeedToShowPopupConnect = false
                             if let error = error {
                                 mUnenrollAlertNeed = true
                                 mUnenrollAlertMessage = "\(error)"
                                 return
+                            }                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                mAppModel.update_enrollments()
                             }
-                            mAppModel.update_enrollments()
                         })
                     }) {
-                        Text("Yes")
-                            .fontWeight(.medium)
-                            .frame(minWidth: 100)
-                            .padding(.vertical, 8)
-                            .foregroundColor(.white)
-                            .background(Color.red)
-                            .cornerRadius(8)
+                        let backgroundColor = mIsUnenrolling ? Color.gray.opacity(0.7) : Color.red
+                        let textColor = mIsUnenrolling ? Color.gray.opacity(0.9) : Color.white
+                        HStack {
+                            Text("Yes")
+                                .fontWeight(.medium)
+                                .foregroundColor(textColor)
+                            
+                            if mIsUnenrolling {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: textColor))
+                                    .scaleEffect(0.8)
+                            }
+                        }
+                        .frame(minWidth: 100)
+                        .padding(.vertical, 8)
+                        .background(backgroundColor)
+                        .cornerRadius(8)
                     }
+                    .disabled(mIsUnenrolling)
                 }
                 .padding(.bottom)
             }

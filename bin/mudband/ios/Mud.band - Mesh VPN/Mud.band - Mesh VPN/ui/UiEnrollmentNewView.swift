@@ -59,15 +59,17 @@ class UiEnrollmentNewModel : ObservableObject {
     }
     
     func enroll_success(target: UiEnrollmentNewView,
-                        appModel: AppModel, priv_key: String, raw_str: String) {
+                        appModel: AppModel, priv_key: String, obj: JSON, raw_str: String) {
         let r = mudband_ui_enroll_post(priv_key, raw_str)
         if r != 0 {
             mudband_ui_log(0, "BANDEC_00277: mudband_ui_enroll() failed.")
             return
         }
+        
+        let isPublic = obj["band"]["opt_public"].intValue
         DispatchQueue.main.async {
-            appModel.update_enrollments()
-            target.dismiss()
+            target.mIsPublicBand = isPublic == 1
+            target.mShowSuccessAlert = true
         }
     }
     
@@ -112,9 +114,15 @@ class UiEnrollmentNewModel : ObservableObject {
                                            msg: obj["msg"].stringValue)
                     return
                 }
+                self.enroll_success(target: target,
+                                    appModel: appModel, priv_key: priv_key,
+                                    obj: obj,
+                                    raw_str: str)
+            } else {
+                self.enroll_set_result(target: target,
+                                       status: 503,
+                                       msg: "Failed to parse to JSON object.")
             }
-            self.enroll_success(target: target,
-                                appModel: appModel, priv_key: priv_key, raw_str: str)
         case .failure(let error):
             self.enroll_set_result(target: target,
                                    status: 502,
@@ -135,6 +143,8 @@ struct UiEnrollmentNewView: View {
     @State var mErrorAlertNeed = false
     @State var mErrorAlertMessage = ""
     @State var mIsEnrolling = false
+    @State var mShowSuccessAlert = false
+    @State var mIsPublicBand = false
 
     @ViewBuilder
     var body: some View {
@@ -232,6 +242,22 @@ struct UiEnrollmentNewView: View {
                 Button("Cancel", role: .cancel) { }
             } message: {
                 Text("Multi-factor authentication is required to complete the enrollment process.")
+            }
+            .alert("Enrollment successful", isPresented: $mShowSuccessAlert) {
+                Button("Okay") {
+                    DispatchQueue.main.async {
+                        mAppModel.update_enrollments()
+                        dismiss()
+                    }
+                }
+            } message: {
+                if mIsPublicBand {
+                    Text("NOTE: This band is public. This means that:\n\n• Nobody can connect to your device without your permission.\n• Your default policy is 'block'.\n• You need to add an ACL rule to allow the connection.\n• To control ACL, you need to open the WebCLI.\n\nFor details, please visit: https://mud.band/docs/public-band")
+                        .multilineTextAlignment(.leading)
+                } else {
+                    Text("NOTE: This band is private. This means that:\n\n• Band admin only can control ACL rules and the default policy.\n• You can't control your device.\n\nFor details, please visit: https://mud.band/docs/private-band")
+                        .multilineTextAlignment(.leading)
+                }
             }
         }
     }

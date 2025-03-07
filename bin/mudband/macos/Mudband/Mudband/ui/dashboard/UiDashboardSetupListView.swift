@@ -184,6 +184,7 @@ struct UiDashboardSetupDangerZoneUnenrollView: View {
     @State private var mUnenrollAlertNeed = false
     @State private var mUnenrollAlertMessage = ""
     @State private var mCanUnenroll = true
+    @State private var mIsUnenrolling = false
     
     var onUnenrollSuccess: () -> Void
     
@@ -246,9 +247,11 @@ struct UiDashboardSetupDangerZoneUnenrollView: View {
                     }
                     .keyboardShortcut(.escape, modifiers: [])
                     
-                    Button("Remove") {
-                        mShowConfirmationSheet = false
+                    Button(action: {
+                        mIsUnenrolling = true
                         mUnenrollModel.mudband_unenroll(unenrollCompletionHandler: { error in
+                            mIsUnenrolling = false
+                            mShowConfirmationSheet = false
                             if let error = error {
                                 mUnenrollAlertNeed = true
                                 mUnenrollAlertMessage = "\(error)"
@@ -259,9 +262,19 @@ struct UiDashboardSetupDangerZoneUnenrollView: View {
                                 mAppModel.update_enrollments()
                             }
                         })
+                    }) {
+                        HStack {
+                            Text("Remove")
+                            if mIsUnenrolling {
+                                ProgressView()
+                                    .scaleEffect(0.7)
+                                    .frame(width: 16, height: 16)
+                            }
+                        }
                     }
                     .keyboardShortcut(.return, modifiers: [])
                     .foregroundColor(.red)
+                    .disabled(mIsUnenrolling)
                 }
                 .padding(.bottom, 24)
             }
