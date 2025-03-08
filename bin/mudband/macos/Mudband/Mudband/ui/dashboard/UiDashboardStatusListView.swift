@@ -151,13 +151,9 @@ struct UiDashboardStatusListView: View {
         }
         .padding(.vertical, 14)
         .padding(.horizontal, 16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .shadow(color: Color.black.opacity(0.12), radius: 6, x: 0, y: 3)
-        )
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.blue.opacity(0.1), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.blue, lineWidth: 1)
         )
     }
 

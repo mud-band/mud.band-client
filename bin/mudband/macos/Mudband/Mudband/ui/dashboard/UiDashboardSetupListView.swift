@@ -304,6 +304,40 @@ struct UiDashboardSetupListView: View {
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
+                    // Band Options Group
+                    GroupBox(label: 
+                        Label("Band", systemImage: "music.note.list")
+                            .font(.system(size: 13, weight: .semibold))
+                    ) {
+                        VStack(spacing: 0) {
+                            NavigationLink(destination: UiBandCreateAsGuestView()) {
+                                HStack(spacing: 12) {
+                                    Image(systemName: "person.badge.plus")
+                                        .foregroundColor(.blue)
+                                        .font(.system(size: 18))
+                                        .frame(width: 24, height: 24)
+                                    
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Create Band as Guest")
+                                            .font(.system(size: 14, weight: .medium))
+                                        
+                                        Text("Create a new band without registration")
+                                            .font(.system(size: 12))
+                                            .foregroundColor(.secondary)
+                                    }
+                                    
+                                    Spacer()
+                                }
+                                .padding(.vertical, 6)
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 2)
+                    }
+                    .groupBoxStyle(MacGroupBoxStyle())
+                    
                     // Enrollment Options Group
                     GroupBox(label: 
                         Label("Enrollment", systemImage: "network")
