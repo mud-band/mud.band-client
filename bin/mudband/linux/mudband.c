@@ -143,15 +143,16 @@ static struct callout wg_stat_co;
 static struct vtclog *stats_vl;
 struct vtclog *band_vl;
 const char *band_b_arg;
+char *band_confdir_root;
 char *band_confdir_enroll;
 int band_need_iface_sync = 1;
-int band_need_mfa_authentication;
+int band_mfa_authentication_required;
+char band_mfa_authentication_url[512];
 
 static struct callout_block wg_cb;
 static int wg_aborted;
 static int orig_argc;
 static char **orig_argv;
-char *band_confdir_root;
 
 static int wg_tunfd = -1;
 static char wg_tunname[IFNAMSIZ];
@@ -1952,7 +1953,7 @@ mudband_tunnel(void)
 			band_need_iface_sync = 0;
 			wireguard_iface_sync(device);
 		}
-		if (band_need_mfa_authentication) {
+		if (band_mfa_authentication_required) {
 			ODR_msleep(1000);
 			continue;
 		}

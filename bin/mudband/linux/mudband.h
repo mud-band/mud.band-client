@@ -79,7 +79,8 @@ extern const char *band_b_arg;
 extern char *band_confdir_root;
 extern char *band_confdir_enroll;
 extern int band_need_iface_sync;
-extern int band_need_mfa_authentication;
+extern int band_mfa_authentication_required;
+extern char band_mfa_authentication_url[512];
 int	mudband_log_printf(const char *id, int lvl, double t_elapsed,
 	    const char *msg);
 json_t *wireguard_iface_stat_to_json(void);

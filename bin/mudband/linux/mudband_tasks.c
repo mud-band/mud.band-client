@@ -36,6 +36,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "jansson.h"
 #include "mudband.h"
 #include "mudband_mqtt.h"
 #include "mudband_stun_client.h"
@@ -50,6 +51,7 @@ static struct callout_block mbt_cb;
 static struct callout mbt_stun_client_co;
 static struct callout mbt_conf_fetcher_co;
 static struct callout mbt_conf_nuke_co;
+static struct callout mbt_snapshot_co;
 static odr_pthread_t mbt_tp;
 static int mbt_need_conf_fetcher_trigger;
 static int mbt_aborted;
@@ -126,6 +128,45 @@ MBT_conf_fetcher_trigger(void)
 	vtc_log(mbt_vl, 2, "Trigger the conf fetcher.");
 }
 
+static void
+mbt_snapshot(void *arg)
+{
+	json_t *jroot, *jstats, *jstatus;
+	char filepath[PATH_MAX];
+
+	(void)arg;
+
+	jroot = json_object();
+	AN(jroot);
+	/* stats */
+	jstats = wireguard_iface_stat_to_json();
+	AN(jstats);
+	json_object_set_new(jroot, "stats", jstats);
+	/* status */
+	jstatus = json_object();
+	AN(jstatus);
+	if (band_mfa_authentication_required) {
+		json_object_set_new(jstatus, "mfa_authentication_required",
+		    json_true());
+		if (band_mfa_authentication_url[0] != '\0') {
+			json_object_set_new(jstatus, "mfa_authentication_url",
+			    json_string(band_mfa_authentication_url));
+		}
+	} else {
+		json_object_set_new(jstatus, "mfa_authentication_required",
+		    json_false());
+	}
+	json_object_set_new(jroot, "status", jstatus);
+
+	snprintf(filepath, sizeof(filepath), "%s/%s", band_confdir_root,
+	    "snapshot.json");
+	json_dump_file(jroot, filepath, 0);
+	json_decref(jroot);
+
+	callout_reset(&mbt_cb, &mbt_snapshot_co,
+	    CALLOUT_SECTOTICKS(60), mbt_snapshot, NULL);
+}
+
 static void *
 mbt_thread(void *arg)
 {
@@ -165,6 +206,7 @@ MBT_init(void)
 	callout_init(&mbt_conf_nuke_co, 0);
 	callout_init(&mbt_conf_fetcher_co, 0);
 	callout_init(&mbt_stun_client_co, 1);
+	callout_init(&mbt_snapshot_co, 2);
 
 	callout_reset(&mbt_cb, &mbt_conf_nuke_co,
 	    CALLOUT_SECTOTICKS(60), mbt_conf_nuke, NULL);
@@ -172,6 +214,8 @@ MBT_init(void)
 	    CALLOUT_SECTOTICKS(600), mbt_conf_fetcher, NULL);
 	callout_reset(&mbt_cb, &mbt_stun_client_co,
 	    CALLOUT_SECTOTICKS(600), mbt_stun_client, NULL);
+	callout_reset(&mbt_cb, &mbt_snapshot_co,
+	    CALLOUT_SECTOTICKS(60), mbt_snapshot, NULL);
 
 	AZ(ODR_pthread_create(&mbt_tp, NULL, mbt_thread, NULL));
 	AZ(ODR_pthread_detach(mbt_tp));

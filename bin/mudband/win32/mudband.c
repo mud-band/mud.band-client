@@ -141,6 +141,8 @@ const char *band_b_arg;
 char *band_confdir_enroll;
 char *band_confdir_root;
 int band_need_iface_sync = 1;
+int band_mfa_authentication_required;
+char band_mfa_authentication_url[512];
 
 static struct callout_block wg_cb;
 static int wg_aborted;
@@ -169,6 +171,48 @@ static WINTUN_ADAPTER_HANDLE band_wintun_adapter;
 static WINTUN_SESSION_HANDLE band_wintun_session;
 static odr_pthread_t band_wintun_tp;
 static int band_wintun_proxy_fd = -1;
+
+json_t *
+wireguard_iface_stat_to_json(void)
+{
+	json_t *jroot;
+
+	jroot = json_object();
+	AN(jroot);
+
+	json_object_set_new(jroot, "n_no_peer_found",
+	    json_integer(wg_stat.n_no_peer_found));
+	json_object_set_new(jroot, "n_no_ipv4_hdr",
+	    json_integer(wg_stat.n_no_ipv4_hdr));
+	json_object_set_new(jroot, "n_tun_rx_pkts",
+	    json_integer(wg_stat.n_tun_rx_pkts));
+	json_object_set_new(jroot, "n_tun_tx_pkts",
+	    json_integer(wg_stat.n_tun_tx_pkts));
+	json_object_set_new(jroot, "n_udp_rx_pkts",
+	    json_integer(wg_stat.n_udp_rx_pkts));
+	json_object_set_new(jroot, "n_udp_tx_pkts",
+	    json_integer(wg_stat.n_udp_tx_pkts));
+	json_object_set_new(jroot, "n_udp_proxy_rx_pkts",
+	    json_integer(wg_stat.n_udp_proxy_rx_pkts));
+	json_object_set_new(jroot, "n_udp_proxy_tx_pkts",
+	    json_integer(wg_stat.n_udp_proxy_tx_pkts));
+	json_object_set_new(jroot, "n_udp_proxy_rx_errs",
+	    json_integer(wg_stat.n_udp_proxy_rx_errs));
+	json_object_set_new(jroot, "bytes_tun_rx",
+	    json_integer(wg_stat.bytes_tun_rx));
+	json_object_set_new(jroot, "bytes_tun_tx",
+	    json_integer(wg_stat.bytes_tun_tx));
+	json_object_set_new(jroot, "bytes_udp_rx",
+	    json_integer(wg_stat.bytes_udp_rx));
+	json_object_set_new(jroot, "bytes_udp_tx",
+	    json_integer(wg_stat.bytes_udp_tx));
+	json_object_set_new(jroot, "bytes_udp_proxy_rx",
+	    json_integer(wg_stat.bytes_udp_proxy_rx));
+	json_object_set_new(jroot, "bytes_udp_proxy_tx",
+	    json_integer(wg_stat.bytes_udp_proxy_tx));
+
+	return (jroot);
+}
 
 static void
 mudband_signal_init(void)
@@ -2045,6 +2089,11 @@ mudband_tunnel(void)
 			band_need_iface_sync = 0;
 			wireguard_iface_sync(device);
 		}
+		if (band_mfa_authentication_required) {
+			ODR_msleep(1000);
+			continue;
+		}
+
 		tv.tv_sec = 0;
 		tv.tv_usec = 300000;
 		FD_ZERO(&rset);
