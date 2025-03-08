@@ -82,6 +82,7 @@ extern int band_need_iface_sync;
 extern int band_need_mfa_authentication;
 int	mudband_log_printf(const char *id, int lvl, double t_elapsed,
 	    const char *msg);
+json_t *wireguard_iface_stat_to_json(void);
 
 /* mudband_acl.c */
 int	ACL_init(void);

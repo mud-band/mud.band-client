@@ -70,8 +70,6 @@
 #define WIREGUARD_IFACE_KEEPALIVE_DEFAULT	(0xFFFF)
 #define WIREGUARD_IFACE_INVALID_INDEX		(-1)
 
-#define TODO()		do { assert(0 == 1); } while (0)
-
 #define WIREGUARD_IPHDR_HI_BYTE(byte)	(((byte) >> 4) & 0x0F)
 #define WIREGUARD_IPHDR_LO_BYTE(byte)	((byte) & 0x0F)
 
@@ -159,6 +157,48 @@ static int wg_tunfd = -1;
 static char wg_tunname[IFNAMSIZ];
 static unsigned S_flag = 0;
 
+json_t *
+wireguard_iface_stat_to_json(void)
+{
+	json_t *jroot;
+
+	jroot = json_object();
+	AN(jroot);
+
+	json_object_set_new(jroot, "n_no_peer_found",
+	    json_integer(wg_stat.n_no_peer_found));
+	json_object_set_new(jroot, "n_no_ipv4_hdr",
+	    json_integer(wg_stat.n_no_ipv4_hdr));
+	json_object_set_new(jroot, "n_tun_rx_pkts",
+	    json_integer(wg_stat.n_tun_rx_pkts));
+	json_object_set_new(jroot, "n_tun_tx_pkts",
+	    json_integer(wg_stat.n_tun_tx_pkts));
+	json_object_set_new(jroot, "n_udp_rx_pkts",
+	    json_integer(wg_stat.n_udp_rx_pkts));
+	json_object_set_new(jroot, "n_udp_tx_pkts",
+	    json_integer(wg_stat.n_udp_tx_pkts));
+	json_object_set_new(jroot, "n_udp_proxy_rx_pkts",
+	    json_integer(wg_stat.n_udp_proxy_rx_pkts));
+	json_object_set_new(jroot, "n_udp_proxy_tx_pkts",
+	    json_integer(wg_stat.n_udp_proxy_tx_pkts));
+	json_object_set_new(jroot, "n_udp_proxy_rx_errs",
+	    json_integer(wg_stat.n_udp_proxy_rx_errs));
+	json_object_set_new(jroot, "bytes_tun_rx",
+	    json_integer(wg_stat.bytes_tun_rx));
+	json_object_set_new(jroot, "bytes_tun_tx",
+	    json_integer(wg_stat.bytes_tun_tx));
+	json_object_set_new(jroot, "bytes_udp_rx",
+	    json_integer(wg_stat.bytes_udp_rx));
+	json_object_set_new(jroot, "bytes_udp_tx",
+	    json_integer(wg_stat.bytes_udp_tx));
+	json_object_set_new(jroot, "bytes_udp_proxy_rx",
+	    json_integer(wg_stat.bytes_udp_proxy_rx));
+	json_object_set_new(jroot, "bytes_udp_proxy_tx",
+	    json_integer(wg_stat.bytes_udp_proxy_tx));
+
+	return (jroot);
+}
+
 static int
 wireguard_iface_open_tundev(void)
 {
@@ -166,7 +206,12 @@ wireguard_iface_open_tundev(void)
 	int fd;
 
 	fd = open("/dev/net/tun", O_RDWR);
-	assert(fd >= 0);
+	if (fd < 0) {
+		vtc_log(band_vl, 0,
+		    "BANDEC_XXXXX: Failed to open /dev/net/tun: %d %s",
+		    errno, strerror(errno));
+		return (-1);
+	}
 
 	memset(&ifr, 0, sizeof(ifr));
 	/*
@@ -176,12 +221,23 @@ wireguard_iface_open_tundev(void)
 	 *        IFF_NO_PI - Do not provide packet information
 	 */
 	ifr.ifr_flags = IFF_TUN | IFF_NO_PI;
-	assert(ioctl(fd, TUNSETIFF, (void *) &ifr) == 0);
+	if (ioctl(fd, TUNSETIFF, (void *) &ifr) != 0) {
+		vtc_log(band_vl, 0,
+		    "BANDEC_XXXXX: Failed to setup TUN device: %d %s",
+		    errno, strerror(errno));
+		close(fd);
+		return (-1);
+	}
+	
 	/* At here, the device name is specified and new name is placed */
 	strcpy(wg_tunname, ifr.ifr_name);
-	assert(strlen(wg_tunname) > 0);
-	vtc_log(band_vl, 2, "New tun(4) interface is created: %s",
-	    wg_tunname);
+	if (strlen(wg_tunname) == 0) {
+		vtc_log(band_vl, 0, "BANDEC_XXXXX: TUN device name is empty");
+		close(fd);
+		return (-1);
+	}
+	
+	vtc_log(band_vl, 2, "New tun(4) interface is created: %s", wg_tunname);
 	return (fd);
 }
 
@@ -541,7 +597,10 @@ wireguard_iface_device_output(struct wireguard_device *device, struct pbuf *q,
 	l = sendto(device->udp_fd, buf, buflen, 0,
 	    (struct sockaddr *)&sin, sizeof(sin));
 	if (l == -1) {
-		TODO();
+		vtc_log(band_vl, 0,
+		    "BANDEC_XXXXX: sendto(2) to %s:%d failed: %d %s",
+		    inet_ntoa(sin.sin_addr), ntohs(sin.sin_port),
+		    errno, strerror(errno));
 		return (-1);
 	}
 	assert(l == buflen);
@@ -591,7 +650,9 @@ wireguard_iface_output_to_peer(struct wireguard_device *device, struct pbuf *p,
 			pbuf = pbuf_alloc(header_len + padded_len +
 			    WIREGUARD_AUTHTAG_LEN);
 			if (pbuf == NULL) {
-				TODO();
+				vtc_log(band_vl, 0,
+				    "BANDEC_XXXXX: Out of memory when"
+				    " allocating packet buffer");
 				return (-1);
 			}
 			memset(pbuf->payload, 0, sizeof(*hdr));
@@ -719,7 +780,6 @@ wireguard_iface_timer(void *arg)
 			wireguard_keypair_destroy(&peer->next_keypair);
 			wireguard_keypair_destroy(&peer->curr_keypair);
 			wireguard_keypair_destroy(&peer->prev_keypair);
-			// TODO: Also destroy handshake?
 			
 			// Revert back to default IP/port if these were altered
 			peer->endpoint_latest_is_proxy =
@@ -757,11 +817,11 @@ wireguard_iface_init(struct wireguard_iface_init_data *init_data)
 	r = wireguard_base64_decode(init_data->private_key, private_key,
 	    &private_key_len);
 	if (!r) {
-		TODO();
+		vtc_log(band_vl, 0, "BANDEC_XXXXX: Invalid private key");
 		return (NULL);
 	}
 	if (private_key_len != WIREGUARD_PRIVATE_KEY_LEN) {
-		TODO();
+		vtc_log(band_vl, 0, "BANDEC_XXXXX: Invalid private key length");
 		return (NULL);
 	}
 	device = (struct wireguard_device *)calloc(1, sizeof(*device));
@@ -775,7 +835,9 @@ wireguard_iface_init(struct wireguard_iface_init_data *init_data)
 	// Per-wireguard netif/device setup
 	r = wireguard_device_init(device, private_key);
 	if (!r) {
-		TODO();
+		vtc_log(band_vl, 0,
+		    "BANDEC_XXXXX: Failed to initialize wireguard device");
+		free(device);
 		return (NULL);
 	}
 
@@ -1906,7 +1968,10 @@ mudband_tunnel(void)
 		if (r == -1) {
 			if (errno == EINTR)
 				goto done;
-			TODO();
+			vtc_log(band_vl, 0,
+			    "BANDEC_XXXXX: select(2) failed: %d %s",
+			    errno, strerror(errno));
+			break;
 		}
 		if (r == 0)
 			goto done;
