@@ -187,17 +187,14 @@ struct EnrollmentRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(enrollment.name)
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(isSelected ? .white : .black)
                 
                 Text(enrollment.band_uuid)
                     .font(.system(size: 12))
-                    .foregroundColor(isSelected ? .white.opacity(0.8) : .gray)
                     .lineLimit(1)
             }            
         }
         .padding(.vertical, 4)
         .contentShape(Rectangle())
-        .background(isSelected ? Color.blue.opacity(0.1) : Color.clear)
         .cornerRadius(4)
     }
 }
