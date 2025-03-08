@@ -209,7 +209,7 @@ wireguard_iface_open_tundev(void)
 	fd = open("/dev/net/tun", O_RDWR);
 	if (fd < 0) {
 		vtc_log(band_vl, 0,
-		    "BANDEC_XXXXX: Failed to open /dev/net/tun: %d %s",
+		    "BANDEC_00846: Failed to open /dev/net/tun: %d %s",
 		    errno, strerror(errno));
 		return (-1);
 	}
@@ -224,7 +224,7 @@ wireguard_iface_open_tundev(void)
 	ifr.ifr_flags = IFF_TUN | IFF_NO_PI;
 	if (ioctl(fd, TUNSETIFF, (void *) &ifr) != 0) {
 		vtc_log(band_vl, 0,
-		    "BANDEC_XXXXX: Failed to setup TUN device: %d %s",
+		    "BANDEC_00847: Failed to setup TUN device: %d %s",
 		    errno, strerror(errno));
 		close(fd);
 		return (-1);
@@ -233,7 +233,7 @@ wireguard_iface_open_tundev(void)
 	/* At here, the device name is specified and new name is placed */
 	strcpy(wg_tunname, ifr.ifr_name);
 	if (strlen(wg_tunname) == 0) {
-		vtc_log(band_vl, 0, "BANDEC_XXXXX: TUN device name is empty");
+		vtc_log(band_vl, 0, "BANDEC_00848: TUN device name is empty");
 		close(fd);
 		return (-1);
 	}
@@ -599,7 +599,7 @@ wireguard_iface_device_output(struct wireguard_device *device, struct pbuf *q,
 	    (struct sockaddr *)&sin, sizeof(sin));
 	if (l == -1) {
 		vtc_log(band_vl, 0,
-		    "BANDEC_XXXXX: sendto(2) to %s:%d failed: %d %s",
+		    "BANDEC_00849: sendto(2) to %s:%d failed: %d %s",
 		    inet_ntoa(sin.sin_addr), ntohs(sin.sin_port),
 		    errno, strerror(errno));
 		return (-1);
@@ -652,7 +652,7 @@ wireguard_iface_output_to_peer(struct wireguard_device *device, struct pbuf *p,
 			    WIREGUARD_AUTHTAG_LEN);
 			if (pbuf == NULL) {
 				vtc_log(band_vl, 0,
-				    "BANDEC_XXXXX: Out of memory when"
+				    "BANDEC_00850: Out of memory when"
 				    " allocating packet buffer");
 				return (-1);
 			}
@@ -818,11 +818,11 @@ wireguard_iface_init(struct wireguard_iface_init_data *init_data)
 	r = wireguard_base64_decode(init_data->private_key, private_key,
 	    &private_key_len);
 	if (!r) {
-		vtc_log(band_vl, 0, "BANDEC_XXXXX: Invalid private key");
+		vtc_log(band_vl, 0, "BANDEC_00851: Invalid private key");
 		return (NULL);
 	}
 	if (private_key_len != WIREGUARD_PRIVATE_KEY_LEN) {
-		vtc_log(band_vl, 0, "BANDEC_XXXXX: Invalid private key length");
+		vtc_log(band_vl, 0, "BANDEC_00852: Invalid private key length");
 		return (NULL);
 	}
 	device = (struct wireguard_device *)calloc(1, sizeof(*device));
@@ -837,7 +837,7 @@ wireguard_iface_init(struct wireguard_iface_init_data *init_data)
 	r = wireguard_device_init(device, private_key);
 	if (!r) {
 		vtc_log(band_vl, 0,
-		    "BANDEC_XXXXX: Failed to initialize wireguard device");
+		    "BANDEC_00853: Failed to initialize wireguard device");
 		free(device);
 		return (NULL);
 	}
@@ -1970,7 +1970,7 @@ mudband_tunnel(void)
 			if (errno == EINTR)
 				goto done;
 			vtc_log(band_vl, 0,
-			    "BANDEC_XXXXX: select(2) failed: %d %s",
+			    "BANDEC_00854: select(2) failed: %d %s",
 			    errno, strerror(errno));
 			break;
 		}
