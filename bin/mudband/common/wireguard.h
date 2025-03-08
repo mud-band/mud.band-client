@@ -128,6 +128,7 @@ struct wireguard_peer {
 	bool		endpoint_latest_is_proxy;
 	uint32_t	endpoint_latest_ip;
 	uint16_t	endpoint_latest_port;
+	time_t		endpoint_latest_t_heartbeated;
 
 	/* keep-alive interval in seconds, 0 is disable */
 	uint16_t	keepalive_interval;
