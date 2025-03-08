@@ -751,9 +751,12 @@ CNF_fetch(const char *fetch_type)
 			    "BANDEC_00482: MFA authentication expired."
 			    " Please visit the SSO URL to re-verify: %s",
 			    json_string_value(jsso_url));
+			band_mfa_authentication_required = 1;
+			ODR_snprintf(band_mfa_authentication_url,
+			    sizeof(band_mfa_authentication_url),
+			    "%s", json_string_value(jsso_url));
 			json_decref(jroot);
 			free(resp_body);
-			band_need_mfa_authentication = 1;
 			return (-4);
 		}
 
@@ -781,7 +784,7 @@ CNF_fetch(const char *fetch_type)
 	    MBE_get_uuidstr());
 	json_decref(jroot);
 	free(resp_body);
-	band_need_mfa_authentication = 0;
+	band_mfa_authentication_required = 0;
 	return (0);
 }
 
