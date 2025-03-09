@@ -106,7 +106,52 @@ static struct vtclog *stats_vl;
 static struct vtclog *wg_vl;
 struct wireguard_device *wg_device;
 int wg_band_need_iface_sync;
+int wg_band_need_peer_snapahot;
+int wg_band_mfa_authentication_required;
+char wg_band_mfa_authentication_url[512];
 PacketTunnelProvider *wg_tunnel_provider;
+
+json_t *
+wireguard_iface_stat_to_json(void)
+{
+    json_t *jroot;
+
+    jroot = json_object();
+    AN(jroot);
+
+    json_object_set_new(jroot, "n_no_peer_found",
+        json_integer(wg_stat.n_no_peer_found));
+    json_object_set_new(jroot, "n_no_ipv4_hdr",
+        json_integer(wg_stat.n_no_ipv4_hdr));
+    json_object_set_new(jroot, "n_tun_rx_pkts",
+        json_integer(wg_stat.n_tun_rx_pkts));
+    json_object_set_new(jroot, "n_tun_tx_pkts",
+        json_integer(wg_stat.n_tun_tx_pkts));
+    json_object_set_new(jroot, "n_udp_rx_pkts",
+        json_integer(wg_stat.n_udp_rx_pkts));
+    json_object_set_new(jroot, "n_udp_tx_pkts",
+        json_integer(wg_stat.n_udp_tx_pkts));
+    json_object_set_new(jroot, "n_udp_proxy_rx_pkts",
+        json_integer(wg_stat.n_udp_proxy_rx_pkts));
+    json_object_set_new(jroot, "n_udp_proxy_tx_pkts",
+        json_integer(wg_stat.n_udp_proxy_tx_pkts));
+    json_object_set_new(jroot, "n_udp_proxy_rx_errs",
+        json_integer(wg_stat.n_udp_proxy_rx_errs));
+    json_object_set_new(jroot, "bytes_tun_rx",
+        json_integer(wg_stat.bytes_tun_rx));
+    json_object_set_new(jroot, "bytes_tun_tx",
+        json_integer(wg_stat.bytes_tun_tx));
+    json_object_set_new(jroot, "bytes_udp_rx",
+        json_integer(wg_stat.bytes_udp_rx));
+    json_object_set_new(jroot, "bytes_udp_tx",
+        json_integer(wg_stat.bytes_udp_tx));
+    json_object_set_new(jroot, "bytes_udp_proxy_rx",
+        json_integer(wg_stat.bytes_udp_proxy_rx));
+    json_object_set_new(jroot, "bytes_udp_proxy_tx",
+        json_integer(wg_stat.bytes_udp_proxy_tx));
+
+    return (jroot);
+}
 
 uint32_t
 wireguard_sys_now(void)
@@ -977,6 +1022,48 @@ wireguard_iface_print_stat(void *arg)
         wireguard_iface_print_stat, NULL);
 }
 
+static void
+wireguard_peer_snapshot_run(struct wireguard_device *device)
+{
+    struct wireguard_peer *peer;
+    struct wireguard_peer_snapshot *new_peer_snapshots = NULL;
+    int i, new_peer_snapshots_count = 0;
+
+    AN(device);
+    assert(device->peers_count >= 0);
+
+    if (device->peers_count == 0)
+               return;
+    if (device->peers_count >= 65536) {
+        vtc_log(wg_vl, 0, "BANDEC_XXXXX: Too many peers.");
+        return;
+    }
+       
+    new_peer_snapshots_count = device->peers_count;
+    new_peer_snapshots = malloc(sizeof(struct wireguard_peer_snapshot) *
+        new_peer_snapshots_count);
+    if (new_peer_snapshots == NULL) {
+        vtc_log(wg_vl, 0,
+            "BANDEC_XXXXX: Failed to allocate memory for"
+            " peer snapshots.");
+        return;
+    }
+    for (i = 0; i < new_peer_snapshots_count; i++) {
+        peer = &device->peers[i];
+
+        new_peer_snapshots[i].iface_addr = peer->iface_addr;
+        new_peer_snapshots[i].endpoint_ip = peer->endpoint_latest_ip;
+        new_peer_snapshots[i].endpoint_port =
+            peer->endpoint_latest_port;
+        new_peer_snapshots[i].endpoint_t_heartbeated =
+            peer->endpoint_latest_t_heartbeated;
+    }
+    if (tasks_peer_snapshots != NULL)
+        free(tasks_peer_snapshots);
+    tasks_peer_snapshots = new_peer_snapshots;
+    tasks_peer_snapshots_count = new_peer_snapshots_count;
+}
+
 void
 mudband_tunnel_wireguard_ticks(void)
 {
@@ -984,6 +1071,10 @@ mudband_tunnel_wireguard_ticks(void)
     if (wg_band_need_iface_sync) {
         wg_band_need_iface_sync = 0;
         wireguard_iface_sync(wg_device);
+    }
+    if (wg_band_need_peer_snapahot) {
+        wireguard_peer_snapshot_run(wg_device);
+        wg_band_need_peer_snapahot = 0;
     }
     COT_ticks(&wg_cb);
     COT_clock(&wg_cb);
