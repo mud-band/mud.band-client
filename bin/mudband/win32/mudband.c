@@ -141,6 +141,7 @@ const char *band_b_arg;
 char *band_confdir_enroll;
 char *band_confdir_root;
 int band_need_iface_sync = 1;
+int band_need_peer_snapahot;
 int band_mfa_authentication_required;
 char band_mfa_authentication_url[512];
 
@@ -148,6 +149,8 @@ static struct callout_block wg_cb;
 static int wg_aborted;
 static int orig_argc;
 static char **orig_argv;
+
+unsigned status_snapshot_flag = 0;
 
 #include <iphlpapi.h>
 
@@ -2036,6 +2039,48 @@ mudband_tunnel_proxy_handler(struct pbuf *p, struct wireguard_sockaddr *wsin)
 	return (0);
 }
 
+static void
+wireguard_peer_snapshot_run(struct wireguard_device *device)
+{
+	struct wireguard_peer *peer;
+	struct wireguard_peer_snapshot *new_peer_snapshots = NULL;
+	int i, new_peer_snapshots_count = 0;
+
+	AN(device);
+	assert(device->peers_count >= 0);
+
+	if (device->peers_count == 0)
+               return;
+	if (device->peers_count >= 65536) {
+		vtc_log(band_vl, 0, "BANDEC_XXXXX: Too many peers.");
+		return;
+	}
+       
+	new_peer_snapshots_count = device->peers_count;
+	new_peer_snapshots = malloc(sizeof(struct wireguard_peer_snapshot) *
+		new_peer_snapshots_count);
+	if (new_peer_snapshots == NULL) {
+		vtc_log(band_vl, 0,
+		    "BANDEC_XXXXX: Failed to allocate memory for"
+		    " peer snapshots.");
+		return;
+	}
+	for (i = 0; i < new_peer_snapshots_count; i++) {
+		peer = &device->peers[i];
+
+		new_peer_snapshots[i].iface_addr = peer->iface_addr;
+		new_peer_snapshots[i].endpoint_ip = peer->endpoint_latest_ip;
+		new_peer_snapshots[i].endpoint_port =
+			peer->endpoint_latest_port;
+		new_peer_snapshots[i].endpoint_t_heartbeated =
+			peer->endpoint_latest_t_heartbeated;
+	}
+	if (mbt_peer_snapshots != NULL)
+		free(mbt_peer_snapshots);
+	mbt_peer_snapshots = new_peer_snapshots;
+	mbt_peer_snapshots_count = new_peer_snapshots_count;
+}
+
 static int
 mudband_tunnel(void)
 {
@@ -2089,6 +2134,10 @@ mudband_tunnel(void)
 		if (band_need_iface_sync) {
 			band_need_iface_sync = 0;
 			wireguard_iface_sync(device);
+		}
+		if (band_need_peer_snapahot) {
+			wireguard_peer_snapshot_run(device);
+			band_need_peer_snapahot = 0;
 		}
 		if (band_mfa_authentication_required) {
 			ODR_msleep(1000);
@@ -2205,6 +2254,8 @@ usage(void)
 	fprintf(stderr, FMT, "-n <device_name>",
 	    "Specify the device name.");
 	fprintf(stderr, FMT_LONG, "--name <device_name>");
+	fprintf(stderr, FMT, "--status-snapshot",
+	    "Writes status_snapshot.json every 1 minutes.");
 	fprintf(stderr, FMT, "-v", "Print the version.");
 	fprintf(stderr, FMT, "-V", "Be verbose.");
 	fprintf(stderr, FMT, "-W, --webcli", "Get a URL to access WebCLI.");
@@ -2228,6 +2279,7 @@ main(int argc, char *argv[])
 		{ "enroll-secret", vopt_long_required_argument, NULL, '^' },
 		{ "enroll-token", vopt_long_required_argument, NULL, 'e' },
 		{ "help", vopt_long_no_argument, NULL, 'h' },
+		{ "status-snapshot", vopt_long_no_argument, NULL, '*' },
 		{ "verbose", vopt_long_no_argument, NULL, 'V' },
 		{ "webcli", vopt_long_no_argument, NULL, 'W' },
 		{ NULL, 0, NULL, 0 }
@@ -2271,6 +2323,9 @@ main(int argc, char *argv[])
 			break;
 		case '&':
 			enroll_list_flag = 1 - enroll_list_flag;
+			break;
+		case '*':
+			status_snapshot_flag = 1 - status_snapshot_flag;
 			break;
 		case 'b':
 			band_b_arg = vopt_arg;
