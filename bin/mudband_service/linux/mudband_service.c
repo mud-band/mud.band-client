@@ -389,7 +389,7 @@ cmd_tunnel_connect(char *out, size_t outmax)
 			json_string("Tunnel is already running"));
 	} else {
 		ODR_snprintf(cmd, sizeof(cmd),
-		    "%s -S -P /var/run/mudband.pid\n", b_arg);
+		    "%s --status-snapshot -S -P /var/run/mudband.pid\n", b_arg);
 		rv = CMD_execute(0, cmd);
 		if (rv == 0) {
 			band_tunnel_status.is_running = 1;

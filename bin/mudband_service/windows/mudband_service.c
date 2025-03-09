@@ -1107,7 +1107,7 @@ svc_execute_mudband(char *path)
 	char cmd[ODR_BUFSIZ];
 
 	// Add quotes around the path to handle spaces
-	snprintf(cmd, sizeof(cmd), "\"%s\"", path);
+	snprintf(cmd, sizeof(cmd), "\"%s\" --status-snapshot", path);
 	
 	vtc_log(vl, 2, "Running the command: %s", cmd);
 
