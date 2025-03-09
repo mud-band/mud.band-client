@@ -18,6 +18,7 @@ interface Peer {
     port: number
     type: string
   }[]
+  endpoint_t_heartbeated?: number
 }
 
 export default function DashboardDevicesCard() {
@@ -25,35 +26,108 @@ export default function DashboardDevicesCard() {
   const [peers, setPeers] = useState<Peer[]>([])
 
   useEffect(() => {
-    const fetchDevices = async () => {
+    const fetchData = async () => {
       try {
-        const conf = await invoke<string>("mudband_ui_get_active_conf")
-        const conf_resp = JSON.parse(conf) as { 
+        const [confData, snapshotData] = await Promise.all([
+          invoke<string>("mudband_ui_get_active_conf"),
+          invoke<string>("mudband_ui_get_status_snapshot")
+        ]);
+
+        console.log(confData)
+        console.log(snapshotData)
+
+        const confResp = JSON.parse(confData) as { 
           status: number,
           msg?: string,
           conf: { 
             peers: Peer[] 
           } 
-        }
-        if (conf_resp.status === 200) {
-          setPeers(conf_resp.conf.peers)
+        };
+
+        const snapshotResp = JSON.parse(snapshotData) as {
+          status: number,
+          msg?: string,
+          status_snapshot?: {
+            peers: {
+              endpoint_port: number
+              iface_addr: string
+              endpoint_ip: string
+              endpoint_t_heartbeated: number
+            }[]
+            stats: {}
+            status: {
+              mfa_authentication_required: boolean
+            }
+          }
+        };
+
+        if (confResp.status === 200) {
+          const enhancedPeers = confResp.conf.peers.map(peer => {
+            if (snapshotResp.status == 200) {
+              const matchingPeer = snapshotResp.status_snapshot?.peers.find(
+                statusPeer => statusPeer.iface_addr === peer.private_ip
+              );
+            
+              if (matchingPeer) {
+                return {
+                  ...peer,
+                  endpoint_t_heartbeated: matchingPeer.endpoint_t_heartbeated
+                };
+              }
+            }
+            return peer;
+          });
+          
+          setPeers(enhancedPeers);
         } else {
           toast({
             variant: "destructive",
             title: "Error",
-            description: `BANDEC_00632: Failed to fetch devices: ${conf_resp.msg ? conf_resp.msg : 'N/A'}`
-          })
+            description: `BANDEC_00632: Failed to fetch devices: ${confResp.msg ? confResp.msg : 'N/A'}`
+          });
         }
       } catch (error) {
         toast({
           variant: "destructive",
           title: "Error",
           description: `BANDEC_00633: Failed to fetch devices: ${error}`
-        })
+        });
       }
+    };
+    
+    fetchData();
+  }, []);
+
+  const formatTimestamp = (timestamp?: number) => {
+    if (!timestamp) {
+      return "Unknown";
     }
-    fetchDevices()
-  }, [])
+    
+    const now = Math.floor(Date.now() / 1000);
+    const diff = now - timestamp;
+    
+    if (diff < 60) {
+      return "just now";
+    }
+    if (diff < 3600) {
+      const minutes = Math.floor(diff / 60);
+      return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
+    }
+    if (diff < 86400) {
+      const hours = Math.floor(diff / 3600);
+      return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
+    }
+    if (diff < 604800) {
+      const days = Math.floor(diff / 86400);
+      return `${days} ${days === 1 ? 'day' : 'days'} ago`;
+    }
+    if (diff < 2592000) {
+      const weeks = Math.floor(diff / 604800);
+      return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`;
+    }
+    const months = Math.floor(diff / 2592000);
+    return `${months} ${months === 1 ? 'month' : 'months'} ago`;
+  };
 
   return (
     <Card>
@@ -73,6 +147,9 @@ export default function DashboardDevicesCard() {
               <div className="text-right">
                 <div className="text-sm text-muted-foreground">IP: {peer.private_ip}</div>
                 <div className="text-xs text-muted-foreground">NAT Type: {peer.nat_type}</div>
+                <div className="text-xs text-muted-foreground">
+                  Last Heartbeat: {formatTimestamp(peer.endpoint_t_heartbeated)}
+                </div>
               </div>
             </div>
           ))}
