@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faList } from "@fortawesome/free-solid-svg-icons"
 import { invoke } from "@tauri-apps/api/tauri"
 import { open } from '@tauri-apps/api/shell'
+import { Activity, Smartphone, Link, Terminal, Settings } from "lucide-react"
 
 import {
   Sheet,
@@ -150,7 +151,10 @@ export default function DashboardPage() {
                 }}
                 className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                Status
+                <div className="flex items-center">
+                  <Activity className="w-5 h-5 mr-2" />
+                  <span>Status</span>
+                </div>
               </button>
               <button 
                 onClick={() => {
@@ -159,7 +163,10 @@ export default function DashboardPage() {
                 }}
                 className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                Devices
+                <div className="flex items-center">
+                  <Smartphone className="w-5 h-5 mr-2" />
+                  <span>Devices</span>
+                </div>
               </button>
               <button 
                 onClick={() => {
@@ -168,7 +175,10 @@ export default function DashboardPage() {
                 }}
                 className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                Links
+                <div className="flex items-center">
+                  <Link className="w-5 h-5 mr-2" />
+                  <span>Links</span>
+                </div>
               </button>
               {showWebCLI && (
                 <button 
@@ -178,7 +188,10 @@ export default function DashboardPage() {
                   }}
                   className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  WebCLI
+                  <div className="flex items-center">
+                    <Terminal className="w-5 h-5 mr-2" />
+                    <span>WebCLI</span>
+                  </div>
                 </button>
               )}
               <button 
@@ -188,7 +201,10 @@ export default function DashboardPage() {
                 }}
                 className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                Settings
+                <div className="flex items-center">
+                  <Settings className="w-5 h-5 mr-2" />
+                  <span>Settings</span>
+                </div>
               </button>
             </div>
           </SheetContent>

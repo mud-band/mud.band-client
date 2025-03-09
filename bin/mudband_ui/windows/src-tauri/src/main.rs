@@ -283,6 +283,23 @@ fn mudband_ui_get_enrollment_list(_state: tauri::State<'_, Mutex<AppState>>) -> 
 }
 
 #[tauri::command]
+fn mudband_ui_get_status_snapshot(_state: tauri::State<'_, Mutex<AppState>>) -> String {
+    let command = serde_json::json!({
+        "cmd": "get_status_snapshot"
+    });
+
+    match mudband_ui_ipc_send(command) {
+        Ok(json) => {
+            serde_json::to_string(&json).unwrap_or_else(|_| "{}".to_string())
+        }
+        Err(e) => serde_json::to_string(&serde_json::json!({
+            "status": 500,
+            "msg": format!("BANDEC_XXXXX: {}", e)
+        })).unwrap_or_else(|_| "{}".to_string())
+    }
+}
+
+#[tauri::command]
 fn mudband_ui_unenroll(_state: tauri::State<'_, Mutex<AppState>>, band_uuid: String) -> String {
     let command = serde_json::json!({
         "cmd": "unenroll",
@@ -339,6 +356,7 @@ fn main() {
             mudband_ui_tunnel_connect,
             mudband_ui_get_active_conf,
             mudband_ui_get_enrollment_list,
+	    mudband_ui_get_status_snapshot,
             mudband_ui_change_enrollment,
             mudband_ui_unenroll,
             mudband_ui_get_band_admin,

@@ -25,11 +25,16 @@
         "*.o": true,
         "*.pdb": true,
         "*.swp": true,
+	"dist": true,
+	"node_modules": true,
 	"mudband_service.exe": true,
 	"mudband_service_msg.h": true,
 	"mudband_service_msg.rc": true,
 	"mudband_service_msg.res": true,
 	"MSG00409.bin": true,
+	"package-lock.json": true,
+	"src-tauri/Cargo.lock": true,
+	"src-tauri/target": true,
         "TAGS": true
     }
 }

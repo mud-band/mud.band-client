@@ -2,7 +2,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { open } from '@tauri-apps/api/shell'
 import { useNavigate } from "react-router-dom"
-import { AlertTriangle } from "lucide-react"
+import { AlertTriangle, UserPlus, Users, LogIn } from "lucide-react"
 
 export default function EnrollmentIntroPage() {
   const navigate = useNavigate()
@@ -37,7 +37,7 @@ export default function EnrollmentIntroPage() {
               variant="default"
               className="w-64"
             >
-              Enroll
+              <UserPlus className="mr-2 h-4 w-4" /> Enroll
             </Button>
           </div>
           
@@ -48,13 +48,13 @@ export default function EnrollmentIntroPage() {
                 onClick={handleBandCreateAsGuest}
                 variant="outline"
               >
-                Create Band as Guest
+                <Users className="mr-2 h-4 w-4" /> Create Band as Guest
               </Button>
               <Button 
                 onClick={handleSignIn}
                 variant="outline"
               >
-                Sign in & Create Band
+                <LogIn className="mr-2 h-4 w-4" /> Sign in & Create Band
               </Button>
             </div>
           </div>

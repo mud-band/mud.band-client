@@ -270,6 +270,7 @@ fn mudband_ui_get_status_snapshot(_state: tauri::State<'_, Mutex<AppState>>) -> 
         })).unwrap_or_else(|_| "{}".to_string())
     }
 }
+
 #[tauri::command]
 fn mudband_ui_get_enrollment_list(_state: tauri::State<'_, Mutex<AppState>>) -> String {
     let command = serde_json::json!({

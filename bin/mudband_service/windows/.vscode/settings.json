@@ -25,11 +25,14 @@
         "*.o": true,
         "*.pdb": true,
         "*.swp": true,
+	"mudband.exe": true,
 	"mudband_service.exe": true,
 	"mudband_service_msg.h": true,
 	"mudband_service_msg.rc": true,
 	"mudband_service_msg.res": true,
+	"mudband_service_test.exe": true,
 	"MSG00409.bin": true,
-        "TAGS": true
+        "TAGS": true,
+	"wintun.dll": true
     }
 }
