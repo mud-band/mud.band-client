@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/tauri"
 import { useEffect, useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import DashboardBandAdminCard from "./DashboardBandAdminCard"
+import { Activity, Wifi, WifiOff } from "lucide-react"
 
 export default function DashboardStatusCard() {
   const { toast } = useToast()
@@ -102,7 +103,10 @@ export default function DashboardStatusCard() {
       <DashboardBandAdminCard />
       <Card>
         <CardHeader>
-          <CardTitle>Status</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Activity className="h-5 w-5" />
+            Status
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-gray-600">Band name: {bandName}</p>
@@ -162,7 +166,10 @@ export default function DashboardStatusCard() {
               }
             }}
           >
-            {isTunnelRunning ? "Disconnect" : "Connect"}
+            {isTunnelRunning ? 
+              <><WifiOff className="mr-2 h-4 w-4" /> Disconnect</> : 
+              <><Wifi className="mr-2 h-4 w-4" /> Connect</>
+            }
           </Button>
         </CardContent>
       </Card>

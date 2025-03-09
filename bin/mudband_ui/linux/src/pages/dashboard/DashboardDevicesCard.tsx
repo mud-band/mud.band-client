@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
+import { Smartphone } from "lucide-react"
 
 interface Peer {
   name: string
@@ -129,7 +130,9 @@ export default function DashboardDevicesCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Devices</CardTitle>
+        <CardTitle className="flex items-center">
+          <Smartphone className="mr-2 h-5 w-5" /> Devices
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground mb-2">List of peer devices.</p>
