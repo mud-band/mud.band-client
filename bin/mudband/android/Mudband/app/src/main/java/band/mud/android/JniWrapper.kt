@@ -69,6 +69,7 @@ class JniWrapper private constructor() {
     external fun getVpnServiceConfig(): String?
     external fun saveBandAdmin(bandUuid: String, jwt: String): Boolean
     external fun getBandAdmin(): String?
+    external fun getStatusSnapshotString(): String?
     external fun tunnelInit(tunFd: Int)
     external fun tunnelLoop(): Int
     external fun tunnelFini()

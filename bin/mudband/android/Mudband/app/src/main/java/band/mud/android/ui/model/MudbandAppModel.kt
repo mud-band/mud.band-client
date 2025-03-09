@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import band.mud.android.util.MudbandLog
 
 @Serializable
 data class MudbandConfigInterfaceJson(
@@ -65,6 +66,27 @@ data class MudbandConfigJson(
     val links: Array<MudbandConfigLinkJson>
 )
 
+@Serializable
+data class MudbandStatusSnapshotPeerJson(
+    val iface_addr: String,
+    val endpoint_ip: String,
+    val endpoint_port: Long,
+    val endpoint_t_heartbeated: Long
+)
+
+@Serializable
+data class MudbandStatusSnapshotStatusJson(
+    val mfa_authentication_required: Boolean,
+    val mfa_authentication_url: String
+)
+
+@Serializable
+data class MudbandStatusSnapshotJson(
+    val band_uuid: String,
+    val status: MudbandStatusSnapshotStatusJson,
+    val peers: Array<MudbandStatusSnapshotPeerJson>
+)
+
 data class MudbandAppUiStateBand(
     var name: String,
     var band_uuid: String
@@ -78,7 +100,8 @@ data class MudbandAppUiStateLink(
 data class MudbandAppUiStateDevice(
     var name: String,
     var private_ip: String,
-    var wireguard_pubkey: String
+    var wireguard_pubkey: String,
+    var endpoint_t_heartbeated: Long
 )
 
 data class MudbandAppUiState(
@@ -216,10 +239,34 @@ class MudbandAppViewModel(application: Application) : AndroidViewModel(applicati
             return
         }
         val jsonWithUnknownKeys = Json { ignoreUnknownKeys = true }
-        val obj = jsonWithUnknownKeys.decodeFromString<MudbandConfigJson>(body)
+        val configObj = jsonWithUnknownKeys.decodeFromString<MudbandConfigJson>(body)
         val devices: MutableList<MudbandAppUiStateDevice> = ArrayList()
-        obj.peers.forEach {
-            devices += MudbandAppUiStateDevice(it.name, it.private_ip, it.wireguard_pubkey)
+        val status_snapshot = app.jni.getStatusSnapshotString()
+        if (status_snapshot != null && status_snapshot.isNotEmpty()) {
+	    val statusSnapshotJsonWithUnknownKeys = Json { ignoreUnknownKeys = true }
+            val statusSnapshotObj = statusSnapshotJsonWithUnknownKeys.decodeFromString<MudbandStatusSnapshotJson>(status_snapshot)
+            configObj.peers.forEach { configPeer ->
+                val peer = statusSnapshotObj.peers.find { peer -> 
+                    peer.iface_addr == configPeer.private_ip 
+                }
+                val heartbeatTime = peer?.endpoint_t_heartbeated ?: 0
+                
+                devices += MudbandAppUiStateDevice(
+                    configPeer.name, 
+                    configPeer.private_ip, 
+                    configPeer.wireguard_pubkey, 
+                    heartbeatTime
+                )
+            }
+        } else {
+            configObj.peers.forEach { configPeer ->
+                devices += MudbandAppUiStateDevice(
+                    configPeer.name,
+                    configPeer.private_ip,
+                    configPeer.wireguard_pubkey,
+                    0
+                )
+            }
         }
         _uiState.update { currentState ->
             currentState.copy(
