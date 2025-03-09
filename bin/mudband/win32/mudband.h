@@ -72,9 +72,11 @@ struct wireguard_iface_peer {
 	uint16_t keep_alive;
 };
 extern const char *band_b_arg;
+extern unsigned status_snapshot_flag;
 extern char *band_confdir_enroll;
 extern char *band_confdir_root;
 extern int band_need_iface_sync;
+extern int band_need_peer_snapahot;
 extern int band_mfa_authentication_required;
 extern char band_mfa_authentication_url[512];
 json_t *wireguard_iface_stat_to_json(void);
@@ -144,6 +146,14 @@ const char *
 void	MPC_init(void);
 
 /* mudband_tasks.c */
+struct wireguard_peer_snapshot {
+	uint32_t	iface_addr;
+	uint32_t	endpoint_ip;
+	uint16_t	endpoint_port;
+	time_t		endpoint_t_heartbeated;
+};
+extern struct wireguard_peer_snapshot *mbt_peer_snapshots;
+extern int mbt_peer_snapshots_count;
 int	MBT_init(void);
 void	MBT_fini(void);
 void	MBT_conf_fetcher_trigger(void);
