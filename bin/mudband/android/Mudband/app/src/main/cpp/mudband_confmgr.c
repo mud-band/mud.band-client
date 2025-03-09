@@ -569,6 +569,24 @@ CNF_parse_response(const char *etag, const char *body)
     if (json_integer_value(jstatus) != 200) {
         json_t *jmsg;
 
+        if (json_integer_value(jstatus) == 301) {
+            json_t *jsso_url;
+
+            jsso_url = json_object_get(jroot, "sso_url");
+            AN(jsso_url);
+            assert(json_is_string(jsso_url));
+            vtc_log(cnf_vl, 1,
+                    "BANDEC_XXXXX: MFA authentication expired."
+                    " Please visit the SSO URL to re-verify: %s",
+                    json_string_value(jsso_url));
+            band_mfa_authentication_required = 1;
+            ODR_snprintf(band_mfa_authentication_url,
+                         sizeof(band_mfa_authentication_url),
+                         "%s", json_string_value(jsso_url));
+            json_decref(jroot);
+            return (-4);
+        }
+
         jmsg = json_object_get(jroot, "msg");
         AN(jmsg);
         assert(json_is_string(jmsg));

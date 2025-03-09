@@ -67,6 +67,27 @@ import androidx.navigation.NavHostController
 import band.mud.android.ui.model.MudbandAppUiStateDevice
 import band.mud.android.ui.model.MudbandAppViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
+import kotlin.math.abs
+import java.util.concurrent.TimeUnit
+
+fun formatRelativeTime(timestamp: Long): String {
+    if (timestamp <= 0) {
+        return "never"
+    }
+    val currentTime = System.currentTimeMillis() / 1000
+    val diff = currentTime - timestamp
+    
+    return when {
+        diff < 0 -> "future"
+        diff < 60 -> "${diff}s ago"
+        diff < 3600 -> "${diff / 60}m ago"
+        diff < 86400 -> "${diff / 3600}h ago"
+        diff < 604800 -> "${diff / 86400}d ago"
+        diff < 2592000 -> "${diff / 604800}w ago"
+        diff < 31536000 -> "${diff / 2592000}mo ago"
+        else -> "${diff / 31536000}y ago"
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,14 +108,18 @@ fun DashboardDeviceItem(device: MudbandAppUiStateDevice) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Devices,
-                contentDescription = "Device",
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(end = 16.dp)
-            )
-            
-            Column {
+            // Left side: Icon and Name
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Devices,
+                    contentDescription = "Device",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                
                 Text(
                     text = device.name, 
                     fontSize = 18.sp,
@@ -103,12 +128,23 @@ fun DashboardDeviceItem(device: MudbandAppUiStateDevice) {
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+            }
+            
+            // Right side: IP and Heartbeat information
+            Column(
+                horizontalAlignment = Alignment.End
+            ) {
                 Text(
                     text = "Private IP: ${device.private_ip}",
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Heartbeat: ${formatRelativeTime(device.endpoint_t_heartbeated)}",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
