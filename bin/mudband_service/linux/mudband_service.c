@@ -487,6 +487,53 @@ cmd_tunnel_disconnect(char *out, size_t outmax)
 }
 
 static ssize_t
+cmd_get_status_snapshot(char *out, size_t outmax)
+{
+	json_t *root, *status_snapshot;
+	json_error_t jerror;
+	ssize_t outlen = 0;
+	char *p;
+	char filepath[ODR_BUFSIZ];
+
+	root = json_object();
+	assert(root != NULL);
+
+	ODR_snprintf(filepath, sizeof(filepath), "%s/status_snapshot.json",
+	    band_confdir_root);
+	
+	if (ODR_access(filepath, ODR_ACCESS_F_OK) == -1) {
+		vtc_log(vl, 1,
+		    "BANDEC_XXXXX: Status snapshot file not found: %s",
+		    filepath);
+		json_object_set_new(root, "status", json_integer(500));
+		json_object_set_new(root, "msg",
+		    json_string("Status snapshot file not found"));
+	} else {
+		status_snapshot = json_load_file(filepath, 0, &jerror);
+		if (status_snapshot == NULL) {
+			vtc_log(vl, 1,
+			    "BANDEC_XXXXX: Error while reading status"
+			    " snapshot JSON: on line %d: %s",
+			    jerror.line, jerror.text);
+			json_object_set_new(root, "status", json_integer(500));
+			json_object_set_new(root, "msg",
+			    json_string("Failed to parse status snapshot file"));
+		} else {
+			json_object_set_new(root, "status", json_integer(200));
+			json_object_set_new(root, "status_snapshot",
+			    status_snapshot);
+		}
+	}
+	p = json_dumps(root, 0);
+	assert(p != NULL);
+	outlen = snprintf(out, outmax, "%s", p);
+	free(p);
+	json_decref(root);
+	return (outlen);
+}
+
+
+static ssize_t
 cmd_get_active_band(char *out, size_t outmax)
 {
 	json_t *root, *active_band;
@@ -783,6 +830,8 @@ main_loop(int fd)
 			outlen = cmd_get_active_conf(out, outmax);
 		else if (strcmp(cmdval, "get_enrollment_count") == 0)
 			outlen = cmd_get_enrollment_count(out, outmax);
+		else if (strcmp(cmdval, "get_status_snapshot") == 0)
+			outlen = cmd_get_status_snapshot(out, outmax);
 		else if (strcmp(cmdval, "ping") == 0)
 			outlen = cmd_ping(out, outmax);
 		else if (strcmp(cmdval, "tunnel_get_status") == 0)
