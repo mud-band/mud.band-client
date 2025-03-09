@@ -267,7 +267,7 @@ MBT_init(void)
 	    CALLOUT_SECTOTICKS(600), mbt_stun_client, NULL);
 	if (status_snapshot_flag) {
 		callout_reset(&mbt_cb, &mbt_status_snapshot_co,
-		    CALLOUT_SECTOTICKS(60), mbt_status_snapshot, NULL);
+		    CALLOUT_SECTOTICKS(10), mbt_status_snapshot, NULL);
 	}
 
 	AZ(ODR_pthread_create(&mbt_tp, NULL, mbt_thread, NULL));

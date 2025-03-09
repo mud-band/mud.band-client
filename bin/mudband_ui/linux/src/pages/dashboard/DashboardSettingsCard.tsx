@@ -19,6 +19,7 @@ import BandCreateAsGuestDialog from "../band/BandCreateAsGuestDialog"
 import React from "react"
 import { invoke } from "@tauri-apps/api/tauri"
 import { useToast } from "@/hooks/use-toast"
+import { Music, PlusCircle, RefreshCw, LogOut, Settings } from "lucide-react"
 
 function Spinner() {
   return (
@@ -159,7 +160,10 @@ export default function DashboardSettingsCard() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Settings</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Settings className="h-5 w-5" />
+          Settings
+        </CardTitle>
         <CardDescription>
           Manage enrollment and other settings.
           {isTunnelRunning && (
@@ -180,6 +184,7 @@ export default function DashboardSettingsCard() {
                   className="w-full justify-start"
                   disabled={isTunnelRunning}
                 >
+                  <Music className="mr-2 h-4 w-4" />
                   Create Band as Guest
                 </Button>
               </DialogTrigger>
@@ -200,6 +205,7 @@ export default function DashboardSettingsCard() {
                   className="w-full justify-start"
                   disabled={isTunnelRunning}
                 >
+                  <PlusCircle className="mr-2 h-4 w-4" />
                   New enrollment
                 </Button>
               </DialogTrigger>
@@ -214,6 +220,7 @@ export default function DashboardSettingsCard() {
                   className="w-full justify-start"
                   disabled={isTunnelRunning}
                 >
+                  <RefreshCw className="mr-2 h-4 w-4" />
                   Change enrollment
                 </Button>
               </DialogTrigger>
@@ -234,6 +241,7 @@ export default function DashboardSettingsCard() {
                   className="w-full justify-start"
                   disabled={isTunnelRunning}
                 >
+                  <LogOut className="mr-2 h-4 w-4" />
                   Unenroll
                 </Button>
               </DialogTrigger>

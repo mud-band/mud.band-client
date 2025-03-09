@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
-
+import { Link } from "lucide-react"
 interface Link {
   name: string
   url: string
@@ -64,7 +64,9 @@ export default function DashboardLinksCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Links</CardTitle>
+        <CardTitle className="flex items-center">
+          <Link className="mr-2 h-5 w-5" /> Links
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground mb-2">List of links.</p>

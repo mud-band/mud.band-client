@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faList } from "@fortawesome/free-solid-svg-icons"
 import { invoke } from "@tauri-apps/api/tauri"
 import { open } from '@tauri-apps/api/shell'
+import { Activity, Smartphone, Link, Terminal, Settings } from "lucide-react"
 
 import {
   Sheet,
@@ -148,8 +149,9 @@ export default function DashboardPage() {
                   setSelectedMenu('status')
                   setIsOpen(false)
                 }}
-                className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors flex items-center"
               >
+                <Activity className="w-4 h-4 mr-2" />
                 Status
               </button>
               <button 
@@ -157,8 +159,9 @@ export default function DashboardPage() {
                   setSelectedMenu('devices')
                   setIsOpen(false)
                 }}
-                className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors flex items-center"
               >
+                <Smartphone className="w-4 h-4 mr-2" />
                 Devices
               </button>
               <button 
@@ -166,8 +169,9 @@ export default function DashboardPage() {
                   setSelectedMenu('links')
                   setIsOpen(false)
                 }}
-                className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors flex items-center"
               >
+                <Link className="w-4 h-4 mr-2" />
                 Links
               </button>
               {showWebCLI && (
@@ -176,8 +180,9 @@ export default function DashboardPage() {
                     handleWebCLIClick()
                     setIsOpen(false)
                   }}
-                  className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors flex items-center"
                 >
+                  <Terminal className="w-4 h-4 mr-2" />
                   WebCLI
                 </button>
               )}
@@ -186,8 +191,9 @@ export default function DashboardPage() {
                   setSelectedMenu('settings')
                   setIsOpen(false)
                 }}
-                className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                className="block w-full text-left p-1.5 hover:bg-gray-100 rounded-lg transition-colors flex items-center"
               >
+                <Settings className="w-4 h-4 mr-2" />
                 Settings
               </button>
             </div>
