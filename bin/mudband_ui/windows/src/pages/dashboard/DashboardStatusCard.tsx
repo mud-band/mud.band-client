@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/tauri"
 import { useEffect, useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import DashboardBandAdminCard from "./DashboardBandAdminCard"
+import { Power, PowerOff } from "lucide-react"
 
 export default function DashboardStatusCard() {
   const { toast } = useToast()
@@ -161,7 +162,17 @@ export default function DashboardStatusCard() {
               }
             }}
           >
-            {isTunnelRunning ? "Disconnect" : "Connect"}
+            {isTunnelRunning ? (
+              <>
+                <PowerOff className="mr-2 h-4 w-4" />
+                Disconnect
+              </>
+            ) : (
+              <>
+                <Power className="mr-2 h-4 w-4" />
+                Connect
+              </>
+            )}
           </Button>
         </CardContent>
       </Card>

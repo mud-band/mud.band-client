@@ -33,9 +33,6 @@ export default function DashboardDevicesCard() {
           invoke<string>("mudband_ui_get_status_snapshot")
         ]);
 
-        console.log(confData)
-        console.log(snapshotData)
-
         const confResp = JSON.parse(confData) as { 
           status: number,
           msg?: string,

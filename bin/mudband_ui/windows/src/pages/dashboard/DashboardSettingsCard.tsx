@@ -19,6 +19,7 @@ import BandCreateAsGuestDialog from "../band/BandCreateAsGuestDialog"
 import React from "react"
 import { invoke } from "@tauri-apps/api/tauri"
 import { useToast } from "@/hooks/use-toast"
+import { Users, Plus, RefreshCw, LogOut } from "lucide-react"
 
 function Spinner() {
   return (
@@ -180,6 +181,7 @@ export default function DashboardSettingsCard() {
                   className="w-full justify-start"
                   disabled={isTunnelRunning}
                 >
+                  <Users className="mr-2 h-4 w-4" />
                   Create Band as Guest
                 </Button>
               </DialogTrigger>
@@ -200,6 +202,7 @@ export default function DashboardSettingsCard() {
                   className="w-full justify-start"
                   disabled={isTunnelRunning}
                 >
+                  <Plus className="mr-2 h-4 w-4" />
                   New enrollment
                 </Button>
               </DialogTrigger>
@@ -214,6 +217,7 @@ export default function DashboardSettingsCard() {
                   className="w-full justify-start"
                   disabled={isTunnelRunning}
                 >
+                  <RefreshCw className="mr-2 h-4 w-4" />
                   Change enrollment
                 </Button>
               </DialogTrigger>
@@ -234,6 +238,7 @@ export default function DashboardSettingsCard() {
                   className="w-full justify-start"
                   disabled={isTunnelRunning}
                 >
+                  <LogOut className="mr-2 h-4 w-4" />
                   Unenroll
                 </Button>
               </DialogTrigger>
