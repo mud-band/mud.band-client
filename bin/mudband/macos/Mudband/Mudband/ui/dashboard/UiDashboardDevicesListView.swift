@@ -33,12 +33,12 @@ struct UiDashboardDevicesListView: View {
         var id = UUID()
         var name: String
         var private_ip: String
+        var endpoint_t_heartbeated: String
     }
     @State var devices: [Device] = []
     @State private var searchText: String = ""
     @State private var isRefreshing: Bool = false
     
-    // Filtered devices based on search text
     private var filteredDevices: [Device] {
         if searchText.isEmpty {
             return devices
@@ -48,6 +48,19 @@ struct UiDashboardDevicesListView: View {
                 $0.private_ip.localizedCaseInsensitiveContains(searchText)
             }
         }
+    }
+    
+    private func read_status_snapshot() -> JSON? {
+        guard let top_dir = FileManager.TopDirURL?.path else {
+            mudband_ui_log(0, "BANDEC_XXXXX: Failed to get the top dir.")
+            return nil
+        }
+        let filepath = top_dir + "/status_snapshot.json"
+        guard let str = try? String(contentsOfFile: filepath, encoding: String.Encoding.utf8) else {
+            mudband_ui_log(0, "BANDEC_XXXXX: Failed to parse the band config: \(filepath)")
+            return nil
+        }
+        return JSON(parseJSON: str)
     }
     
     private func read_band_conf() -> JSON? {
@@ -67,15 +80,51 @@ struct UiDashboardDevicesListView: View {
         return JSON(parseJSON: str)
     }
     
+    private func formatRelativeTime(timestamp: Int64) -> String {
+        if timestamp == 0 {
+            return "Never"
+        }
+        
+        let now = Int64(Date().timeIntervalSince1970)
+        let diff = now - timestamp
+        
+        if diff < 0 {
+            return "Future"
+        } else if diff < 60 {
+            return "\(diff)s ago"
+        } else if diff < 3600 {
+            return "\(diff / 60)m ago"
+        } else if diff < 86400 {
+            return "\(diff / 3600)h ago"
+        } else if diff < 2592000 {
+            return "\(diff / 86400)d ago"
+        } else if diff < 31536000 {
+            return "\(diff / 2592000)mo ago"
+        } else {
+            return "\(diff / 31536000)y ago"
+        }
+    }
+    
     private func update_device_list() {
         devices.removeAll()
-        guard let obj = read_band_conf() else {
+        guard let confObj = read_band_conf() else {
             mudband_ui_log(0, "BANDEC_00420: read_band_conf() failed")
             return
         }
-        for (_, peer) in obj["peers"] {
+        let statusSnapshotObj = read_status_snapshot()
+        for (_, peer) in confObj["peers"] {
+            var endpoint_t_heartbeated: Int64 = 0
+            if statusSnapshotObj != nil {
+                for (_, statusPeer) in statusSnapshotObj!["peers"] {
+                    if statusPeer["iface_addr"].stringValue == peer["private_ip"].stringValue {
+                        endpoint_t_heartbeated = statusPeer["endpoint_t_heartbeated"].int64Value
+                        break
+                    }
+                }
+            }
             devices.append(Device(name: peer["name"].stringValue,
-                                  private_ip: peer["private_ip"].stringValue))
+                                  private_ip: peer["private_ip"].stringValue,
+                                  endpoint_t_heartbeated: formatRelativeTime(timestamp: endpoint_t_heartbeated)))
         }
     }
     
@@ -147,13 +196,24 @@ struct UiDashboardDevicesListView: View {
                                 Text(device.name)
                                     .font(.headline)
                                 
-                                HStack(spacing: 4) {
-                                    Image(systemName: "network")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                    Text(device.private_ip)
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
+                                HStack(spacing: 10) {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "network")
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                        Text(device.private_ip)
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "heart.fill")
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                        Text(device.endpoint_t_heartbeated)
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
                             }
                         }

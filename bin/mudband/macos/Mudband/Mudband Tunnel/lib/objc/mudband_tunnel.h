@@ -59,6 +59,7 @@ struct wireguard_iface_peer {
 /* mudband_tunnel.m */
 extern char *band_tunnel_enroll_dir;
 extern char *band_tunnel_top_dir;
+extern int wg_band_need_peer_snapahot;
 int     mudband_tunnel_log_callback(const char *id, int lvl, double t_elapsed,
                                     const char *msg);
 
@@ -104,7 +105,20 @@ vuuid_t *
         mudband_tunnel_progconf_get_default_band_uuid(void);
 
 /* mudband_tunnel_tasks.m */
+struct wireguard_peer_snapshot {
+    uint32_t    iface_addr;
+    uint32_t    endpoint_ip;
+    uint16_t    endpoint_port;
+    time_t        endpoint_t_heartbeated;
+};
+extern struct wireguard_peer_snapshot *tasks_peer_snapshots;
+extern int tasks_peer_snapshots_count;
 void    mudband_tunnel_tasks_init(void);
 void    mudband_tunnek_tasks_conf_fetcher_trigger(void);
+
+/* mudband_tunnel_wireguard.m */
+extern int wg_band_mfa_authentication_required;
+extern char wg_band_mfa_authentication_url[512];
+json_t *wireguard_iface_stat_to_json(void);
 
 #endif /* MUDBAND_TUNNEL_H */
