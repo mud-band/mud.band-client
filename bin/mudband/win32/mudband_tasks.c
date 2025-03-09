@@ -126,6 +126,7 @@ mbt_status_snapshot(void *arg)
 {
 	json_t *jroot, *jstats, *jstatus;
 	int i;
+	const char *default_band_uuid;
 	char filepath[PATH_MAX];
 
 	(void)arg;
@@ -142,8 +143,14 @@ mbt_status_snapshot(void *arg)
 		    " 3 seconds.");
 		return;
 	}
+	default_band_uuid = MPC_get_default_band_uuid();
+	if (default_band_uuid == NULL) {
+		vtc_log(mbt_vl, 1, "BANDEC_XXXXX: No default band UUID.");
+		return;
+	}
 	jroot = json_object();
 	AN(jroot);
+	json_object_set_new(jroot, "band_uuid", json_string(default_band_uuid));
 	/* peers */
 	assert(mbt_peer_snapshots_count >= 0);
 	json_t *jpeers = json_array();
