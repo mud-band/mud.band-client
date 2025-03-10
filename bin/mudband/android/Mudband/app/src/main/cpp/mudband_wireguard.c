@@ -64,6 +64,48 @@
 struct wireguard_iface_stat wg_iface_stat;
 static struct vtclog *mwg_vl;
 
+json_t *
+wireguard_iface_stat_to_json(void)
+{
+    json_t *jroot;
+
+    jroot = json_object();
+    AN(jroot);
+
+    json_object_set_new(jroot, "n_no_peer_found",
+                        json_integer(wg_iface_stat.n_no_peer_found));
+    json_object_set_new(jroot, "n_no_ipv4_hdr",
+                        json_integer(wg_iface_stat.n_no_ipv4_hdr));
+    json_object_set_new(jroot, "n_tun_rx_pkts",
+                        json_integer(wg_iface_stat.n_tun_rx_pkts));
+    json_object_set_new(jroot, "n_tun_tx_pkts",
+                        json_integer(wg_iface_stat.n_tun_tx_pkts));
+    json_object_set_new(jroot, "n_udp_rx_pkts",
+                        json_integer(wg_iface_stat.n_udp_rx_pkts));
+    json_object_set_new(jroot, "n_udp_tx_pkts",
+                        json_integer(wg_iface_stat.n_udp_tx_pkts));
+    json_object_set_new(jroot, "n_udp_proxy_rx_pkts",
+                        json_integer(wg_iface_stat.n_udp_proxy_rx_pkts));
+    json_object_set_new(jroot, "n_udp_proxy_tx_pkts",
+                        json_integer(wg_iface_stat.n_udp_proxy_tx_pkts));
+    json_object_set_new(jroot, "n_udp_proxy_rx_errs",
+                        json_integer(wg_iface_stat.n_udp_proxy_rx_errs));
+    json_object_set_new(jroot, "bytes_tun_rx",
+                        json_integer(wg_iface_stat.bytes_tun_rx));
+    json_object_set_new(jroot, "bytes_tun_tx",
+                        json_integer(wg_iface_stat.bytes_tun_tx));
+    json_object_set_new(jroot, "bytes_udp_rx",
+                        json_integer(wg_iface_stat.bytes_udp_rx));
+    json_object_set_new(jroot, "bytes_udp_tx",
+                        json_integer(wg_iface_stat.bytes_udp_tx));
+    json_object_set_new(jroot, "bytes_udp_proxy_rx",
+                        json_integer(wg_iface_stat.bytes_udp_proxy_rx));
+    json_object_set_new(jroot, "bytes_udp_proxy_tx",
+                        json_integer(wg_iface_stat.bytes_udp_proxy_tx));
+
+    return (jroot);
+}
+
 uint32_t
 wireguard_sys_now(void)
 {

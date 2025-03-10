@@ -141,12 +141,12 @@ mbt_status_snapshot(void *arg)
 		vtc_log(mbt_vl, 1,
 		    "BANDEC_XXXXX: No peer snapshot performed within"
 		    " 3 seconds.");
-		return;
+		goto done;
 	}
 	default_band_uuid = MPC_get_default_band_uuid();
 	if (default_band_uuid == NULL) {
 		vtc_log(mbt_vl, 1, "BANDEC_XXXXX: No default band UUID.");
-		return;
+		goto done;
 	}
 	jroot = json_object();
 	AN(jroot);
@@ -197,6 +197,8 @@ mbt_status_snapshot(void *arg)
 	} else {
 		json_object_set_new(jstatus, "mfa_authentication_required",
 		    json_false());
+		json_object_set_new(jstatus, "mfa_authentication_url",
+		    json_string(""));
 	}
 	json_object_set_new(jroot, "status", jstatus);
 
@@ -204,7 +206,7 @@ mbt_status_snapshot(void *arg)
 	    "status_snapshot.json");
 	json_dump_file(jroot, filepath, 0);
 	json_decref(jroot);
-
+done:
 	callout_reset(&mbt_cb, &mbt_status_snapshot_co,
 	    CALLOUT_SECTOTICKS(60), mbt_status_snapshot, NULL);
 }

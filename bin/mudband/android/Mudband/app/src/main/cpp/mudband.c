@@ -85,6 +85,9 @@ static struct wireguard_device *band_device;
 static int              band_tun_fd = -1;
 int                     band_need_iface_sync;
 int                     band_need_fetch_config;
+int                     band_need_peer_snapshot;
+int                     band_mfa_authentication_required;
+char                    band_mfa_authentication_url[512];
 
 void
 VAS_Fail(const char *func, const char *file, int line, const char *cond,
@@ -242,6 +245,30 @@ Java_band_mud_android_JniWrapper_getBandConfigEtag(JNIEnv *env, jobject thiz)
     s = (*env)->NewStringUTF(env, etag);
     CNF_rel(&cnf);
     return (s);
+}
+
+jstring
+Java_band_mud_android_JniWrapper_getStatusSnapshotString(JNIEnv *env, jobject thiz)
+{
+	jstring str;
+	json_error_t error;
+    json_t *jroot;
+    char filepath[PATH_MAX], *status_snapshot_str;
+
+	ODR_snprintf(filepath, sizeof(filepath), "%s/status_snapshot.json",
+	    band_root_dir);
+    jroot = json_load_file(filepath, 0, &error);
+    if (jroot == NULL) {
+        vtc_log(band_vl, 0, "BANDEC_XXXXX: json_load_file() failed: %d %s",
+		    error.line, error.text);
+        return (NULL);
+    }
+    status_snapshot_str = json_dumps(jroot, 0);
+	AN(status_snapshot_str);
+    json_decref(jroot);
+    str = (*env)->NewStringUTF(env, status_snapshot_str);
+	free(status_snapshot_str);
+	return (str);
 }
 
 jstring
@@ -769,6 +796,48 @@ mudband_tunnel_proxy_handler(struct pbuf *p, struct wireguard_sockaddr *wsin)
     return (0);
 }
 
+static void
+wireguard_peer_snapshot_run(struct wireguard_device *device)
+{
+    struct wireguard_peer *peer;
+    struct wireguard_peer_snapshot *new_peer_snapshots = NULL;
+    int i, new_peer_snapshots_count = 0;
+
+    AN(device);
+    assert(device->peers_count >= 0);
+
+    if (device->peers_count == 0)
+        return;
+    if (device->peers_count >= 65536) {
+        vtc_log(band_vl, 0, "BANDEC_XXXXX: Too many peers.");
+        return;
+    }
+
+    new_peer_snapshots_count = device->peers_count;
+    new_peer_snapshots = malloc(sizeof(struct wireguard_peer_snapshot) *
+                                new_peer_snapshots_count);
+    if (new_peer_snapshots == NULL) {
+        vtc_log(band_vl, 0,
+                "BANDEC_XXXXX: Failed to allocate memory for"
+                " peer snapshots.");
+        return;
+    }
+    for (i = 0; i < new_peer_snapshots_count; i++) {
+        peer = &device->peers[i];
+
+        new_peer_snapshots[i].iface_addr = peer->iface_addr;
+        new_peer_snapshots[i].endpoint_ip = peer->endpoint_latest_ip;
+        new_peer_snapshots[i].endpoint_port =
+                peer->endpoint_latest_port;
+        new_peer_snapshots[i].endpoint_t_heartbeated =
+                peer->endpoint_latest_t_heartbeated;
+    }
+    if (mbt_peer_snapshots != NULL)
+        free(mbt_peer_snapshots);
+    mbt_peer_snapshots = new_peer_snapshots;
+    mbt_peer_snapshots_count = new_peer_snapshots_count;
+}
+
 jint
 Java_band_mud_android_JniWrapper_tunnelLoop(JNIEnv *env, jobject thiz)
 {
@@ -781,6 +850,14 @@ Java_band_mud_android_JniWrapper_tunnelLoop(JNIEnv *env, jobject thiz)
     if (band_need_iface_sync) {
         band_need_iface_sync = 0;
         wireguard_iface_sync(band_device);
+    }
+    if (band_need_peer_snapshot) {
+        wireguard_peer_snapshot_run(band_device);
+        band_need_peer_snapshot = 0;
+    }
+    if (band_mfa_authentication_required) {
+        ODR_msleep(1000);
+        goto done;
     }
     tv.tv_sec = 0;
     tv.tv_usec = 300000;

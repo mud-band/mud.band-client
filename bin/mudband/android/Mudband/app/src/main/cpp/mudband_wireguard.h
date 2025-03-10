@@ -139,6 +139,7 @@ void    wireguard_iface_sync(struct wireguard_device *device);
 struct pbuf;
 int     wireguard_iface_output(struct wireguard_device *device, struct pbuf *p, const uint32_t ipaddr);
 void    wireguard_iface_network_rx(struct wireguard_device *device, struct pbuf *p, struct wireguard_sockaddr *wsin);
+json_t *wireguard_iface_stat_to_json(void);
 
 void    MWG_init(void);
 

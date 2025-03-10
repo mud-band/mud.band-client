@@ -24,6 +24,9 @@
 // SUCH DAMAGE.
 //
 
+#include <sys/param.h>
+#include <arpa/inet.h>
+
 #import <Foundation/Foundation.h>
 #import "Mud_band_Tunnel-Swift.h"
 
@@ -39,9 +42,12 @@
 
 extern PacketTunnelProvider *wg_tunnel_provider;
 
+struct wireguard_peer_snapshot *tasks_peer_snapshots;
+int tasks_peer_snapshots_count;
 static struct callout tasks_conf_nuke_co;
 static struct callout tasks_stun_client_co;
 static struct callout tasks_conf_fetcher_co;
+static struct callout tasks_status_snapshot_co;
 static struct callout_block tasks_cb;
 static struct vtclog *tasks_vl;
 static odr_pthread_t tasks_tp;
@@ -74,6 +80,97 @@ mudband_tunnel_tasks_conf_fetcher(void *arg)
 done:
     callout_reset(&tasks_cb, &tasks_conf_fetcher_co,
                   CALLOUT_SECTOTICKS(600), mudband_tunnel_tasks_conf_fetcher, NULL);
+}
+
+static void
+mudband_tunnel_tasks_status_snapshot(void *arg)
+{
+    json_t *jroot, *jstats, *jstatus;
+    int i;
+    const char *default_band_uuid;
+    char filepath[PATH_MAX];
+
+    (void)arg;
+
+    wg_band_need_peer_snapahot = 1;    /* trigger a peer snapshot. */
+    for (i = 0; i < 3; i++) {
+        if (wg_band_need_peer_snapahot == 0)
+            break;
+        ODR_msleep(1000);
+    }
+    if (wg_band_need_peer_snapahot == 1) {
+        vtc_log(tasks_vl, 1,
+                "BANDEC_XXXXX: No peer snapshot performed within"
+                " 3 seconds.");
+        goto done;
+    }
+    default_band_uuid = mudband_tunnel_progconf_get_default_band_uuidstr();
+    if (default_band_uuid == NULL) {
+        vtc_log(tasks_vl, 1, "BANDEC_XXXXX: No default band UUID.");
+        goto done;
+    }
+    jroot = json_object();
+    AN(jroot);
+    json_object_set_new(jroot, "band_uuid", json_string(default_band_uuid));
+    /* peers */
+    assert(tasks_peer_snapshots_count >= 0);
+    json_t *jpeers = json_array();
+    AN(jpeers);
+    for (i = 0; i < tasks_peer_snapshots_count; i++) {
+        struct in_addr addr;
+        json_t *jpeer;
+        const char *ip_ptr;
+        char ip_str[INET_ADDRSTRLEN];
+
+        jpeer = json_object();
+        AN(jpeer);
+        /* Convert iface_addr to string */
+        addr.s_addr = tasks_peer_snapshots[i].iface_addr;
+        ip_ptr = inet_ntop(AF_INET, &addr, ip_str, sizeof(ip_str));
+        AN(ip_ptr);
+        json_object_set_new(jpeer, "iface_addr", json_string(ip_str));
+        /* Convert endpoint_ip to string */
+        addr.s_addr = tasks_peer_snapshots[i].endpoint_ip;
+        ip_ptr = inet_ntop(AF_INET, &addr, ip_str, sizeof(ip_str));
+        AN(ip_ptr);
+        json_object_set_new(jpeer, "endpoint_ip", json_string(ip_str));
+        json_object_set_new(jpeer, "endpoint_port",
+            json_integer(tasks_peer_snapshots[i].endpoint_port));
+        json_object_set_new(jpeer, "endpoint_t_heartbeated",
+            json_integer(tasks_peer_snapshots[i].endpoint_t_heartbeated));
+        json_array_append_new(jpeers, jpeer);
+    }
+    json_object_set_new(jroot, "peers", jpeers);
+    /* stats */
+    jstats = wireguard_iface_stat_to_json();
+    AN(jstats);
+    json_object_set_new(jroot, "stats", jstats);
+    /* status */
+    jstatus = json_object();
+    AN(jstatus);
+    if (wg_band_mfa_authentication_required) {
+        json_object_set_new(jstatus, "mfa_authentication_required",
+            json_true());
+        if (wg_band_mfa_authentication_url[0] != '\0') {
+            json_object_set_new(jstatus, "mfa_authentication_url",
+                json_string(wg_band_mfa_authentication_url));
+        }
+    } else {
+        json_object_set_new(jstatus, "mfa_authentication_required",
+            json_false());
+        json_object_set_new(jstatus, "mfa_authentication_url",
+            json_string(""));
+    }
+    json_object_set_new(jroot, "status", jstatus);
+
+    snprintf(filepath, sizeof(filepath), "%s/%s", band_tunnel_top_dir,
+        "status_snapshot.json");
+    json_dump_file(jroot, filepath, 0);
+    json_decref(jroot);
+done:
+    callout_reset(&tasks_cb, &tasks_status_snapshot_co,
+        CALLOUT_SECTOTICKS(60), mudband_tunnel_tasks_status_snapshot, NULL);
+
 }
 
 static void *
@@ -122,6 +219,7 @@ mudband_tunnel_tasks_init(void)
     callout_init(&tasks_conf_nuke_co, 0);
     callout_init(&tasks_stun_client_co, 0);
     callout_init(&tasks_conf_fetcher_co, 0);
+    callout_init(&tasks_status_snapshot_co, 2);
         
     callout_reset(&tasks_cb, &tasks_conf_nuke_co,
                   CALLOUT_SECTOTICKS(60), mudband_tunnel_tasks_conf_nuke,
@@ -130,6 +228,8 @@ mudband_tunnel_tasks_init(void)
                   mudband_tunnel_tasks_stun_client, NULL);
     callout_reset(&tasks_cb, &tasks_conf_fetcher_co,
                   CALLOUT_SECTOTICKS(600), mudband_tunnel_tasks_conf_fetcher, NULL);
+    callout_reset(&tasks_cb, &tasks_status_snapshot_co,
+                  CALLOUT_SECTOTICKS(10), mudband_tunnel_tasks_status_snapshot, NULL);
 
     tasks_vl = vtc_logopen("tasks", mudband_tunnel_log_callback);
     AN(tasks_vl);
