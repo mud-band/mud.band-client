@@ -148,13 +148,13 @@ mbt_status_snapshot(void *arg)
 	}
 	if (band_need_peer_snapahot == 1) {
 		vtc_log(mbt_vl, 1,
-		    "BANDEC_XXXXX: No peer snapshot performed within"
+		    "BANDEC_00869: No peer snapshot performed within"
 		    " 3 seconds.");
 		goto done;
 	}
 	default_band_uuid = MPC_get_default_band_uuid();
 	if (default_band_uuid == NULL) {
-		vtc_log(mbt_vl, 1, "BANDEC_XXXXX: No default band UUID.");
+		vtc_log(mbt_vl, 1, "BANDEC_00870: No default band UUID.");
 		goto done;
 	}
 	jroot = json_object();

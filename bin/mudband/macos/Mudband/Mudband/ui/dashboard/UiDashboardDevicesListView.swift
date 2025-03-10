@@ -52,12 +52,12 @@ struct UiDashboardDevicesListView: View {
     
     private func read_status_snapshot() -> JSON? {
         guard let top_dir = FileManager.TopDirURL?.path else {
-            mudband_ui_log(0, "BANDEC_XXXXX: Failed to get the top dir.")
+            mudband_ui_log(0, "BANDEC_00888: Failed to get the top dir.")
             return nil
         }
         let filepath = top_dir + "/status_snapshot.json"
         guard let str = try? String(contentsOfFile: filepath, encoding: String.Encoding.utf8) else {
-            mudband_ui_log(0, "BANDEC_XXXXX: Failed to parse the band config: \(filepath)")
+            mudband_ui_log(0, "BANDEC_00889: Failed to parse the band config: \(filepath)")
             return nil
         }
         return JSON(parseJSON: str)

@@ -1046,7 +1046,7 @@ stun_sm_test_ii_recv(struct stun_client *sc)
 
 	r = stun_recvmsg(sc->fd, msg, &msgLen, &from.addr, &from.port);
 	if (r == -1) {
-		vtc_log(stunc_vl, 0, "BANDEC_XXXXX: stun_recvmsg() failed.");
+		vtc_log(stunc_vl, 0, "BANDEC_00865: stun_recvmsg() failed.");
 		sc->result.test_ii_fail_recvmsg = 1;
 		sc->step = STUN_STEP_ERROR;
 		return (STUN_SM_RETURN_CONTINUE);
@@ -1105,7 +1105,7 @@ stun_sm_test_iii_recv(struct stun_client *sc)
 
 	r = stun_recvmsg(sc->fd, msg, &msglen, &from.addr, &from.port);
 	if (r == -1) {
-		vtc_log(stunc_vl, 0, "BANDEC_XXXXX: stun_recvmsg() failed.");
+		vtc_log(stunc_vl, 0, "BANDEC_00866: stun_recvmsg() failed.");
 		sc->result.test_iii_fail_recvmsg = 1;
 		sc->step = STUN_STEP_ERROR;
 		return (STUN_SM_RETURN_CONTINUE);

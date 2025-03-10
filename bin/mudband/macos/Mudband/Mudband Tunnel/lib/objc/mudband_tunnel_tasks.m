@@ -100,13 +100,13 @@ mudband_tunnel_tasks_status_snapshot(void *arg)
     }
     if (wg_band_need_peer_snapahot == 1) {
         vtc_log(tasks_vl, 1,
-                "BANDEC_XXXXX: No peer snapshot performed within"
+                "BANDEC_00884: No peer snapshot performed within"
                 " 3 seconds.");
         goto done;
     }
     default_band_uuid = mudband_tunnel_progconf_get_default_band_uuidstr();
     if (default_band_uuid == NULL) {
-        vtc_log(tasks_vl, 1, "BANDEC_XXXXX: No default band UUID.");
+        vtc_log(tasks_vl, 1, "BANDEC_00885: No default band UUID.");
         goto done;
     }
     jroot = json_object();
