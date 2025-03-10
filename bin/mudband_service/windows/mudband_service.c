@@ -954,7 +954,7 @@ cmd_get_status_snapshot(char *out, size_t outmax)
 	
 	if (ODR_access(filepath, ODR_ACCESS_F_OK) == -1) {
 		vtc_log(vl, 1,
-		    "BANDEC_XXXXX: Status snapshot file not found: %s",
+		    "BANDEC_00857: Status snapshot file not found: %s",
 		    filepath);
 		json_object_set_new(root, "status", json_integer(500));
 		json_object_set_new(root, "msg",
@@ -963,7 +963,7 @@ cmd_get_status_snapshot(char *out, size_t outmax)
 		status_snapshot = json_load_file(filepath, 0, &jerror);
 		if (status_snapshot == NULL) {
 			vtc_log(vl, 1,
-			    "BANDEC_XXXXX: Error while reading status"
+			    "BANDEC_00858: Error while reading status"
 			    " snapshot JSON: on line %d: %s",
 			    jerror.line, jerror.text);
 			json_object_set_new(root, "status", json_integer(500));

@@ -266,7 +266,7 @@ fn mudband_ui_get_status_snapshot(_state: tauri::State<'_, Mutex<AppState>>) -> 
         }
         Err(e) => serde_json::to_string(&serde_json::json!({
             "status": 500,
-            "msg": format!("BANDEC_XXXXX: {}", e)
+            "msg": format!("BANDEC_00859: {}", e)
         })).unwrap_or_else(|_| "{}".to_string())
     }
 }

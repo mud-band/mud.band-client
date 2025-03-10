@@ -1034,7 +1034,7 @@ wireguard_peer_snapshot_run(struct wireguard_device *device)
     if (device->peers_count == 0)
                return;
     if (device->peers_count >= 65536) {
-        vtc_log(wg_vl, 0, "BANDEC_XXXXX: Too many peers.");
+        vtc_log(wg_vl, 0, "BANDEC_00881: Too many peers.");
         return;
     }
        
@@ -1043,7 +1043,7 @@ wireguard_peer_snapshot_run(struct wireguard_device *device)
         new_peer_snapshots_count);
     if (new_peer_snapshots == NULL) {
         vtc_log(wg_vl, 0,
-            "BANDEC_XXXXX: Failed to allocate memory for"
+            "BANDEC_00882: Failed to allocate memory for"
             " peer snapshots.");
         return;
     }

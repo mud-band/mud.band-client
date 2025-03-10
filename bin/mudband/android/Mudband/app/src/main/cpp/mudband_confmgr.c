@@ -576,7 +576,7 @@ CNF_parse_response(const char *etag, const char *body)
             AN(jsso_url);
             assert(json_is_string(jsso_url));
             vtc_log(cnf_vl, 1,
-                    "BANDEC_XXXXX: MFA authentication expired."
+                    "BANDEC_00876: MFA authentication expired."
                     " Please visit the SSO URL to re-verify: %s",
                     json_string_value(jsso_url));
             band_mfa_authentication_required = 1;
