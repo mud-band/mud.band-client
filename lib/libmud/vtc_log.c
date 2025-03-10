@@ -54,7 +54,7 @@ static const char * const lead[] = {
 static odr_pthread_mutex_t vtc_mtx;
 
 int vtc_error;	/* Error encountered */
-unsigned vtc_verbose = 3;
+unsigned vtc_verbose = 2;
 
 #define NLEAD (sizeof(lead)/sizeof(lead[0]))
 
