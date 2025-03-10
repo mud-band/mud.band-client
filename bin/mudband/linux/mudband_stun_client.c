@@ -204,10 +204,12 @@ struct stun_client {
 		int		test_i2_success;
 		int		test_i3_success;
 		int		test_ii_success;
+		int		test_ii_fail_recvmsg;
 		int		test_ii_fail_no_ip_change;
 		int		test_ii_fail_parse_error;
 		int		test_ii_fail_wrong_test_num;
 		int		test_iii_success;
+		int		test_iii_fail_recvmsg;
 		int		test_iii_fail_no_port_change;
 		int		test_iii_fail_parse_error;
 		int		test_iii_fail_wrong_test_num;
@@ -1042,7 +1044,13 @@ stun_sm_test_ii_recv(struct stun_client *sc)
 	char msg[STUN_MAX_MESSAGE_SIZE];
 	int msgLen = sizeof(msg), r;
 
-	stun_recvmsg(sc->fd, msg, &msgLen, &from.addr, &from.port);
+	r = stun_recvmsg(sc->fd, msg, &msgLen, &from.addr, &from.port);
+	if (r == -1) {
+		vtc_log(stunc_vl, 0, "BANDEC_XXXXX: stun_recvmsg() failed.");
+		sc->result.test_ii_fail_recvmsg = 1;
+		sc->step = STUN_STEP_ERROR;
+		return (STUN_SM_RETURN_CONTINUE);
+	}
 	memset(&resp, 0, sizeof(struct stun_msg));
 	r = stun_parsemsg(msg, msgLen, &resp);
 	if (r == -1) {
@@ -1095,7 +1103,13 @@ stun_sm_test_iii_recv(struct stun_client *sc)
 	char msg[STUN_MAX_MESSAGE_SIZE];
 	int msglen = sizeof(msg), r;
 
-	stun_recvmsg(sc->fd, msg, &msglen, &from.addr, &from.port);
+	r = stun_recvmsg(sc->fd, msg, &msglen, &from.addr, &from.port);
+	if (r == -1) {
+		vtc_log(stunc_vl, 0, "BANDEC_XXXXX: stun_recvmsg() failed.");
+		sc->result.test_iii_fail_recvmsg = 1;
+		sc->step = STUN_STEP_ERROR;
+		return (STUN_SM_RETURN_CONTINUE);
+	}
 	memset(&resp, 0, sizeof(struct stun_msg));
 	r = stun_parsemsg(msg, msglen, &resp);
 	if (r == -1) {

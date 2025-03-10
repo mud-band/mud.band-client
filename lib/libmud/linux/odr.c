@@ -94,8 +94,11 @@ double
 ODR_real(void)
 {
 	struct odr_timespec ts;
+	int r;
 
-	assert(ODR_clock_gettime(ODR_CLOCK_REALTIME, &ts) == 0);
+	r = ODR_clock_gettime(ODR_CLOCK_REALTIME, &ts);
+	if (r != 0)
+		return (0.0);
 	return (ts.tv_sec + 1e-9 * ts.tv_nsec);
 }
 
