@@ -1,6 +1,6 @@
 NCLUDES = -I
 
-CFLAGS = -g -O0 -Wall -Wstrict-prototypes -Wmissing-prototypes		\
+CFLAGS = -g -O3 -Wall -Wstrict-prototypes -Wmissing-prototypes		\
 	 -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings	\
 	 -Wswitch -Wshadow -Wcast-align -Wunused-parameter		\
 	 -Wchar-subscripts -Winline -Wnested-externs -Wredundant-decls	\

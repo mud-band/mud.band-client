@@ -63,7 +63,7 @@
 #define WIREGUARD_REKEY_AFTER_TIME	(120)
 #define WIREGUARD_REJECT_AFTER_TIME	(180)
 #define WIREGUARD_REKEY_TIMEOUT		(5)
-#define WIREGUARD_KEEPALIVE_TIMEOUT	(10)
+#define WIREGUARD_KEEPALIVE_TIMEOUT	(25)
 
 struct wireguard_keypair {
 	bool		valid;

@@ -768,6 +768,12 @@ wireguard_iface_timer(void *arg)
 	struct wireguard_device *device = (struct wireguard_device *)arg;
 	struct wireguard_peer *peer;
 	int x;
+	struct {
+		int n_start_handshake;
+		int n_keepalive;
+		int n_keypair_destroy;
+		int n_reset_peer;
+	} timer_stats = { 0, };
 	bool activated = false;
 
 	(void)activated;
@@ -776,36 +782,51 @@ wireguard_iface_timer(void *arg)
 		peer = &device->peers[x];
 		if (!peer->valid)
 			continue;
-		// Do we need to rekey / send a handshake?
+		/* Do we need to rekey / send a handshake? */
 		if (wireguard_iface_should_reset_peer(peer)) {
-			// Nothing back for too long -
-			// we should wipe out all crypto state
+			/*
+			 * Nothing back for too long -
+			 * we should wipe out all crypto state
+			 */
 			wireguard_keypair_destroy(&peer->next_keypair);
 			wireguard_keypair_destroy(&peer->curr_keypair);
 			wireguard_keypair_destroy(&peer->prev_keypair);
 			
-			// Revert back to default IP/port if these were altered
+			/*
+			 * Revert back to default IP/port if these were
+			 * altered.
+			 */
 			peer->endpoint_latest_is_proxy =
 			    peer->endpoints[0].is_proxy;
 			peer->endpoint_latest_ip = peer->endpoints[0].ip;
 			peer->endpoint_latest_port = peer->endpoints[0].port;
+			timer_stats.n_reset_peer++;
 		}
 		if (wireguard_iface_should_destroy_current_keypair(peer)) {
-			// Destroy current keypair
+			/* Destroy current keypair */
 			wireguard_keypair_destroy(&peer->curr_keypair);
+			timer_stats.n_keypair_destroy++;
 		}
 		if (wireguard_iface_should_send_keepalive(peer)) {
 			wireguard_iface_send_keepalive(device, peer);
+			timer_stats.n_keepalive++;
 		}
 		if (wireguard_iface_should_send_initiation(peer)) {
 			wireguard_start_handshake(device, peer);
+			timer_stats.n_start_handshake++;
 		}
 		if (peer->curr_keypair.valid || peer->prev_keypair.valid) {
 			activated = true;
 		}
 	}
 
-	callout_reset(&wg_cb, &device->co, CALLOUT_MSTOTICKS(400),
+	vtc_log(band_vl, 3,
+	    "wg_timer: n_start_handshake=%d, n_keepalive=%d, "
+	    "n_keypair_destroy=%d, n_reset_peer=%d",
+	    timer_stats.n_start_handshake, timer_stats.n_keepalive,
+	    timer_stats.n_keypair_destroy, timer_stats.n_reset_peer);
+
+	callout_reset(&wg_cb, &device->co, CALLOUT_SECTOTICKS(1),
 	    wireguard_iface_timer, device);
 }
 
@@ -846,7 +867,7 @@ wireguard_iface_init(struct wireguard_iface_init_data *init_data)
 
 	vtc_log(band_vl, 2, "Initialized the wireguard device.");
 
-	callout_reset(&wg_cb, &device->co, CALLOUT_MSTOTICKS(400),
+	callout_reset(&wg_cb, &device->co, CALLOUT_SECTOTICKS(1),
 	    wireguard_iface_timer, device);
 	return (device);
 }

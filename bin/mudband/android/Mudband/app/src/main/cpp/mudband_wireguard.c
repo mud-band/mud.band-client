@@ -449,7 +449,7 @@ wireguard_iface_timer(void *arg)
         }
     }
 
-    callout_reset(&device->cb, &device->co, CALLOUT_MSTOTICKS(400),
+    callout_reset(&device->cb, &device->co, CALLOUT_SECTOTICKS(1),
                   wireguard_iface_timer, device);
 }
 
@@ -489,7 +489,7 @@ wireguard_iface_init(struct vtclog *vl, struct wireguard_iface_init_data *init_d
 
     vtc_log(vl, 2, "Initialized the wireguard device.");
 
-    callout_reset(&device->cb, &device->co, CALLOUT_MSTOTICKS(400),
+    callout_reset(&device->cb, &device->co, CALLOUT_SECTOTICKS(1),
                   wireguard_iface_timer, device);
     return (device);
 }
