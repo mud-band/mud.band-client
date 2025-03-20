@@ -133,6 +133,10 @@ struct wireguard_peer {
 	/* keep-alive interval in seconds, 0 is disable */
 	uint16_t	keepalive_interval;
 
+	uint16_t	timeout_rekey;
+	uint16_t	timeout_rekey_after_time;
+	uint16_t	timeout_reject_after_time;
+
 	struct wireguard_allowed_ip allowed_source_ips[WIREGUARD_MAX_SRC_IPS];
 
 	uint8_t		public_key[WIREGUARD_PUBLIC_KEY_LEN];

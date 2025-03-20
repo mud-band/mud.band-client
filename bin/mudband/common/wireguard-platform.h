@@ -23,6 +23,8 @@ uint32_t
 // Fill the supplied buffer with random data - random data is used for
 // generating new session keys periodically
 void	wireguard_random_bytes(void *bytes, size_t size);
+uint16_t
+	wireguard_random_between_uint16(uint16_t minval, uint16_t maxval);
 
 // Get the current time in tai64n format - 8 byte seconds, 4 byte nano
 // sub-second - see https://cr.yp.to/libtai/tai64.html for details

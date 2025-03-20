@@ -380,6 +380,16 @@ wireguard_random_bytes(void *bytes, size_t size)
 	}
 }
 
+uint16_t
+wireguard_random_between_uint16(uint16_t minval, uint16_t maxval)
+{
+	uint16_t r = 0;
+
+	assert(minval < maxval);
+	r = (rand() % (maxval - minval)) + minval;
+	return (r);
+}
+
 /*
  * See https://cr.yp.to/libtai/tai64.html
  *
@@ -412,7 +422,7 @@ wireguard_iface_can_send_initiation(struct wireguard_peer *peer)
 {
 
 	return ((peer->last_initiation_tx == 0) ||
-	    (wireguard_expired(peer->last_initiation_tx, WIREGUARD_REKEY_TIMEOUT)));
+	    (wireguard_expired(peer->last_initiation_tx, peer->timeout_rekey)));
 }
 
 static bool
@@ -426,7 +436,7 @@ wireguard_iface_should_send_initiation(struct wireguard_peer *peer, int *reason)
 			*reason = 1;
 		} else if (peer->curr_keypair.valid &&
 		    !peer->curr_keypair.initiator &&
-		    wireguard_expired(peer->curr_keypair.keypair_millis, WIREGUARD_REJECT_AFTER_TIME - peer->keepalive_interval)) {
+		    wireguard_expired(peer->curr_keypair.keypair_millis, peer->timeout_reject_after_time - peer->keepalive_interval)) {
 			result = true;
 			*reason = 2;
 		} else if (!peer->curr_keypair.valid && peer->active) {
@@ -458,7 +468,7 @@ wireguard_iface_should_destroy_current_keypair(struct wireguard_peer *peer)
 	bool result = false;
 
 	if (peer->curr_keypair.valid &&
-	    (wireguard_expired(peer->curr_keypair.keypair_millis, WIREGUARD_REJECT_AFTER_TIME) ||
+	    (wireguard_expired(peer->curr_keypair.keypair_millis, peer->timeout_reject_after_time) ||
 		(peer->curr_keypair.sending_counter >= WIREGUARD_REJECT_AFTER_MESSAGES))) {
 		result = true;
 	}
@@ -471,7 +481,7 @@ wireguard_iface_should_reset_peer(struct wireguard_peer *peer)
 	bool result = false;
 
 	if (peer->curr_keypair.valid &&
-	    (wireguard_expired(peer->curr_keypair.keypair_millis, WIREGUARD_REJECT_AFTER_TIME * 3))) {
+	    (wireguard_expired(peer->curr_keypair.keypair_millis, peer->timeout_reject_after_time * 3))) {
 		result = true;
 	}
 	return result;
@@ -653,7 +663,7 @@ wireguard_iface_output_to_peer(struct wireguard_device *device, struct pbuf *p,
 		keypair = &peer->prev_keypair;
 	}
 	if (keypair->valid && (keypair->initiator || keypair->last_rx != 0)) {
-		if (!wireguard_expired(keypair->keypair_millis, WIREGUARD_REJECT_AFTER_TIME) &&
+		if (!wireguard_expired(keypair->keypair_millis, peer->timeout_reject_after_time) &&
 		    (keypair->sending_counter < WIREGUARD_REJECT_AFTER_MESSAGES)) {
 			// Calculate the outgoing packet size - round up to
 			// next 16 bytes, add 16 bytes for header
@@ -718,7 +728,7 @@ wireguard_iface_output_to_peer(struct wireguard_device *device, struct pbuf *p,
 			if (keypair->sending_counter >= WIREGUARD_REKEY_AFTER_MESSAGES) {
 				peer->send_handshake = true;
 			} else if (keypair->initiator &&
-			    wireguard_expired(keypair->keypair_millis, WIREGUARD_REKEY_AFTER_TIME)) {
+			    wireguard_expired(keypair->keypair_millis, peer->timeout_rekey_after_time)) {
 				peer->send_handshake = true;
 			}
 		} else {
@@ -1050,6 +1060,22 @@ wireguard_iface_reusable_old_peer(struct wireguard_peer *peers,
 	return (peer);
 }
 
+static void
+wireguard_iface_timeout_update(struct wireguard_peer *peer)
+{
+
+	peer->timeout_rekey = WIREGUARD_REKEY_TIMEOUT +
+	    wireguard_random_between_uint16(0, WIREGUARD_REKEY_TIMEOUT);
+	peer->timeout_rekey_after_time = WIREGUARD_REKEY_AFTER_TIME +
+	    wireguard_random_between_uint16(0, WIREGUARD_REKEY_AFTER_TIME / 3);
+	peer->timeout_reject_after_time = WIREGUARD_REJECT_AFTER_TIME +
+	    wireguard_random_between_uint16(0, WIREGUARD_REJECT_AFTER_TIME / 3);
+	assert((int)peer->timeout_reject_after_time -
+	    (int)peer->keepalive_interval - (int)peer->timeout_rekey > 0);
+	assert((int)peer->timeout_reject_after_time -
+	    (int)peer->keepalive_interval > 0);
+}
+
 static int
 wireguard_iface_add_peer(struct wireguard_device *device,
     struct wireguard_iface_peer *p, int *peer_index)
@@ -1105,6 +1131,7 @@ wireguard_iface_add_peer(struct wireguard_device *device,
 	} else {
 		peer->keepalive_interval = p->keep_alive;
 	}
+	wireguard_iface_timeout_update(peer);
 	r = wireguard_iface_peer_add_ip(peer, p->allowed_ip, p->allowed_mask);
 	assert(r);
 	memcpy(peer->greatest_timestamp, p->greatest_timestamp,
@@ -1463,7 +1490,7 @@ wireguard_iface_process_data_message(struct wireguard_device *device,
 		return;
 	}
 	if ((keypair->receiving_valid) &&
-	    !wireguard_expired(keypair->keypair_millis, WIREGUARD_REJECT_AFTER_TIME) &&
+	    !wireguard_expired(keypair->keypair_millis, peer->timeout_reject_after_time) &&
 	    (keypair->sending_counter < WIREGUARD_REJECT_AFTER_MESSAGES)) {
 		nonce = U8TO64_LITTLE(data_hdr->counter);
 		src = &data_hdr->enc_packet[0];
@@ -1495,7 +1522,7 @@ wireguard_iface_process_data_message(struct wireguard_device *device,
 
 			// Check to see if we should rekey
 			if (keypair->initiator &&
-			    wireguard_expired(keypair->keypair_millis, WIREGUARD_REJECT_AFTER_TIME - peer->keepalive_interval - WIREGUARD_REKEY_TIMEOUT)) {
+			    wireguard_expired(keypair->keypair_millis, peer->timeout_reject_after_time - peer->keepalive_interval - peer->timeout_rekey)) {
 				peer->send_handshake = true;
 			}
 			assert(pbuf->tot_len >= 0);
@@ -1774,6 +1801,7 @@ wireguard_iface_peers_update(struct wireguard_device *device, struct cnf *cnf)
 			new_peer = wireguard_peer_alloc(device);
 			AN(new_peer);
 			*new_peer = *old_peer;
+			wireguard_iface_timeout_update(new_peer);
 			wireguard_iface_otp_update(new_peer, &iface_peer);
 			n_reuse++;
 		}
