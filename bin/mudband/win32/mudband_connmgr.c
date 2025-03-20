@@ -92,10 +92,20 @@ MCM_listen_port(void)
 			listen_port = CNF_get_interface_listen_port(cnf->jroot);
 			CNF_rel(&cnf);
 		}
-		if (listen_port == -1)
+		if (listen_port == -1) {
 			mcm_listen_fd = mcm_open_port(0);
-		else
+			assert(mcm_listen_fd >= 0);
+		} else {
 			mcm_listen_fd = mcm_open_port(listen_port);
+			if (mcm_listen_fd < 0) {
+				vtc_log(mcm_vl, 1,
+				    "BANDEC_XXXXX: mcm_open_port(%d) failed."
+				    " Retrying to open any port.",
+				    listen_port);
+				mcm_listen_fd = mcm_open_port(0);
+			}
+			assert(mcm_listen_fd >= 0);
+		}
 		assert(mcm_listen_fd >= 0);
 		VSOCK_myname(mcm_listen_fd,
 		    mcm_listen_addrstr, sizeof(mcm_listen_addrstr),
