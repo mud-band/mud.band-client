@@ -107,10 +107,12 @@ struct wireguard_iphdr {
 struct wireguard_iface_stat {
     uint64_t	n_no_peer_found;
     uint64_t	n_no_ipv4_hdr;
+    uint64_t	n_nobufs;
     uint64_t	n_tun_rx_pkts;
     uint64_t	n_tun_tx_pkts;
     uint64_t	n_udp_rx_pkts;
     uint64_t	n_udp_tx_pkts;
+    uint64_t	n_udp_tx_errs;
     uint64_t	n_udp_proxy_rx_pkts;
     uint64_t	n_udp_proxy_tx_pkts;
     uint64_t	n_udp_proxy_rx_errs;
