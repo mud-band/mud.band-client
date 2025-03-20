@@ -757,7 +757,7 @@ CNF_fetch(const char *fetch_type)
 			    "%s", json_string_value(jsso_url));
 			json_decref(jroot);
 			free(resp_body);
-			return (-4);
+			return (2); /* +2 */
 		}
 
 		jmsg = json_object_get(jroot, "msg");

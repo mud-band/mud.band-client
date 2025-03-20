@@ -73,7 +73,7 @@ mbt_stun_client(void *arg)
 static void
 mbt_conf_fetcher(void *arg)
 {
-	int r;
+	int interval = 600 /* XXX 10 mins */, r;
 
 	(void)arg;
 
@@ -81,9 +81,10 @@ mbt_conf_fetcher(void *arg)
 	if (r < 0 ) {
 		vtc_log(mbt_vl, 1, "Failed to fetch the configuration. (r %d)",
 		    r);
+		interval = 60;	/* XXX 1 min */
 		goto done;
 	}
-	if (r == 1) {
+	if (r > 0) {
 		vtc_log(mbt_vl, 2, "Skip to check and read the config");
 		goto done;
 	}
@@ -103,7 +104,7 @@ mbt_conf_fetcher(void *arg)
 	}
 done:
 	callout_reset(&mbt_cb, &mbt_conf_fetcher_co,
-	    CALLOUT_SECTOTICKS(600), mbt_conf_fetcher, NULL);
+	    CALLOUT_SECTOTICKS(interval), mbt_conf_fetcher, NULL);
 }
 
 static void
