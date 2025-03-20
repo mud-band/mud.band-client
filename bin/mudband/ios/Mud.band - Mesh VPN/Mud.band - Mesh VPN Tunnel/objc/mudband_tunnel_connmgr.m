@@ -76,10 +76,18 @@ mudband_tunnel_connmgr_listen_port(void)
             listen_port = mudband_tunnel_confmgr_get_interface_listen_port(cnf->jroot);
             mudband_tunnel_confmgr_rel(&cnf);
         }
-        if (listen_port == -1)
+        if (listen_port == -1) {
             connmgr_listen_fd = mudband_tunnel_connmgr_open_port(0);
-        else
+        } else {
             connmgr_listen_fd = mudband_tunnel_connmgr_open_port(listen_port);
+	    if (connmgr_listen_fd < 0) {
+	        vtc_log(connmgr_vl, 1,
+			"BANDEC_XXXXX: mudband_tunnel_connmgr_open_port(%d)"
+			" failed. Retrying to open any port.",
+			listen_port);
+		connmgr_listen_fd = mudband_tunnel_connmgr_open_port(0);
+	    }
+	}
         assert(connmgr_listen_fd >= 0);
         VSOCK_myname(connmgr_listen_fd,
                      connmgr_listen_addrstr, sizeof(connmgr_listen_addrstr),

@@ -101,11 +101,19 @@ MCM_listen_port(void)
             vtc_log(mcm_vl, 2, "listen_port %d", listen_port);
             CNF_rel(&cnf);
         }
-        if (listen_port == -1)
+        if (listen_port == -1) {
             mcm_listen_fd = mcm_open_port(0);
-        else
+        } else {
             mcm_listen_fd = mcm_open_port(listen_port);
-        assert(mcm_listen_fd >= 0);
+	    if (mcm_listen_fd < 0) {
+	        vtc_log(mcm_vl, 1,
+			"BANDEC_XXXXX: mcm_open_port(%d) failed."
+			" Retrying to open any port.",
+			listen_port);
+		mcm_listen_fd = mcm_open_port(0);
+	    }
+	}
+	assert(mcm_listen_fd >= 0);
         VSOCK_myname(mcm_listen_fd,
                      mcm_listen_addrstr, sizeof(mcm_listen_addrstr),
                      mcm_listen_portstr, sizeof(mcm_listen_portstr));
