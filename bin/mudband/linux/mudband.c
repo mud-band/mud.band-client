@@ -416,19 +416,22 @@ wireguard_iface_can_send_initiation(struct wireguard_peer *peer)
 }
 
 static bool
-wireguard_iface_should_send_initiation(struct wireguard_peer *peer)
+wireguard_iface_should_send_initiation(struct wireguard_peer *peer, int *reason)
 {
 	bool result = false;
 
 	if (wireguard_iface_can_send_initiation(peer)) {
 		if (peer->send_handshake) {
 			result = true;
+			*reason = 1;
 		} else if (peer->curr_keypair.valid &&
 		    !peer->curr_keypair.initiator &&
 		    wireguard_expired(peer->curr_keypair.keypair_millis, WIREGUARD_REJECT_AFTER_TIME - peer->keepalive_interval)) {
 			result = true;
+			*reason = 2;
 		} else if (!peer->curr_keypair.valid && peer->active) {
 			result = true;
+			*reason = 3;
 		}
 	}
 	return result;
@@ -791,6 +794,8 @@ wireguard_iface_timer(void *arg)
 		int n_keypair_destroy;
 		int n_reset_peer;
 	} timer_stats = { 0, };
+	int send_initiation_reason;
+	int send_initiation_reasons[4 /* XXX */] = { 0, };
 	bool activated = false;
 
 	(void)activated;
@@ -828,9 +833,11 @@ wireguard_iface_timer(void *arg)
 			wireguard_iface_send_keepalive(device, peer);
 			timer_stats.n_keepalive++;
 		}
-		if (wireguard_iface_should_send_initiation(peer)) {
+		send_initiation_reason = 0;
+		if (wireguard_iface_should_send_initiation(peer, &send_initiation_reason)) {
 			wireguard_start_handshake(device, peer);
 			timer_stats.n_start_handshake++;
+			send_initiation_reasons[send_initiation_reason]++;
 		}
 		if (peer->curr_keypair.valid || peer->prev_keypair.valid) {
 			activated = true;
@@ -838,9 +845,12 @@ wireguard_iface_timer(void *arg)
 	}
 
 	vtc_log(band_vl, 3,
-	    "wg_timer: n_start_handshake=%d, n_keepalive=%d, "
+	    "wg_timer: n_start_handshake=%d (%d/%d/%d/%d), n_keepalive=%d, "
 	    "n_keypair_destroy=%d, n_reset_peer=%d",
-	    timer_stats.n_start_handshake, timer_stats.n_keepalive,
+	    timer_stats.n_start_handshake,
+	    send_initiation_reasons[0], send_initiation_reasons[1],
+	    send_initiation_reasons[2], send_initiation_reasons[3],
+	    timer_stats.n_keepalive,
 	    timer_stats.n_keypair_destroy, timer_stats.n_reset_peer);
 
 	callout_reset(&wg_cb, &device->co, CALLOUT_SECTOTICKS(1),
