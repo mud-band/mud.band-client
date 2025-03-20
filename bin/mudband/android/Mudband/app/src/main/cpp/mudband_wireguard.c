@@ -176,6 +176,11 @@ wireguard_iface_peer_output_multipath(struct wireguard_device *device,
         l = sendto(device->udp_fd, buf, buflen, 0,
                    (struct sockaddr *)&sin, sizeof(sin));
         if (l == -1) {
+	    wg_iface_stat.n_udp_tx_errs++;
+	    if (errno == ENOBUFS) {
+	        wg_iface_stat.n_nobufs++;
+		return (-1);
+	    }
             vtc_log(mwg_vl, 0,
                     "BANDEC_00198: sendto(2) to %s:%d failed: %d %s",
                     inet_ntoa(sin.sin_addr), pr->endpoints[x].port,
@@ -220,6 +225,11 @@ wireguard_iface_peer_output(struct wireguard_device *device, struct pbuf *q,
     l = sendto(device->udp_fd, buf, buflen, 0,
                (struct sockaddr *)&sin, sizeof(sin));
     if (l == -1) {
+        wg_iface_stat.n_udp_tx_errs++;
+	if (errno == ENOBUFS) {
+	    wg_iface_stat.n_nobufs++;
+	    return (-1);
+	}
         vtc_log(mwg_vl, 0,
 		"BANDEC_00817: sendto(2) to %s:%d failed: %d %s",
 		inet_ntoa(sin.sin_addr), ntohs(sin.sin_port),
@@ -961,8 +971,16 @@ wireguard_iface_device_output(struct wireguard_device *device, struct pbuf *q,
     l = sendto(device->udp_fd, buf, buflen, 0,
                (struct sockaddr *)&sin, sizeof(sin));
     if (l == -1) {
-        TODO();
-        return (-1);
+        wg_iface_stat.n_udp_tx_errs++;
+	if (errno == ENOBUFS) {
+	    wg_iface_stat.n_nobufs++;
+	    return (-1);
+	}
+	vtc_log(mwg_vl, 0,
+		"BANDEC_00893: sendto(2) to %s:%d failed: %d %s",
+		inet_ntoa(sin.sin_addr), ntohs(sin.sin_port),
+		errno, strerror(errno));
+	return (-1);
     }
     assert(l == buflen);
     wg_iface_stat.n_udp_tx_pkts++;

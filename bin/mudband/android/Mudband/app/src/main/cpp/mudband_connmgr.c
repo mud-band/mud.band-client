@@ -107,7 +107,7 @@ MCM_listen_port(void)
             mcm_listen_fd = mcm_open_port(listen_port);
 	    if (mcm_listen_fd < 0) {
 	        vtc_log(mcm_vl, 1,
-			"BANDEC_XXXXX: mcm_open_port(%d) failed."
+			"BANDEC_00892: mcm_open_port(%d) failed."
 			" Retrying to open any port.",
 			listen_port);
 		mcm_listen_fd = mcm_open_port(0);

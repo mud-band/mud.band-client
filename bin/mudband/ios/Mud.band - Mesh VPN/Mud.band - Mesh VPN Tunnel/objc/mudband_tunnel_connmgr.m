@@ -82,7 +82,7 @@ mudband_tunnel_connmgr_listen_port(void)
             connmgr_listen_fd = mudband_tunnel_connmgr_open_port(listen_port);
 	    if (connmgr_listen_fd < 0) {
 	        vtc_log(connmgr_vl, 1,
-			"BANDEC_XXXXX: mudband_tunnel_connmgr_open_port(%d)"
+			"BANDEC_00894: mudband_tunnel_connmgr_open_port(%d)"
 			" failed. Retrying to open any port.",
 			listen_port);
 		connmgr_listen_fd = mudband_tunnel_connmgr_open_port(0);
