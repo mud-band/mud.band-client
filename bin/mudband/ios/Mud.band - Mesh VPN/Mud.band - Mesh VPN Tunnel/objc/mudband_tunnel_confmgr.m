@@ -543,13 +543,13 @@ mudband_tunnel_confmgr_fill_iface_peer(json_t *jroot, struct wireguard_iface_pee
             }
 
             device_address = json_string_value(jaddress);
-            peer->endpoints[x].ip =
+            peer->endpoints[peer->n_endpoints].ip =
                 (uint32_t)inet_addr(device_address);
-            peer->endpoints[x].port =
+            peer->endpoints[peer->n_endpoints].port =
                 (uint16_t)json_integer_value(jport);
-            peer->endpoints[x].is_proxy = false;
+            peer->endpoints[peer->n_endpoints].is_proxy = false;
             if (!strcmp(json_string_value(jtype), "proxy"))
-                peer->endpoints[x].is_proxy = true;
+                peer->endpoints[peer->n_endpoints].is_proxy = true;
             peer->n_endpoints++;
         }
         peer->public_key = json_string_value(jwireguard_pubkey);
