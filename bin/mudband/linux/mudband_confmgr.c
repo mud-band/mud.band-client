@@ -73,6 +73,7 @@ cnf_getifaddrs(void)
 	json_t *jroot;
 	in_addr_t addr_198_18, mask_198_18, ifaddrs[CNF_IFADDRS_MAX];
 	int r, n, n_ifaddrs = 0;
+	const char *stun_mapped_addr;
 
 	r = getifaddrs(&ifap);
 	if (r == -1) {
@@ -122,7 +123,9 @@ cnf_getifaddrs(void)
 		}
 	}
 	freeifaddrs(ifap);
-	json_array_append_new(jroot, json_string(STUNC_get_mappped_addr()));
+	stun_mapped_addr = STUNC_get_mappped_addr();
+	AN(stun_mapped_addr);
+	json_array_append_new(jroot, json_string(stun_mapped_addr));
 	return (jroot);
 #undef CNF_IFADDRS_MAX
 }
@@ -260,6 +263,7 @@ CNF_check_and_read(void)
 		return (-3);
 	}
 	ma1 = STUNC_get_mappped_addr();
+	AN(ma1);
 	ma2 = cnf_get_interface_remote_addr_by_obj(jroot);
 	if (strcmp(ma1, ma2) != 0) {
 		vtc_log(cnf_vl, 2,
@@ -682,7 +686,11 @@ CNF_fetch(const char *fetch_type)
 	req.hdrs = hdrs;
 	{
 		json_t *jreq_body, *jiface, *jifaddrs;
+		const char *stun_mapped_addr;
 		char *rb;
+
+		stun_mapped_addr = STUNC_get_mappped_addr();
+		AN(stun_mapped_addr);
 
 		jiface = json_object();
 		AN(jiface);
@@ -697,7 +705,7 @@ CNF_fetch(const char *fetch_type)
 		json_object_set_new(jreq_body, "stun_nattype",
 		    json_integer(STUNC_get_nattype()));
 		json_object_set_new(jreq_body, "stun_mapped_addr",
-		    json_string(STUNC_get_mappped_addr()));
+		    json_string(stun_mapped_addr));
 		json_object_set_new(jreq_body, "fetch_type",
 		    json_string(fetch_type));
 		rb = json_dumps(jreq_body, 0);

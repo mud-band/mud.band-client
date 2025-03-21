@@ -1390,7 +1390,11 @@ enum stun_nattype
 STUNC_get_nattype(void)
 {
 
-	assert(stunc_result_inited == 1);
+	if (!stunc_result_inited) {
+		vtc_log(stunc_vl, 0,
+		    "BANDEC_00898: STUN client test not performed yet.");
+		return (STUN_NATTYPE_UNKNOWN);
+	}
 	return (stunc_result.nattype);
 }
 
@@ -1399,7 +1403,11 @@ STUNC_get_mappped_addr(void)
 {
 	struct in_addr addr;
 
-	assert(stunc_result_inited == 1);
+	if (!stunc_result_inited) {
+		vtc_log(stunc_vl, 0,
+		    "BANDEC_00899: STUN client test not performed yet.");
+		return (NULL);
+	}
 	addr.s_addr = stunc_result.mapped_addr;
 	return (inet_ntoa(addr));
 }
