@@ -1390,8 +1390,10 @@ wireguard_iface_update_peer_addr(struct wireguard_peer *peer,
 {
 
 	if (peer->endpoint_latest_ip == wsin->addr &&
-	    peer->endpoint_latest_port == wsin->port)
+	    peer->endpoint_latest_port == wsin->port) {
+		peer->endpoint_latest_t_heartbeated = time(NULL);
 		return;
+	}
 	peer->endpoint_latest_ip = wsin->addr;
 	peer->endpoint_latest_port = wsin->port;
 	peer->endpoint_latest_is_proxy = wsin->proxy.from_it;
