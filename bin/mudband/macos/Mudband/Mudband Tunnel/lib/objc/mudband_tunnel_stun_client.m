@@ -941,10 +941,17 @@ stun_sm_test_i2_recv(struct stun_client *sc)
     stun_recvmsg(sc->fd, msg, &msgLen, &from.addr, &from.port);
     memset(&resp, 0, sizeof(struct stun_msg));
     r = stun_parsemsg(msg, msgLen, &resp);
-    if (r == -1)
+    if (r == -1) {
         vtc_log(stun_client_vl, 0, "BANDEC_00789: stun_parsemsg() failed.");
-
-    assert(resp.msg_hdr.id.octet[0] == 10);
+	sc->step = STUN_STEP_TEST_I3_PREPARE;
+	return (STUN_SM_RETURN_CONTINUE);
+    }
+    if (resp.msg_hdr.id.octet[0] != 10) {
+        vtc_log(stunc_vl, 0,
+		"BANDEC_00904: Wrong test_num returned.");
+	sc->step = STUN_STEP_TEST_I3_PREPARE;
+	return (STUN_SM_RETURN_CONTINUE);
+    }
 
     mapped_addr.addr = resp.mapped_address.ipv4.addr;
     mapped_addr.port = resp.mapped_address.ipv4.port;
