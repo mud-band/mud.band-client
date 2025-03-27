@@ -76,14 +76,20 @@ mbt_stun_client(void *arg)
 static void
 mbt_conf_fetcher(void *arg)
 {
+	int interval = 600 /* 10 mins */;
 	int r;
 
 	(void)arg;
 
 	r = CNF_fetch("when_it_gots_a_event");
 	if (r < 0 ) {
+		if (r == -4 /* XXX */) {
+			interval = 30;	/* 30 seconds */
+			goto done;
+		}
 		vtc_log(mbt_vl, 1, "Failed to fetch the configuration. (r %d)",
 		    r);
+		interval = 60;
 		goto done;
 	}
 	if (r == 1) {
@@ -106,7 +112,7 @@ mbt_conf_fetcher(void *arg)
 	}
 done:
 	callout_reset(&mbt_cb, &mbt_conf_fetcher_co,
-	    CALLOUT_SECTOTICKS(600), mbt_conf_fetcher, NULL);
+	    CALLOUT_SECTOTICKS(interval), mbt_conf_fetcher, NULL);
 }
 
 static void

@@ -79,6 +79,10 @@ mbt_conf_fetcher(void *arg)
 
 	r = CNF_fetch("when_it_gots_a_event");
 	if (r < 0 ) {
+		if (r == -4 /* XXX */) {
+			interval = 30;	/* 30 seconds */
+			goto done;
+		}
 		vtc_log(mbt_vl, 1, "Failed to fetch the configuration. (r %d)",
 		    r);
 		interval = 60;	/* XXX 1 min */
