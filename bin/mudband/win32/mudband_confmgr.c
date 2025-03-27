@@ -691,6 +691,13 @@ CNF_fetch(const char *fetch_type)
 		free(resp_body);
 		return (1);
 	}
+	if (req.resp_status == 503) {
+		vtc_log(cnf_vl, 2,
+		    "The servser is busy to response for %s."
+		    " Try to fetch later %s", MBE_get_uuidstr());
+		free(resp_body);
+		return (-4);
+	}
 	resp_body[resp_bodylen] = '\0';
 	jroot = json_loads(resp_body, 0, &jerror);
 	if (jroot == NULL) {
