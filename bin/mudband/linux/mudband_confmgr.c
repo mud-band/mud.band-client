@@ -733,10 +733,13 @@ CNF_fetch(const char *fetch_type)
 		free(resp_body);
 		return (1);
 	}
-	if (req.resp_status == 503) {
+	if (req.resp_status == 502 || req.resp_status == 503) {
+		/* 502 = bad gateway */
+		/* 503 = service unavailable */
 		vtc_log(cnf_vl, 2,
-		    "The servser is busy to response for %s."
-		    " Try to fetch later %s", MBE_get_uuidstr());
+		    "The server is busy to response for %s so"
+		    " try to fetch later. (status %d)",
+		    MBE_get_uuidstr(), req.resp_status);
 		free(resp_body);
 		return (-4);
 	}
