@@ -1530,6 +1530,12 @@ STUNC_test(int times)
 		return (-1);
 	}
 	in.s_addr = htonl(mapped_addr.addr);
+	if (in.s_addr == INADDR_ANY) {
+		vtc_log(stunc_vl, 1,
+		    "BANDEC_00907: STUN client test returned INADDR_ANY."
+		    " This means all tests failed or blocked.");
+		return (-1);
+	}
 	vtc_log(stunc_vl, 2,
 	    "STUN client test completed. (nat_type %s mapped_addr %s)",
 	    STUNC_nattypestr(nattype),
