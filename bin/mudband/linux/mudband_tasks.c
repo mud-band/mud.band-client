@@ -64,7 +64,7 @@ mbt_stun_client(void *arg)
 
 	(void)arg;
 
-	STUNC_test();
+	STUNC_test(3);
 
 	callout_reset(&mbt_cb, &mbt_stun_client_co, CALLOUT_SECTOTICKS(600),
 	    mbt_stun_client, NULL);

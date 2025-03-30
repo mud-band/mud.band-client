@@ -340,7 +340,6 @@ stun_encode_attr_integrity(char* ptr, const struct stun_attr_integrity *atr)
 	ptr = stun_encode(ptr, atr->hash, sizeof(atr->hash));
 	return ptr;
 }
-#endif
 
 static int
 stun_random_port(void)
@@ -354,6 +353,7 @@ stun_random_port(void)
 	ret = ret & max;
 	return (ret);
 }
+#endif
 
 static void
 stun_buildreq(struct stun_msg *msg,
@@ -1419,62 +1419,121 @@ STUNC_get_mappped_addr(void)
 	return (inet_ntoa(addr));
 }
 
-int
-STUNC_test(void)
+static int
+stunc_test_loop(struct stun_addr4 *mapped_addr, enum stun_nattype *nattype,
+    int times)
 {
-	struct stun_addr4 mapped_addr;
+	struct stun_addr4 next_mapped_addr;
+	enum stun_nattype next_nattype;
 	struct stun_client sc;
-	enum stun_nattype nattype;
-	struct in_addr in;
+	int i;
 
-	vtc_log(stunc_vl, 2,
-	    "Starting to test the STUN client. It takes some seconds.");
+	AN(mapped_addr);
+	AN(nattype);
+	assert(times >= 1);
 
 	memset(&sc, 0, sizeof(sc));
 	sc.step = STUN_STEP_FIRST;
-	sc.src.addr = 0;
-	sc.src.port = stun_random_port();
 	sc.dst.addr = ntohl(inet_addr("13.56.166.106"));
 	sc.dst.port = 3478;
 	sc.fd = -1;
 	stun_client_perform(&sc);
 
-	nattype = stun_client_get_nattype(&sc);
-	mapped_addr = stun_client_get_mapped_addr(&sc);
+	*nattype = stun_client_get_nattype(&sc);
+	*mapped_addr = stun_client_get_mapped_addr(&sc);
+	if (times == 1 &&
+	    (mapped_addr->addr == INADDR_ANY ||
+	     *nattype == STUN_NATTYPE_FAILURE)) {
+		vtc_log(stunc_vl, 1,
+		    "BANDEC_00764: STUN client test failed.");
+		goto print_error;
+	}
+	for (i = 1; i < times; i++) {
+		memset(&sc, 0, sizeof(sc));
+		sc.step = STUN_STEP_FIRST;
+		sc.dst.addr = ntohl(inet_addr("13.56.166.106"));
+		sc.dst.port = 3478;
+		sc.fd = -1;
+		stun_client_perform(&sc);
 
+		next_nattype = stun_client_get_nattype(&sc);
+		next_mapped_addr = stun_client_get_mapped_addr(&sc);
+		if (*nattype != next_nattype) {
+			vtc_log(stunc_vl, 1,
+			    "BANDEC_00905: NAT type changed from %s to %s "
+			    "on attempt %d.",
+			    STUNC_nattypestr(*nattype),
+			    STUNC_nattypestr(next_nattype), i + 1);
+			goto print_error;
+		}
+		if (mapped_addr->addr != next_mapped_addr.addr) {
+			char addr1[INET_ADDRSTRLEN], addr2[INET_ADDRSTRLEN];
+
+			vtc_log(stunc_vl, 1,
+			    "BANDEC_00906: Mapped address changed"
+			    " from %s to %s on attempt %d.",
+			    inet_ntop(AF_INET, &mapped_addr->addr, addr1,
+				sizeof(addr1)),
+			    inet_ntop(AF_INET, &next_mapped_addr.addr, addr2,
+				sizeof(addr2)),
+			    i + 1);
+			goto print_error;
+		}
+	}
+	return (0);
+
+print_error:
+	vtc_log(stunc_vl, 1, 
+	    "BANDEC_00765: test results:"
+	    " i=%d i2=%d i3=%d"
+	    " ii=%d ii_no_ip=%d ii_parse_error=%d ii_test_num=%d"
+	    " iii=%d"
+	    " iii_no_port=%d iii_parse_error=%d iii_test_num=%d"
+	    " is_nat=%d preserve_port=%d hairpin=%d"
+	    " mapped_same_ip=%d",
+	    sc.result.test_i_success,
+	    sc.result.test_i2_success, 
+	    sc.result.test_i3_success,
+	    sc.result.test_ii_success,
+	    sc.result.test_ii_fail_no_ip_change,
+	    sc.result.test_ii_fail_parse_error,
+	    sc.result.test_ii_fail_wrong_test_num,
+	    sc.result.test_iii_success,
+	    sc.result.test_iii_fail_no_port_change,
+	    sc.result.test_iii_fail_parse_error,
+	    sc.result.test_iii_fail_wrong_test_num,
+	    sc.result.is_nat,
+	    sc.result.preserve_port,
+	    sc.result.hairpin,
+	    sc.result.mapped_same_ip);
+	return (-1);
+}
+
+int
+STUNC_test(int times)
+{
+	struct stun_addr4 mapped_addr;
+	enum stun_nattype nattype;
+	struct in_addr in;
+	int rv;
+
+	vtc_log(stunc_vl, 2,
+	    "Starting to test the STUN client. It takes some seconds.");
+
+	mapped_addr.addr = INADDR_ANY;
+	nattype = STUN_NATTYPE_UNKNOWN;
+	rv = stunc_test_loop(&mapped_addr, &nattype, times);
+	if (rv == -1) {
+		vtc_log(stunc_vl, 1,
+		    "BANDEC_00764: STUN client test failed after %d attempts.",
+		    times);
+		return (-1);
+	}
 	in.s_addr = htonl(mapped_addr.addr);
 	vtc_log(stunc_vl, 2,
 	    "STUN client test completed. (nat_type %s mapped_addr %s)",
 	    STUNC_nattypestr(nattype),
 	    inet_ntoa(in));
-	if (in.s_addr == INADDR_ANY || nattype == STUN_NATTYPE_FAILURE) {
-		vtc_log(stunc_vl, 1,
-		    "BANDEC_00764: STUN client test failed.");
-		vtc_log(stunc_vl, 1, 
-		    "BANDEC_00765: test results:"
-		    " i=%d i2=%d i3=%d"
-		    " ii=%d ii_no_ip=%d ii_parse_error=%d ii_test_num=%d"
-		    " iii=%d"
-		    " iii_no_port=%d iii_parse_error=%d iii_test_num=%d"
-		    " is_nat=%d preserve_port=%d hairpin=%d"
-		    " mapped_same_ip=%d",
-		    sc.result.test_i_success,
-		    sc.result.test_i2_success, 
-		    sc.result.test_i3_success,
-		    sc.result.test_ii_success,
-		    sc.result.test_ii_fail_no_ip_change,
-		    sc.result.test_ii_fail_parse_error,
-		    sc.result.test_ii_fail_wrong_test_num,
-		    sc.result.test_iii_success,
-		    sc.result.test_iii_fail_no_port_change,
-		    sc.result.test_iii_fail_parse_error,
-		    sc.result.test_iii_fail_wrong_test_num,
-		    sc.result.is_nat,
-		    sc.result.preserve_port,
-		    sc.result.hairpin,
-		    sc.result.mapped_same_ip);
-		return (-1);
-	}
 	if (stunc_result_inited) {
 		uint32_t naddr = htonl(mapped_addr.addr);
 
@@ -1513,6 +1572,6 @@ STUNC_init(void)
 
 	stunc_vl = vtc_logopen("stunc", mudband_log_printf);
 	AN(stunc_vl);
-	STUNC_test();
+	STUNC_test(1);
 	return (0);
 }

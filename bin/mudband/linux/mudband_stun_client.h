@@ -45,7 +45,7 @@ struct stun_client_result {
 };
 
 int	STUNC_init(void);
-int	STUNC_test(void);
+int	STUNC_test(int times);
 enum stun_nattype
 	STUNC_get_nattype(void);
 const char *
