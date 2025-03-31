@@ -277,29 +277,51 @@ vhttps_rxchunk(struct vhttps_internal *hp)
 	vtc_dump(hp->vl, 4, "len", hp->rxbuf + l, -1);
 	i = strtoul(hp->rxbuf + l, &q, 16);
 	snprintf(hp->chunklen, sizeof(hp->chunklen), "%d", i);
-	if ((q == hp->rxbuf + l) ||
-		(*q != '\0' && !vct_islws(*q))) {
-		vtc_log(hp->vl, 1, "BANDEC_00014: chunked fail %02x @ %d",
-		    *q, q - (hp->rxbuf + l));
+	if (q == hp->rxbuf + l) {
+		vtc_log(hp->vl, 1,
+		    "BANDEC_00014: Invalid chunk size (no digits found)");
+		return (-1);
 	}
-	assert(q != hp->rxbuf + l);
-	assert(*q == '\0' || vct_islws(*q));
+	if (*q != '\0' && !vct_islws(*q)) {
+		vtc_log(hp->vl, 1,
+		    "BANDEC_00908: Invalid character after chunk size ('%c')",
+		    *q);
+		return (-1);
+	}
 	hp->prxbuf = l;
 	if (i > 0) {
-		(void)vhttps_rxchar(hp, i, 0);
-		vtc_dump(hp->vl, 4, "chunk",
-		    hp->rxbuf + l, i);
+		r = vhttps_rxchar(hp, i, 0);
+		if (r <= 0) {
+			vtc_log(hp->vl, 1,
+			    "BANDEC_00909: Failed to read chunk data"
+			    " (expected %d bytes)", i);
+			return (-1);
+		}
+		vtc_dump(hp->vl, 4, "chunk", hp->rxbuf + l, i);
+	} else if (i < 0) {
+		vtc_log(hp->vl, 1,
+		    "BANDEC_00910: Invalid negative chunk size (%d)", i);
+		return (-1);
 	}
 	l = hp->prxbuf;
-	(void)vhttps_rxchar(hp, 2, 0);
-	if (!vct_iscrlf(hp->rxbuf[l]))
+	r = vhttps_rxchar(hp, 2, 0);
+	if (r <= 0) {
+		vtc_log(hp->vl, 1,
+		    "BANDEC_00911: Failed to read chunk terminator");
+		return (-1);
+	}
+	if (!vct_iscrlf(hp->rxbuf[l])) {
 		vtc_log(hp->vl, 1,
 		    "BANDEC_00015: Wrong chunk tail[0] = %02x",
 		    hp->rxbuf[l] & 0xff);
-	if (!vct_iscrlf(hp->rxbuf[l + 1]))
+		return (-1);
+	}
+	if (!vct_iscrlf(hp->rxbuf[l + 1])) {
 		vtc_log(hp->vl, 1,
 		    "BANDEC_00016: Wrong chunk tail[1] = %02x",
 		    hp->rxbuf[l + 1] & 0xff);
+		return (-1);
+	}
 	hp->prxbuf = l;
 	hp->rxbuf[l] = '\0';
 	return (i);
@@ -323,8 +345,13 @@ vhttps_swallow_body(struct vhttps_internal *hp, char * const *hh, int body)
 	}
 	p = vhttps_find_header(hh, "transfer-encoding");
 	if (p != NULL && !strcmp(p, "chunked")) {
-		while (vhttps_rxchunk(hp) != 0)
+		while ((i = vhttps_rxchunk(hp)) > 0)
 			continue;
+		if (i < 0) {
+			vtc_log(hp->vl, 1,
+			    "BANDEC_XXXXX: Error reading chunked body.");
+			return;
+		}
 		vtc_dump(hp->vl, 4, "body", hp->body, ll);
 		ll = (int)(hp->rxbuf + hp->prxbuf - hp->body);
 		hp->bodylen = ll;
